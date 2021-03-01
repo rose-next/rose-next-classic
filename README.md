@@ -101,8 +101,8 @@ It is recommended to use your own assets but the original rose-next assets can
 be downloaded from https://f000.backblazeb2.com/file/rose-archive/clients/rose-next-assets.7z
 
 The `client` requires assets to be baked before it can run. This can be
-accomplished using the `pipeline` tool in conjunction with the `bake.manifest`
-file. However, this process can be automated be running the `scripts/bake.ps1` script.
+accomplished using the `pipeline` tool in conjunction with the `assets/bake.manifest`
+file. However, this process can be automated be running the `scripts/build-assets.ps1` script.
 
 ### Debugging
 
@@ -174,7 +174,7 @@ directories should be set as the working directories when running the
 client/server executables.
 
 **NOTE**: This script assumes that the assets have already been baked at least
-one. Refer to the docs for `scripts/bake.ps1`
+one. Refer to the docs for `scripts/build-assets.ps1`
 
 - Run the `scripts/dev-setup.ps1` script
 - Update the server configuration file (`dev/server/server.toml`) with your
