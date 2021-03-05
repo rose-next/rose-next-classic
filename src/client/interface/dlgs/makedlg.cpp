@@ -70,8 +70,8 @@ CMakeComboClass::GetClass() {
     return m_iClass;
 }
 //*----------------------------------------------------------------------------------*/
-/// Wait State¿Í Result State´Â ModalÀÎ°ÍÃ³·³ Ã³¸®ÇÑ´Ù.(IsModal¿¡¼­ Ç×»ó return true );
-/// Normal State¿¡¼­´Â return CTDialog::IsModal()
+/// Wait Stateì™€ Result StateëŠ” Modalì¸ê²ƒì²˜ëŸ¼ ì²˜ë¦¬í•œë‹¤.(IsModalì—ì„œ í•­ìƒ return true );
+/// Normal Stateì—ì„œëŠ” return CTDialog::IsModal()
 //*-----------------------------------------------------------------------------------*/
 
 CMakeDLG::CMakeDLG(int iType) {
@@ -91,9 +91,9 @@ CMakeDLG::CMakeDLG(int iType) {
     POINT pt = {168, 171};
 
     m_listMaterialSlot.reserve(
-        g_iMaxCountMaterial); ///Á¦Á¶Ã¢¿¡ ¿Ã·ÁÁø ¾ÆÀÌÅÛÀÇ ¾ÆÀÌÄÜÀÌ ÀÚ¸®ÇÒ ½½·Ô
+        g_iMaxCountMaterial); ///ì œì¡°ì°½ì— ì˜¬ë ¤ì§„ ì•„ì´í…œì˜ ì•„ì´ì½˜ì´ ìë¦¬í•  ìŠ¬ë¡¯
 
-    ///Á¦Á¶ÇÒ ¾ÆÀÌÅÛÀÇ Àç·á°¡ µé¾î°¥ Slot * 4
+    ///ì œì¡°í•  ì•„ì´í…œì˜ ì¬ë£Œê°€ ë“¤ì–´ê°ˆ Slot * 4
     for (int i = 0; i < g_iMaxCountMaterial; ++i) {
         Slot.SetOffset(pt);
         Slot.SetParent(iType);
@@ -104,7 +104,7 @@ CMakeDLG::CMakeDLG(int iType) {
         pt.y += 46;
     }
 
-    ///Á¦Á¶ÇÒ ¾ÆÀÌÅÛÀÌ µé¾î°¥ Slot
+    ///ì œì¡°í•  ì•„ì´í…œì´ ë“¤ì–´ê°ˆ Slot
     pt.x = 168;
     pt.y = 98;
     m_MakeItemSlot.SetOffset(pt);
@@ -118,7 +118,7 @@ CMakeDLG::~CMakeDLG() {
         delete m_pMakeState[i];
 
     m_MakeItemSlot.DetachIcon();
-    for_each(m_listMaterialSlot.begin(), m_listMaterialSlot.end(), [](auto s) { s.DetachIcon(); });
+    for_each(m_listMaterialSlot.begin(), m_listMaterialSlot.end(), [](auto& s) { s.DetachIcon(); });
     m_pCurrState = NULL;
 
     SAFE_DELETE(m_pDragItem);
@@ -137,7 +137,7 @@ CMakeDLG::MoveWindow(POINT pt) {
     CTDialog::MoveWindow(pt);
 
     m_MakeItemSlot.MoveWindow(pt);
-    for_each(m_listMaterialSlot.begin(), m_listMaterialSlot.end(), [pt](auto s) {
+    for_each(m_listMaterialSlot.begin(), m_listMaterialSlot.end(), [pt](auto& s) {
         s.MoveWindow(pt);
     });
 
@@ -153,19 +153,19 @@ CMakeDLG::Draw() {
 
     CManufacture& MakeData = CManufacture::GetInstance();
 
-    ///°¢ Àç·áÄ­º° ¼º°øÁ¡ Ç¥½Ã
+    ///ê° ì¬ë£Œì¹¸ë³„ ì„±ê³µì  í‘œì‹œ
     DrawSuccessPoints();
 
     /// SubSystem Draw
     m_pCurrState->Draw();
 
-    /// Á¦Á¶ÇÒ ¾ÆÀÌÅÛ Draw
+    /// ì œì¡°í•  ì•„ì´í…œ Draw
     m_MakeItemSlot.Draw();
 
-    /// ÀÎº¥Åä¸®¿¡¼­ ¿Å±ä Àç·á¾ÆÀÌÅÛ Draw
-    for_each(m_listMaterialSlot.begin(), m_listMaterialSlot.end(), [](auto s) { s.Draw(); });
+    /// ì¸ë²¤í† ë¦¬ì—ì„œ ì˜®ê¸´ ì¬ë£Œì•„ì´í…œ Draw
+    for_each(m_listMaterialSlot.begin(), m_listMaterialSlot.end(), [](auto& s) { s.Draw(); });
 
-    /// ÇÊ¿ä Àç·á Draw
+    /// í•„ìš” ì¬ë£Œ Draw
     D3DXMATRIX mat;
     D3DXMatrixTranslation(&mat, (float)m_sPosition.x, (float)m_sPosition.y, 0.0f);
     ::setTransformSprite(mat);
@@ -199,7 +199,7 @@ CMakeDLG::Draw() {
     }
 
     /*
-    //È«±Ù : Á¦Á¶ ¼º°ø È®·ü Á¦°Å.
+    //í™ê·¼ : ì œì¡° ì„±ê³µ í™•ë¥  ì œê±°.
         ///Text Draw
         SetRect( &rcDraw, 79,379,79+34,379+15 );
         drawFontf( g_GameDATA.m_hFONT[ FONT_NORMAL ], true, &rcDraw ,g_dwWHITE,DT_RIGHT,"%d",
@@ -215,7 +215,7 @@ CMakeDLG::Draw() {
         "%d",
         MakeData.GetCosumeMP());
 
-    ///ÄŞº¸ Draw
+    ///ì½¤ë³´ Draw
     CWinCtrl* pCtrl = Find(IID_COMBOBOX_CLASS);
     if (pCtrl)
         pCtrl->OwnerDraw();
@@ -253,13 +253,13 @@ CMakeDLG::Update(POINT ptMouse) {
     CTDialog::Update(ptMouse);
 
     m_MakeItemSlot.Update(ptMouse);
-    for_each(m_listMaterialSlot.begin(), m_listMaterialSlot.end(), [ptMouse](auto s) {
+    for_each(m_listMaterialSlot.begin(), m_listMaterialSlot.end(), [ptMouse](auto& s) {
         s.Update(ptMouse);
     });
 
     m_pCurrState->Update(ptMouse);
 
-    //±ä ¾ÆÀÌÅÛ ÀÌ¸§ ÅøÆÁ.
+    //ê¸´ ì•„ì´í…œ ì´ë¦„ íˆ´íŒ.
     vector<CSinglelineString>::iterator itor = m_vecSingleString.begin();
     while (itor != m_vecSingleString.end()) {
         CSinglelineString& sStrBuf = (*itor);
@@ -285,7 +285,7 @@ CMakeDLG::Show() {
     if (IsVision())
         return;
     //*------------------------------------------------------------------------------------
-    /// Å¬·¡½ºµé ·Îµù
+    /// í´ë˜ìŠ¤ë“¤ ë¡œë”©
     CWinCtrl* pComponent = Find(IID_COMBOBOX_CLASS);
     assert(pComponent);
     if (pComponent == NULL)
@@ -358,12 +358,12 @@ CMakeDLG::Process(UINT uiMsg, WPARAM wParam, LPARAM lParam) {
 
 void
 CMakeDLG::RecvResult(t_PACKET* pRecvPacket) {
-    ///ÀÓ½Ã·Î ÀúÀåÇÑ´Ù.
+    ///ì„ì‹œë¡œ ì €ì¥í•œë‹¤.
     m_btRESULT = pRecvPacket->m_gsv_CREATE_ITEM_REPLY.m_btRESULT;
     m_nStepORInvIDX = pRecvPacket->m_gsv_CREATE_ITEM_REPLY.m_nStepORInvIDX;
     m_CreateITEM = pRecvPacket->m_gsv_CREATE_ITEM_REPLY.m_CreatedITEM;
 
-    /////¼º°øÀÌ³ª ½ÇÆĞ½Ã Ãß°¡
+    /////ì„±ê³µì´ë‚˜ ì‹¤íŒ¨ì‹œ ì¶”ê°€
     if (m_btRESULT == RESULT_CREATE_ITEM_SUCCESS || m_btRESULT == RESULT_CREATE_ITEM_FAILED)
         memcpy(m_nPRO_POINT,
             pRecvPacket->m_gsv_CREATE_ITEM_REPLY.m_nPRO_POINT,
@@ -410,7 +410,7 @@ CMakeDLG::Update(CObservable* pObservable, CTObject* pObj) {
             case CTEventManufacture::EID_ADD_MATERIAL: {
                 if (iIndex >= 0 && iIndex < g_iMaxCountMaterial) {
                     if (m_listMaterialSlot[iIndex].GetIcon()) {
-                        assert(0 && "CIconÀÌ ÀÖ´Â Slot¿¡ Overwrite ÇÕ´Ï´Ù@CMakeDLG::Update");
+                        assert(0 && "CIconì´ ìˆëŠ” Slotì— Overwrite í•©ë‹ˆë‹¤@CMakeDLG::Update");
                     } else {
                         CItem* pItem = pEvent->GetItem();
                         m_listMaterialSlot[iIndex].AttachIcon(pItem->CreateItemIcon());
@@ -460,10 +460,10 @@ CMakeDLG::IsModal() {
 
 void
 CMakeDLG::ReloadItemList() {
-    /// ÇØ´ç Å¬·¡½ºµéÀÇ
+    /// í•´ë‹¹ í´ë˜ìŠ¤ë“¤ì˜
     CWinCtrl* pComponent = Find(IID_COMBOBOX_ITEM);
     if (pComponent == NULL) {
-        assert(pComponent && "Combo Box °¡ ¾ø³×¿ä");
+        assert(pComponent && "Combo Box ê°€ ì—†ë„¤ìš”");
         return;
     }
 
