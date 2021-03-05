@@ -50,14 +50,14 @@ classUSER::IsHacking(char* szDesc, char* szFile, int iLine) {
     return false;
 }
 
-/// Äù½ºÆ® º¸»óÀ¸·Î Á¸ ÀÌµ¿ ½ÃÄÑÁÜ
+/// í€˜ìŠ¤íŠ¸ ë³´ìƒìœ¼ë¡œ ì¡´ ì´ë™ ì‹œì¼œì¤Œ
 bool
 classUSER::Reward_WARP(int iZoneNO, tPOINTF& PosGOTO) {
     if (!g_pZoneLIST->IsValidZONE(iZoneNO)) {
         return false;
     }
 
-    // Çà¼ºÀÌµ¿ °ú±İ Ã¼Å©...
+    // í–‰ì„±ì´ë™ ê³¼ê¸ˆ ì²´í¬...
     if (!this->Check_WarpPayment(iZoneNO))
         return false;
 
@@ -77,7 +77,7 @@ classUSER::Reward_WARP(int iZoneNO, tPOINTF& PosGOTO) {
 }
 
 //---------------------------------------------------------------------------
-/// ¼Ò¼Ó Å¬·£ÀÇ Å¬·£ º¯¼ö°ª º¯°æ
+/// ì†Œì† í´ëœì˜ í´ëœ ë³€ìˆ˜ê°’ ë³€ê²½
 bool
 classUSER::Send_gsv_ADJ_CLAN_VAR(BYTE btVarType, int iValue) {
     classPACKET* pCPacket = Packet_AllocNLock();
@@ -100,7 +100,7 @@ classUSER::Send_gsv_ADJ_CLAN_VAR(BYTE btVarType, int iValue) {
     return false;
 }
 
-/// ¹è¿î Å¬·£ ½ºÅ³À» Ã£À½
+/// ë°°ìš´ í´ëœ ìŠ¤í‚¬ì„ ì°¾ìŒ
 BYTE
 classUSER::FindClanSKILL(short nSkillNo1, short nSkillNo2) {
 #ifdef MAX_CLAN_SKILL_SLOT
@@ -108,7 +108,7 @@ classUSER::FindClanSKILL(short nSkillNo1, short nSkillNo2) {
         if (this->m_CLAN.m_ClanBIN.m_SKILL[nI].m_nSkillIDX >= nSkillNo1
             && this->m_CLAN.m_ClanBIN.m_SKILL[nI].m_nSkillIDX <= nSkillNo2) {
             if (SKILL_NEED_LEVELUPPOINT(this->m_CLAN.m_ClanBIN.m_SKILL[nI].m_nSkillIDX)) {
-                // ¸¸·á ³¯Â¥ Ã¼Å©...
+                // ë§Œë£Œ ë‚ ì§œ ì²´í¬...
                 if (this->GetCurAbsSEC() >= this->m_CLAN.m_ClanBIN.m_SKILL[nI].m_dwExpiredAbsSEC) {
                     this->m_CLAN.m_ClanBIN.m_SKILL[nI].m_nSkillIDX = 0;
                     this->m_CLAN.m_ClanBIN.m_SKILL[nI].m_dwExpiredAbsSEC = 0;
@@ -124,12 +124,12 @@ classUSER::FindClanSKILL(short nSkillNo1, short nSkillNo2) {
 #endif
 }
 
-/// Å¬·£ ½ºÅ³ Ãß°¡
+/// í´ëœ ìŠ¤í‚¬ ì¶”ê°€
 bool
 classUSER::AddClanSKILL(short nSkillNo) {
 #ifdef MAX_CLAN_SKILL_SLOT
     if (MAX_CLAN_SKILL_SLOT == this->FindClanSKILL(nSkillNo, nSkillNo)) {
-        // µî·ÏµÈ ½ºÅ³ÀÌ ¾Æ´Ï´Ù...
+        // ë“±ë¡ëœ ìŠ¤í‚¬ì´ ì•„ë‹ˆë‹¤...
         if (this->Send_gsv_ADJ_CLAN_VAR(CLVAR_ADD_SKILL, nSkillNo)) {
             return true;
         }
@@ -138,7 +138,7 @@ classUSER::AddClanSKILL(short nSkillNo) {
     return false;
 }
 
-/// Å¬·£ ½ºÅ³ »èÁ¦
+/// í´ëœ ìŠ¤í‚¬ ì‚­ì œ
 bool
 classUSER::DelClanSKILL(short nSkillNo) {
 #ifdef MAX_CLAN_SKILL_SLOT
@@ -150,35 +150,35 @@ classUSER::DelClanSKILL(short nSkillNo) {
     return false;
 }
 
-/// Å¬·£ ·¹º§ Áõ°¡
+/// í´ëœ ë ˆë²¨ ì¦ê°€
 void
 classUSER::IncClanLEVEL() {
     if (this->GetClanID()) {
-        // ÇöÀç Å¬·£ ·¹º§ ¿Ã¸² & db¿¡ ±â·Ï & WS·Î Àü¼Û->¸ğµç Å¬·£¿ø¿¡°Ô Åëº¸
+        // í˜„ì¬ í´ëœ ë ˆë²¨ ì˜¬ë¦¼ & dbì— ê¸°ë¡ & WSë¡œ ì „ì†¡->ëª¨ë“  í´ëœì›ì—ê²Œ í†µë³´
         this->Send_gsv_ADJ_CLAN_VAR(CLVAR_INC_LEV, 1);
     }
 }
 
-/// Å¬·£ ¼ÒÀ¯ÀÇ ÁÙ¸® Ãß°¡
+/// í´ëœ ì†Œìœ ì˜ ì¤„ë¦¬ ì¶”ê°€
 void
 classUSER::AddClanMONEY(int iMoney) {
     if (this->GetClanID()) {
-        // ÇöÀç Å¬·£ ¸Ó´Ï Á¶Á¤ & db¿¡ ±â·Ï & WS·Î Àü¼Û->¸ğµç Å¬·£¿ø¿¡°Ô Åëº¸
+        // í˜„ì¬ í´ëœ ë¨¸ë‹ˆ ì¡°ì • & dbì— ê¸°ë¡ & WSë¡œ ì „ì†¡->ëª¨ë“  í´ëœì›ì—ê²Œ í†µë³´
         this->Send_gsv_ADJ_CLAN_VAR(CLVAR_ADD_ZULY, iMoney);
     }
 }
 
-/// Å¬·£ Á¡¼ö Áõ°¡
+/// í´ëœ ì ìˆ˜ ì¦ê°€
 void
 classUSER::AddClanSCORE(int iScore) {
     if (this->GetClanID()) {
-        // ÇöÀç Å¬·£ Á¡¼ö Á¶Á¤ & db¿¡ ±â·Ï & WS·Î Àü¼Û->¸ğµç Å¬·£¿ø¿¡°Ô Åëº¸
+        // í˜„ì¬ í´ëœ ì ìˆ˜ ì¡°ì • & dbì— ê¸°ë¡ & WSë¡œ ì „ì†¡->ëª¨ë“  í´ëœì›ì—ê²Œ í†µë³´
         this->Send_gsv_ADJ_CLAN_VAR(CLVAR_ADD_SCORE, iScore);
     }
 }
 
 //-------------------------------------------------------------------------------------------------
-/// Å¬·£ÀÇ Ã¢¼³ Á¶°ÇÀÌ ¸Â´ÂÁö Ã¼Å©..
+/// í´ëœì˜ ì°½ì„¤ ì¡°ê±´ì´ ë§ëŠ”ì§€ ì²´í¬..
 bool
 classUSER::CheckClanCreateCondition(char cStep) {
 #define NEED_CLAN_CREATE_LEVEL 30
@@ -189,7 +189,7 @@ classUSER::CheckClanCreateCondition(char cStep) {
 
     bool bResult = true;
     switch (cStep) {
-        case 0: // »ı¼º ½ÃÀÛ Á¶°Ç¸¸ Ã¼Å©...
+        case 0: // ìƒì„± ì‹œì‘ ì¡°ê±´ë§Œ ì²´í¬...
             if (this->GetCur_MONEY() < NEED_CLAN_CREATE_MONEY) {
                 bResult = false;
                 break;
@@ -201,7 +201,7 @@ classUSER::CheckClanCreateCondition(char cStep) {
             this->UnlockSOCKET();
             break;
 
-        case 1: // »ı¼º½Ã
+        case 1: // ìƒì„±ì‹œ
         {
             char szTmp[128];
             this->LockSOCKET();
@@ -218,7 +218,7 @@ classUSER::CheckClanCreateCondition(char cStep) {
             break;
         }
 
-        case 2: // »ı¼º ½ÇÆĞ
+        case 2: // ìƒì„± ì‹¤íŒ¨
             this->LockSOCKET();
             this->Add_CurMONEY(this->m_iClanCreateMoney);
             this->m_iClanCreateMoney = 0;
@@ -230,7 +230,7 @@ classUSER::CheckClanCreateCondition(char cStep) {
 }
 
 //-------------------------------------------------------------------------------------------------
-/// Å¬¶óÀÌ¾ğÆ®·Î ºÎÅÍ ¹ŞÀº Å¬·£ ¸¶Å© ¼³Á¤ ÆĞÅ¶ Ã³¸®
+/// í´ë¼ì´ì–¸íŠ¸ë¡œ ë¶€í„° ë°›ì€ í´ëœ ë§ˆí¬ ì„¤ì • íŒ¨í‚· ì²˜ë¦¬
 bool
 classUSER::Recv_cli_CLANMARK_SET(t_PACKET* pPacket) {
     if (this->GetClanID()) {
@@ -240,21 +240,21 @@ classUSER::Recv_cli_CLANMARK_SET(t_PACKET* pPacket) {
     return true;
 }
 
-/// Å¬¶óÀÌ¾ğÆ®·Î ºÎÅÍ ¹ŞÀº Å¬·£ ¸¶Å© ¿äÃ» ÆĞÅ¶ Ã³¸®
+/// í´ë¼ì´ì–¸íŠ¸ë¡œ ë¶€í„° ë°›ì€ í´ëœ ë§ˆí¬ ìš”ì²­ íŒ¨í‚· ì²˜ë¦¬
 bool
 classUSER::Recv_cli_CLANMARK_REQ(t_PACKET* pPacket) {
     g_pThreadGUILD->Add_ClanCMD(GCMD_CLANMARK_GET, this->m_iSocketIDX, pPacket);
     return true;
 }
 
-/// Å¬¶óÀÌ¾ğÆ®°¡ ¿äÃ»ÇÑ Å¬·£ ¸¶Å© µî·Ï ³¯Â¥/½Ã°£ Àü¼Û..
+/// í´ë¼ì´ì–¸íŠ¸ê°€ ìš”ì²­í•œ í´ëœ ë§ˆí¬ ë“±ë¡ ë‚ ì§œ/ì‹œê°„ ì „ì†¡..
 bool
 classUSER::Recv_cli_CLANMARK_REG_TIME(t_PACKET* pPacket) {
     g_pThreadGUILD->Add_ClanCMD(GCMD_CLANMARK_REGTIME, this->m_iSocketIDX, pPacket);
     return true;
 }
 
-/// Å¬¶óÀÌ¾ğÆ®°¡ ¿äÃ»ÇÑ Å¬·£ °ü·Ã ÆĞÅ¶¿¡ ´ëÇÑ ÀÀ´ä ÆĞÅ¶ »ı¼ºÈÄ Àü¼Û
+/// í´ë¼ì´ì–¸íŠ¸ê°€ ìš”ì²­í•œ í´ëœ ê´€ë ¨ íŒ¨í‚·ì— ëŒ€í•œ ì‘ë‹µ íŒ¨í‚· ìƒì„±í›„ ì „ì†¡
 bool
 classUSER::Send_wsv_CLANMARK_REPLY(DWORD dwClanID, WORD wMarkCRC, char* pMarkData, short nDataLen) {
     classPACKET* pCPacket = Packet_AllocNLock();
@@ -274,14 +274,14 @@ classUSER::Send_wsv_CLANMARK_REPLY(DWORD dwClanID, WORD wMarkCRC, char* pMarkDat
 }
 
 //-------------------------------------------------------------------------------------------------
-/// ¼­¹ö¿¡ Áßº¹µÇÁö ¾ÊÀº ÆÀ¹øÈ£ ¼³Á¤
+/// ì„œë²„ì— ì¤‘ë³µë˜ì§€ ì•Šì€ íŒ€ë²ˆí˜¸ ì„¤ì •
 bool
 classUSER::Set_TeamNoFromUNIQUE() {
     this->SetCur_TeamNO(100 + this->Get_INDEX());
     return true;
 }
 
-/// Å¬·£´ÜÀ§·Î ÆÀ¹øÈ£ ¼³Á¤
+/// í´ëœë‹¨ìœ„ë¡œ íŒ€ë²ˆí˜¸ ì„¤ì •
 bool
 classUSER::Set_TeamNoFromClanIDX() {
     if (this->GetClanID()) {
@@ -291,7 +291,7 @@ classUSER::Set_TeamNoFromClanIDX() {
     return false;
 }
 
-/// ÆÄÆ¼´ÜÀ§·Î ÆÀ¹øÈ£ ¼³Á¤
+/// íŒŒí‹°ë‹¨ìœ„ë¡œ íŒ€ë²ˆí˜¸ ì„¤ì •
 bool
 classUSER::Set_TeamNoFromPartyIDX() {
     if (this->GetPARTY()) {
@@ -301,7 +301,7 @@ classUSER::Set_TeamNoFromPartyIDX() {
     return false;
 }
 
-/// ºÎÈ° À§Ä¡ ¼³Á¤
+/// ë¶€í™œ ìœ„ì¹˜ ì„¤ì •
 bool
 classUSER::Set_RevivePOS(int iXPos, int iYPos) {
     if (!this->GetZONE())
@@ -321,20 +321,20 @@ classUSER::Check_CheatCODE(char* szCode) {
             if ( !strncmp( szCode, "/pexp", 5 ) ) {
                 if ( this->GetPARTY()->m_btPartyRULE & BIT_PARTY_RULE_EXP_PER_PLAYER ) {
                     this->GetPARTY()->m_btPartyRULE &= ~BIT_PARTY_RULE_EXP_PER_PLAYER;
-                    this->GetPARTY()->SendWhisperToPartyMembers( "»ç³É½Ã ¾ò´Â °æÇèÄ¡°¡ ÀÏÁ¤ÇÏ°Ô
-       ºĞ¹èµË´Ï´Ù." ); } else { this->GetPARTY()->m_btPartyRULE |= BIT_PARTY_RULE_EXP_PER_PLAYER;
-                    this->GetPARTY()->SendWhisperToPartyMembers( "»ç³É½Ã ¾ò´Â °æÇèÄ¡°¡ ·¹º§ºñ·Ê·Î
-       ºĞ¹èµË´Ï´Ù." );
+                    this->GetPARTY()->SendWhisperToPartyMembers( "ì‚¬ëƒ¥ì‹œ ì–»ëŠ” ê²½í—˜ì¹˜ê°€ ì¼ì •í•˜ê²Œ
+       ë¶„ë°°ë©ë‹ˆë‹¤." ); } else { this->GetPARTY()->m_btPartyRULE |= BIT_PARTY_RULE_EXP_PER_PLAYER;
+                    this->GetPARTY()->SendWhisperToPartyMembers( "ì‚¬ëƒ¥ì‹œ ì–»ëŠ” ê²½í—˜ì¹˜ê°€ ë ˆë²¨ë¹„ë¡€ë¡œ
+       ë¶„ë°°ë©ë‹ˆë‹¤." );
                 }
                 return 1;
             } else
             if ( !strncmp( szCode, "/pitem", 6 ) ) {
                 if ( this->GetPARTY()->m_btPartyRULE & BIT_PARTY_RULE_ITEM_TO_ORDER ) {
                     this->GetPARTY()->m_btPartyRULE &= ~BIT_PARTY_RULE_ITEM_TO_ORDER;
-                    this->GetPARTY()->SendWhisperToPartyMembers( "ÆÄÆ¼¼ÒÀ¯ÀÇ ¾ÆÀÌÅÛ ¿ì¼±±ÇÀÌ ¸ğµç
-       ÆÄÆ¼¿ø¿¡°Ô ÀÖ½À´Ï´Ù." ); } else { this->GetPARTY()->m_btPartyRULE |=
-       BIT_PARTY_RULE_ITEM_TO_ORDER; this->GetPARTY()->SendWhisperToPartyMembers( "ÆÄÆ¼¼ÒÀ¯ÀÇ ¾ÆÀÌÅÛ
-       ½Àµæ½Ã ¼øÂ÷ÀûÀ¸·Î ÀÚµ¿ ºĞ¹èµË´Ï´Ù." );
+                    this->GetPARTY()->SendWhisperToPartyMembers( "íŒŒí‹°ì†Œìœ ì˜ ì•„ì´í…œ ìš°ì„ ê¶Œì´ ëª¨ë“ 
+       íŒŒí‹°ì›ì—ê²Œ ìˆìŠµë‹ˆë‹¤." ); } else { this->GetPARTY()->m_btPartyRULE |=
+       BIT_PARTY_RULE_ITEM_TO_ORDER; this->GetPARTY()->SendWhisperToPartyMembers( "íŒŒí‹°ì†Œìœ ì˜ ì•„ì´í…œ
+       ìŠµë“ì‹œ ìˆœì°¨ì ìœ¼ë¡œ ìë™ ë¶„ë°°ë©ë‹ˆë‹¤." );
                 }
                 return 1;
             }
@@ -359,7 +359,7 @@ classUSER::Check_CheatCODE(char* szCode) {
 }
 
 //-------------------------------------------------------------------------------------------------
-/// Ã¤ÆÃÀ¸·Î ¹ŞÀº Å¬·£ ¸í·É Ã³¸®..
+/// ì±„íŒ…ìœ¼ë¡œ ë°›ì€ í´ëœ ëª…ë ¹ ì²˜ë¦¬..
 short
 classUSER::GuildCMD(char* szCMD) {
     char *pArg1, *pArg2, *pArg3;
@@ -375,7 +375,7 @@ classUSER::GuildCMD(char* szCMD) {
     if (!pCPacket)
         return 0;
 
-    if (!strcmpi(pArg1, "create")) { //±æµå»ı¼º, /guildcreate [±æµå¸í]
+    if (!strcmpi(pArg1, "create")) { //ê¸¸ë“œìƒì„±, /guildcreate [ê¸¸ë“œëª…]
         pArg2 = pStrVAR->GetTokenNext(pDelimiters);
         pArg3 = pStrVAR->GetTokenNext(pDelimiters);
         if (pArg2 && pArg3) {
@@ -390,14 +390,14 @@ classUSER::GuildCMD(char* szCMD) {
             pCPacket->AppendString(pArg3);
             this->Recv_cli_CLAN_COMMAND((t_PACKET*)(pCPacket->m_pDATA));
         }
-    } else if (!strcmpi(pArg1, "info")) { //±æµåÁ¤º¸, /ginfo - ±æµå¿¡ ´ëÇÑ ±âº»ÀûÀÎ Á¤º¸
+    } else if (!strcmpi(pArg1, "info")) { //ê¸¸ë“œì •ë³´, /ginfo - ê¸¸ë“œì— ëŒ€í•œ ê¸°ë³¸ì ì¸ ì •ë³´
         pCPacket->m_HEADER.m_wType = CLI_CLAN_COMMAND;
         pCPacket->m_HEADER.m_nSize = sizeof(cli_CLAN_COMMAND);
         pCPacket->m_cli_CLAN_COMMAND.m_btCMD = GCMD_INFO;
 
         this->Recv_cli_CLAN_COMMAND((t_PACKET*)(pCPacket->m_pDATA));
     } else if (!strcmpi(pArg1,
-                   "invite")) { //±æµåÃÊ´ë, /ginvite <ÇÃ·¹ÀÌ¾î> - ±æµå¿¡ ÇØ´ç ÇÃ·¹ÀÌ¾î ÃÊ´ëÇÏ±â
+                   "invite")) { //ê¸¸ë“œì´ˆëŒ€, /ginvite <í”Œë ˆì´ì–´> - ê¸¸ë“œì— í•´ë‹¹ í”Œë ˆì´ì–´ ì´ˆëŒ€í•˜ê¸°
         pArg2 = pStrVAR->GetTokenNext(pDelimiters);
         if (pArg2) {
             pCPacket->m_HEADER.m_wType = CLI_CLAN_COMMAND;
@@ -408,7 +408,7 @@ classUSER::GuildCMD(char* szCMD) {
             this->Recv_cli_CLAN_COMMAND((t_PACKET*)(pCPacket->m_pDATA));
         }
     } else if (!strcmpi(pArg1,
-                   "remove")) { //±æµåÃß¹æ, /gremove <ÇÃ·¹ÀÌ¾î> - ±æµå¿¡¼­ ÇØ´ç ÇÃ·¹ÀÌ¾î Ãß¹æÇÏ±â
+                   "remove")) { //ê¸¸ë“œì¶”ë°©, /gremove <í”Œë ˆì´ì–´> - ê¸¸ë“œì—ì„œ í•´ë‹¹ í”Œë ˆì´ì–´ ì¶”ë°©í•˜ê¸°
         pArg2 = pStrVAR->GetTokenNext(pDelimiters);
         if (pArg2) {
             pCPacket->m_HEADER.m_wType = CLI_CLAN_COMMAND;
@@ -419,7 +419,7 @@ classUSER::GuildCMD(char* szCMD) {
             this->Recv_cli_CLAN_COMMAND((t_PACKET*)(pCPacket->m_pDATA));
         }
     } else if (!strcmpi(pArg1,
-                   "promote")) { //±æµå½Â±Ş, /gpromote <ÇÃ·¹ÀÌ¾î> - ÇØ´ç ÇÃ·¹ÀÌ¾î ±æµå µî±Ş ¿Ã¸®±â
+                   "promote")) { //ê¸¸ë“œìŠ¹ê¸‰, /gpromote <í”Œë ˆì´ì–´> - í•´ë‹¹ í”Œë ˆì´ì–´ ê¸¸ë“œ ë“±ê¸‰ ì˜¬ë¦¬ê¸°
         pArg2 = pStrVAR->GetTokenNext(pDelimiters);
         if (pArg2) {
             pCPacket->m_HEADER.m_wType = CLI_CLAN_COMMAND;
@@ -430,7 +430,7 @@ classUSER::GuildCMD(char* szCMD) {
             this->Recv_cli_CLAN_COMMAND((t_PACKET*)(pCPacket->m_pDATA));
         }
     } else if (!strcmpi(pArg1,
-                   "demote")) { //±æµå°­µî, /gdemote <ÇÃ·¹ÀÌ¾î> - ÇØ´ç ÇÃ·¹ÀÌ¾î ±æµå µî±Ş ³»¸®±â
+                   "demote")) { //ê¸¸ë“œê°•ë“±, /gdemote <í”Œë ˆì´ì–´> - í•´ë‹¹ í”Œë ˆì´ì–´ ê¸¸ë“œ ë“±ê¸‰ ë‚´ë¦¬ê¸°
         pArg2 = pStrVAR->GetTokenNext(pDelimiters);
         if (pArg2) {
             pCPacket->m_HEADER.m_wType = CLI_CLAN_COMMAND;
@@ -450,7 +450,7 @@ classUSER::GuildCMD(char* szCMD) {
             pCPacket->AppendString(pArg2);
             this->Recv_cli_CLAN_COMMAND((t_PACKET*)(pCPacket->m_pDATA));
         }
-    } else if (!strcmpi(pArg1, "motd")) { //±æµå°øÁö, /gmotd <ÇÒ¸»> - ¿À´ÃÀÇ ±æµå ¸Ş½ÃÁö Á¤ÇÏ±â
+    } else if (!strcmpi(pArg1, "motd")) { //ê¸¸ë“œê³µì§€, /gmotd <í• ë§> - ì˜¤ëŠ˜ì˜ ê¸¸ë“œ ë©”ì‹œì§€ ì •í•˜ê¸°
         pArg2 = pStrVAR->GetTokenNext(pDelimiters);
         if (pArg2) {
             pCPacket->m_HEADER.m_wType = CLI_CLAN_COMMAND;
@@ -460,19 +460,19 @@ classUSER::GuildCMD(char* szCMD) {
             pCPacket->AppendString(pArg2);
             this->Recv_cli_CLAN_COMMAND((t_PACKET*)(pCPacket->m_pDATA));
         }
-    } else if (!strcmpi(pArg1, "quit")) { //±æµåÅ»Åğ, /gquit - ±æµå¿¡¼­ Å»ÅğÇÏ±â
+    } else if (!strcmpi(pArg1, "quit")) { //ê¸¸ë“œíƒˆí‡´, /gquit - ê¸¸ë“œì—ì„œ íƒˆí‡´í•˜ê¸°
         pCPacket->m_HEADER.m_wType = CLI_CLAN_COMMAND;
         pCPacket->m_HEADER.m_nSize = sizeof(cli_CLAN_COMMAND);
         pCPacket->m_cli_CLAN_COMMAND.m_btCMD = GCMD_QUIT;
         this->Recv_cli_CLAN_COMMAND((t_PACKET*)(pCPacket->m_pDATA));
-    } else if (!strcmpi(pArg1, "roster")) { //±æµå¸ñ·Ï, /groster - ÀüÃ¼ ±æµå¿ø ¸ñ·Ï º¸±â
+    } else if (!strcmpi(pArg1, "roster")) { //ê¸¸ë“œëª©ë¡, /groster - ì „ì²´ ê¸¸ë“œì› ëª©ë¡ ë³´ê¸°
         pCPacket->m_HEADER.m_wType = CLI_CLAN_COMMAND;
         pCPacket->m_HEADER.m_nSize = sizeof(cli_CLAN_COMMAND);
         pCPacket->m_cli_CLAN_COMMAND.m_btCMD = GCMD_ROSTER;
 
         this->Recv_cli_CLAN_COMMAND((t_PACKET*)(pCPacket->m_pDATA));
-    } else if (!strcmpi(pArg1, "leader")) { //±æµåÀ§ÀÓ, /gleader <ÇÃ·¹ÀÌ¾î> - ´Ù¸¥ ÇÃ·¹ÀÌ¾î¿¡°Ô
-                                            //±æµåÀå À§ÀÓÇÏ±â (±æµåÀå Àü¿ë)
+    } else if (!strcmpi(pArg1, "leader")) { //ê¸¸ë“œìœ„ì„, /gleader <í”Œë ˆì´ì–´> - ë‹¤ë¥¸ í”Œë ˆì´ì–´ì—ê²Œ
+                                            //ê¸¸ë“œì¥ ìœ„ì„í•˜ê¸° (ê¸¸ë“œì¥ ì „ìš©)
         pArg2 = pStrVAR->GetTokenNext(pDelimiters);
         if (pArg2) {
             pCPacket->m_HEADER.m_wType = CLI_CLAN_COMMAND;
@@ -482,7 +482,7 @@ classUSER::GuildCMD(char* szCMD) {
             pCPacket->AppendString(pArg2);
             this->Recv_cli_CLAN_COMMAND((t_PACKET*)(pCPacket->m_pDATA));
         }
-    } else if (!strcmpi(pArg1, "disband")) { //±æµåÇØÃ¼, /gdisband - ±æµå ÇØÃ¼ÇÏ±â (±æµåÀå Àü¿ë)
+    } else if (!strcmpi(pArg1, "disband")) { //ê¸¸ë“œí•´ì²´, /gdisband - ê¸¸ë“œ í•´ì²´í•˜ê¸° (ê¸¸ë“œì¥ ì „ìš©)
         pCPacket->m_HEADER.m_wType = CLI_CLAN_COMMAND;
         pCPacket->m_HEADER.m_nSize = sizeof(cli_CLAN_COMMAND);
         pCPacket->m_cli_CLAN_COMMAND.m_btCMD = GCMD_DISBAND;
@@ -516,14 +516,14 @@ classUSER::GuildCMD(char* szCMD) {
 }
 
 //-------------------------------------------------------------------------------------------------
-/// ÀÎº¥Åä¸®°¡ ²ËÂ÷¼­ ´õÀÌ»ó ÀÌÀÌÅÛÀ» ¼ÒÀ¯ÇÒ¼ö ¾ø´Â »óÅÂ¿¡¼­ ºÎµæÀÌ Äù½ºÆ® º¸»óµî¿¡¼­ ¾ÆÀÌÅÛÀº
-/// ¹Ù´Ú¿¡ ¶³±¸°í ¼ÒÀ¯½Ã°£À» Çã¹ú³ª°Ô ±æ°Ô...
+/// ì¸ë²¤í† ë¦¬ê°€ ê½‰ì°¨ì„œ ë”ì´ìƒ ì´ì´í…œì„ ì†Œìœ í• ìˆ˜ ì—†ëŠ” ìƒíƒœì—ì„œ ë¶€ë“ì´ í€˜ìŠ¤íŠ¸ ë³´ìƒë“±ì—ì„œ ì•„ì´í…œì€
+/// ë°”ë‹¥ì— ë–¨êµ¬ê³  ì†Œìœ ì‹œê°„ì„ í—ˆë²Œë‚˜ê²Œ ê¸¸ê²Œ...
 void
 classUSER::Save_ItemToFILED(tagITEM& sDropITEM, int iRemainTime) {
     switch (sDropITEM.GetTYPE()) {
         case ITEM_TYPE_QUEST:
         case ITEM_TYPE_MONEY:
-            // µ·À» ´õÀÌ»ó ¼ÒÁöÇÏÁö ¸øÇØ µå·ÓµÇ´Â °æ¿ì´Â ¾øÀ½.
+            // ëˆì„ ë”ì´ìƒ ì†Œì§€í•˜ì§€ ëª»í•´ ë“œë¡­ë˜ëŠ” ê²½ìš°ëŠ” ì—†ìŒ.
             return;
     }
 
@@ -539,15 +539,15 @@ classUSER::Save_ItemToFILED(tagITEM& sDropITEM, int iRemainTime) {
             sDropITEM,
             this,
             true,
-            NULL); // »ç¿ëÀÚ µå·Ó.
-        pObjITEM->m_iRemainTIME = iRemainTime; // 30ºĞ°£ À¯È¿ ÇÏµµ·Ï...
+            NULL); // ì‚¬ìš©ì ë“œë¡­.
+        pObjITEM->m_iRemainTIME = iRemainTime; // 30ë¶„ê°„ ìœ íš¨ í•˜ë„ë¡...
 
-        this->GetZONE()->Add_DIRECT(pObjITEM); // µå·Ó ¾ÆÀÌÅÛ
+        this->GetZONE()->Add_DIRECT(pObjITEM); // ë“œë¡­ ì•„ì´í…œ
     }
 }
 
 //-------------------------------------------------------------------------------------------------
-/// °æÇèÄ¡ Áõ°¡½ÃÅ´
+/// ê²½í—˜ì¹˜ ì¦ê°€ì‹œí‚´
 void
 classUSER::Add_EXP(__int64 iGetExp, bool bApplyStamina, WORD wFromObjIDX) {
     if (this->Get_HP() <= 0)
@@ -565,7 +565,7 @@ classUSER::Add_EXP(__int64 iGetExp, bool bApplyStamina, WORD wFromObjIDX) {
         // if ( this->GetCur_STAMINA() >= GREEN_STAMINA ) {
         //	iExp = iGetExp;
 
-        //	// ¼Ò¸ğµÉ ½ºÅ×¹Ì³ª :: {(È¹µæ °æÇèÄ¡ + 80) / (A_LV+5) } * (WORLD_STAMINA) / 100
+        //	// ì†Œëª¨ë  ìŠ¤í…Œë¯¸ë‚˜ :: {(íšë“ ê²½í—˜ì¹˜ + 80) / (A_LV+5) } * (WORLD_STAMINA) / 100
         //	iGetExp= (int)( ( (iExp + 80) / (this->Get_LEVEL()+5) ) * ( ::Get_WorldSTAMINA() ) /
         // 100.f ); 	if ( iGetExp > 0 ) { 		short nNewStamina = this->GetCur_STAMINA() -
         // iGetExp; 		this->SetCur_STAMINA( nNewStamina>0 ? nNewStamina : 0 );
@@ -577,11 +577,11 @@ classUSER::Add_EXP(__int64 iGetExp, bool bApplyStamina, WORD wFromObjIDX) {
 
         //	iGetExp= (int)( ( (iExp + 80) / (this->Get_LEVEL()+5) ) * ( ::Get_WorldSTAMINA() ) /
         // 100.f );
-        //	// ¼Ò¸ğµÉ ½ºÅ×¹Ì³ª :: {(È¹µæ °æÇèÄ¡ + 80) / (A_LV+5) } * (WORLD_STAMINA) / 100
+        //	// ì†Œëª¨ë  ìŠ¤í…Œë¯¸ë‚˜ :: {(íšë“ ê²½í—˜ì¹˜ + 80) / (A_LV+5) } * (WORLD_STAMINA) / 100
         //	iGetExp= (int)( ( (iExp + 80) / (this->Get_LEVEL()+5) ) * ( ::Get_WorldSTAMINA() ) /
         // 100.f ); 	if ( iGetExp > 0 ) { 		short nNewStamina = this->GetCur_STAMINA() -
         // iGetExp; if ( nNewStamina < YELLOW_STAMINA && this->GetPARTY() ) {
-        //			// ÆÄÆ¼¿ø¿¡°Ô ½ºÅ×¹Ì³Ê Á¤º¸ Àü¼Û.
+        //			// íŒŒí‹°ì›ì—ê²Œ ìŠ¤í…Œë¯¸ë„ˆ ì •ë³´ ì „ì†¡.
         //			this->m_pPartyBUFF->Change_ObjectIDX( this );
         //		}
         //		this->SetCur_STAMINA( nNewStamina>0 ? nNewStamina : 0 );
@@ -590,7 +590,7 @@ classUSER::Add_EXP(__int64 iGetExp, bool bApplyStamina, WORD wFromObjIDX) {
         //	iExp = (int) ( iGetExp * 0.3f );
         //	if ( iExp <= 0 ) return;
 
-        //	// ¼Ò¸ğµÉ ½ºÅ×¹Ì³ª :: {(È¹µæ °æÇèÄ¡ + 80) / (A_LV+5) } * (WORLD_STAMINA) / 100
+        //	// ì†Œëª¨ë  ìŠ¤í…Œë¯¸ë‚˜ :: {(íšë“ ê²½í—˜ì¹˜ + 80) / (A_LV+5) } * (WORLD_STAMINA) / 100
         //	iGetExp= (int)( ( (iExp + 80) / (this->Get_LEVEL()+5) ) * ( ::Get_WorldSTAMINA() ) /
         // 100.f ); 	if ( iGetExp > 0 ) { 		short nNewStamina = this->GetCur_STAMINA() -
         // iGetExp; 		this->SetCur_STAMINA( nNewStamina>0 ? nNewStamina : 0 );
@@ -614,28 +614,34 @@ classUSER::Add_EXP(__int64 iGetExp, bool bApplyStamina, WORD wFromObjIDX) {
     bool bLevelUp = false;
 
     short nBeforeLEV = this->Get_LEVEL();
-    while (m_GrowAbility.m_lEXP >= iNeedEXP) {
-        // ·¹º§ Á¦ÇÑ
-        if (this->Get_LEVEL() < GameStaticConfig::MAX_LEVEL) {
-            this->Set_LEVEL(this->Get_LEVEL() + 1);
-        }
-
-        this->AddCur_BonusPOINT((short)(this->Get_LEVEL() * 0.8) + 10);
-
-        for (short nD = 0; nD < g_TblSkillPoint.row_count; nD++) {
-            // Original formula: this->AddCur_SkillPOINT( (short)( ( this->Get_LEVEL() + 4 ) * 0.5f
-            // ) - 1 );
-            if (SP_LEVEL(nD) == this->Get_LEVEL()) {
-                this->AddCur_SkillPOINT(SP_POINT(nD));
+    if (nBeforeLEV == GameStaticConfig::MAX_LEVEL) {
+        m_GrowAbility.m_lEXP = 0;
+    } else {
+        while (m_GrowAbility.m_lEXP >= iNeedEXP) {
+            // ë ˆë²¨ ì œí•œ
+            if (this->Get_LEVEL() >= GameStaticConfig::MAX_LEVEL) {
+                m_GrowAbility.m_lEXP = 0;
                 break;
             }
+            this->Set_LEVEL(this->Get_LEVEL() + 1);
+
+            this->AddCur_BonusPOINT((short)(this->Get_LEVEL() * 0.8) + 10);
+
+            for (short nD = 0; nD < g_TblSkillPoint.row_count; nD++) {
+                // Original formula: this->AddCur_SkillPOINT( (short)( ( this->Get_LEVEL() + 4 ) * 0.5f
+                // ) - 1 );
+                if (SP_LEVEL(nD) == this->Get_LEVEL()) {
+                    this->AddCur_SkillPOINT(SP_POINT(nD));
+                    break;
+                }
+            }
+
+            m_GrowAbility.m_lEXP -= iNeedEXP;
+
+            m_GrowAbility.m_lPenalEXP = 0;
+            iNeedEXP = this->Get_NeedEXP(this->Get_LEVEL());
+            bLevelUp = true;
         }
-
-        m_GrowAbility.m_lEXP -= iNeedEXP;
-
-        m_GrowAbility.m_lPenalEXP = 0;
-        iNeedEXP = this->Get_NeedEXP(this->Get_LEVEL());
-        bLevelUp = true;
     }
 
     if (bLevelUp) {
@@ -647,13 +653,13 @@ classUSER::Add_EXP(__int64 iGetExp, bool bApplyStamina, WORD wFromObjIDX) {
 }
 
 /**
- * \brief	Á×¾ú´Ù...
- * \param	pKiller	:: Á×ÀÎ³Ñ...
+ * \brief	ì£½ì—ˆë‹¤...
+ * \param	pKiller	:: ì£½ì¸ë„˜...
  */
 bool
 classUSER::Dead(CObjCHAR* pKiller) {
     if (this->GetZONE()->GetGlobalFLAG() & ZONE_FLAG_PK_ALLOWED) {
-        // ÇöÀç Á¸ÀÌ PK ¼³Á¤µÇ¾î ÀÖÀ¸¸é...
+        // í˜„ì¬ ì¡´ì´ PK ì„¤ì •ë˜ì–´ ìˆìœ¼ë©´...
         CObjCHAR* pKillerOBJ = (CObjCHAR*)(pKiller->Get_CALLER());
 
         if (pKillerOBJ && pKillerOBJ->IsUSER()) {
@@ -669,7 +675,7 @@ classUSER::Dead(CObjCHAR* pKiller) {
         classUSER* pUSER = g_pObjMGR->Get_UserOBJ(this->m_iLinkedCartObjIDX);
         if (pUSER) {
             if (RIDE_MODE_GUEST == pUSER->m_btRideMODE) {
-                // µÚ¿¡ Å¸°í ÀÖ´ø »ç¿ëÀÚ¸é ¿îÀüÀÚ°¡ Á×¾úÀ¸´Ï ³»·Á¾ßÁö...
+                // ë’¤ì— íƒ€ê³  ìˆë˜ ì‚¬ìš©ìë©´ ìš´ì „ìê°€ ì£½ì—ˆìœ¼ë‹ˆ ë‚´ë ¤ì•¼ì§€...
                 pUSER->m_btRideMODE = 0;
             }
             pUSER->m_iLinkedCartObjIDX = 0;
@@ -684,18 +690,18 @@ classUSER::Dead(CObjCHAR* pKiller) {
     this->m_iTradeUserIDX = 0;
 
     this->Del_ActiveSKILL();
-    this->m_IngSTATUS.Reset(false); // 2005. 03. 30 »óÁ¡»óÅÂ »ç¸Á½Ã »óÁ¡ÇÃ·¡±× ¾ÈÇ®¸®´ø ¹ö±× ¼öÁ¤ ::
+    this->m_IngSTATUS.Reset(false); // 2005. 03. 30 ìƒì ìƒíƒœ ì‚¬ë§ì‹œ ìƒì í”Œë˜ê·¸ ì•ˆí’€ë¦¬ë˜ ë²„ê·¸ ìˆ˜ì • ::
                                     // this->m_IngSTATUS.ClearALL();
 
-    this->Clear_SummonCNT(); // Á×À»¶§...ÀÚ½ÅÀÌ ¼ÒÈ¯½ÃÅ² °¹¼ö 0°³·Î...
+    this->Clear_SummonCNT(); // ì£½ì„ë•Œ...ìì‹ ì´ ì†Œí™˜ì‹œí‚¨ ê°¯ìˆ˜ 0ê°œë¡œ...
 
-    this->update_speed(); // »óÅÂ¶§¹®¿¡ Àû¿ëµÆ´ø ÀÌµ¿¼Óµµ
+    this->update_speed(); // ìƒíƒœë•Œë¬¸ì— ì ìš©ëë˜ ì´ë™ì†ë„
 
     this->m_iAppliedPenaltyEXP = 0;
     if (CObjCHAR::Dead(NULL)) {
-        // ¼ÒÈ¯µÈ ¸÷ÀÌ ¾Æ´Ï¸é...
+        // ì†Œí™˜ëœ ëª¹ì´ ì•„ë‹ˆë©´...
         if (!pKiller->IsUSER() && !pKiller->GetSummonedSkillIDX()) {
-            // °æÇèÄ¡ ÆĞ³ÎÄ¡ Àû¿ë.
+            // ê²½í—˜ì¹˜ íŒ¨ë„ì¹˜ ì ìš©.
             this->Set_PenalEXP(PENALTY_EXP_TOWN);
         }
         return true;
@@ -716,13 +722,13 @@ classUSER::Do_SelfSKILL(short nSkillIDX) {
     }
 
     if (this->Skill_ActionCondition(nSkillIDX)) {
-        // ½ÇÁ¦ ÇÊ¿ä ¼öÄ¡ ¼Ò¸ğ Àû¿ë...
+        // ì‹¤ì œ í•„ìš” ìˆ˜ì¹˜ ì†Œëª¨ ì ìš©...
         if (this->SetCMD_Skill2SELF(nSkillIDX)) {
             return true;
         }
     }
 
-    return false; // Á¢¼Ó ²÷±âÁö ¾ÊÀ½
+    return false; // ì ‘ì† ëŠê¸°ì§€ ì•ŠìŒ
 }
 
 bool
@@ -748,11 +754,11 @@ classUSER::Do_TargetSKILL(int iTargetObject, short nSkillIDX) {
         }
     }
 
-    return false; // Á¢¼Ó ²÷±âÁö ¾ÊÀ½
+    return false; // ì ‘ì† ëŠê¸°ì§€ ì•ŠìŒ
 }
 
 //-------------------------------------------------------------------------------------------------
-/// »ç¿ëÀÚ°¡ ·Î±×¾Æ¿ô ¿äÃ»½Ã¿¡ Å¬¶óÀÌ¾ğÆ®¿¡ ´ë±â ÇØ¾ßÇÒ ½Ã°£ Åëº¸
+/// ì‚¬ìš©ìê°€ ë¡œê·¸ì•„ì›ƒ ìš”ì²­ì‹œì— í´ë¼ì´ì–¸íŠ¸ì— ëŒ€ê¸° í•´ì•¼í•  ì‹œê°„ í†µë³´
 bool
 classUSER::Send_gsv_LOGOUT_REPLY(WORD wWaitSec) {
     classPACKET* pCPacket = Packet_AllocNLock();
@@ -770,11 +776,11 @@ classUSER::Send_gsv_LOGOUT_REPLY(WORD wWaitSec) {
 }
 
 //-------------------------------------------------------------------------------------------------
-/// »ç¿ëÀÚ¿¡°Ô npc¿¡¼­ ¹ßµ¿ÇÒ¼ö ÀÖ´Â ÀÌº¥Æ®¸¦ ¼öÇàÇÏ¶ó°í Åëº¸
+/// ì‚¬ìš©ìì—ê²Œ npcì—ì„œ ë°œë™í• ìˆ˜ ìˆëŠ” ì´ë²¤íŠ¸ë¥¼ ìˆ˜í–‰í•˜ë¼ê³  í†µë³´
 bool
 classUSER::Send_gsv_CHECK_NPC_EVENT(short nNpcIDX) {
     if (NPC_QUEST_TYPE(nNpcIDX)) {
-        // ÆÄÆ¼ Àü¿ë Äù½ºÆ®´Ù...
+        // íŒŒí‹° ì „ìš© í€˜ìŠ¤íŠ¸ë‹¤...
         if (this->GetPARTY()) {
             return this->m_pPartyBUFF->Send_gsv_CHECK_NPC_EVENT(this, nNpcIDX);
         }
@@ -798,7 +804,7 @@ classUSER::Send_gsv_CHECK_NPC_EVENT(short nNpcIDX) {
 }
 
 //-------------------------------------------------------------------------------------------------
-/// »ç¿ëÀÚ¿¡°Ô ¼­¹öÀÇ ÇöÀç ÇÇ/¿¥À» Åëº¸
+/// ì‚¬ìš©ìì—ê²Œ ì„œë²„ì˜ í˜„ì¬ í”¼/ì— ì„ í†µë³´
 bool
 classUSER::Send_gsv_SET_HPnMP(BYTE btApply) {
     classPACKET* pCPacket = Packet_AllocNLock();
@@ -821,7 +827,7 @@ classUSER::Send_gsv_SET_HPnMP(BYTE btApply) {
 }
 
 //-------------------------------------------------------------------------------------------------
-/// Ã¤ÆÃ·ë ÆĞÅ¶~
+/// ì±„íŒ…ë£¸ íŒ¨í‚·~
 bool
 classUSER::Send_wsv_CHATROOM(BYTE btCMD, WORD wUserID, char* szSTR) {
 #ifdef ENABLE_CHATROOM
@@ -847,10 +853,10 @@ classUSER::Send_wsv_CHATROOM(BYTE btCMD, WORD wUserID, char* szSTR) {
     return true;
 }
 
-/// ÀÚ½Å¿¡°Ô ¼Ò¸ğ ¾ÆÀÌÅÛÀ» »ç¿ëµÆ°í ¼Ò¸ğµÈ ¾ÆÀÌÅÛÀÇ °¹¼ö¸¦ Åëº¸
+/// ìì‹ ì—ê²Œ ì†Œëª¨ ì•„ì´í…œì„ ì‚¬ìš©ëê³  ì†Œëª¨ëœ ì•„ì´í…œì˜ ê°¯ìˆ˜ë¥¼ í†µë³´
 bool
 classUSER::Send_gsv_USE_ITEM(short nItemNO, short nInvIDX) {
-    // ÀÚ½Å ÇÑÅ×¸¸ ¼Ò¸ğ¼º ¾ÆÀÌÅÛ »ç¿ëÇß´Ù°í Àü¼Û.
+    // ìì‹  í•œí…Œë§Œ ì†Œëª¨ì„± ì•„ì´í…œ ì‚¬ìš©í–ˆë‹¤ê³  ì „ì†¡.
     classPACKET* pCPacket = Packet_AllocNLock();
     if (!pCPacket)
         return false;
@@ -866,7 +872,7 @@ classUSER::Send_gsv_USE_ITEM(short nItemNO, short nInvIDX) {
     return true;
 }
 
-/// ¼Ò¸ğ ¾ÆÀÌÅÛ »ç¿ëÀ» ÁÖº¯¿¡ ¾Ë·ÁÁÖ°í ¾ÆÀÌÅÛ Ã³¸®
+/// ì†Œëª¨ ì•„ì´í…œ ì‚¬ìš©ì„ ì£¼ë³€ì— ì•Œë ¤ì£¼ê³  ì•„ì´í…œ ì²˜ë¦¬
 bool
 classUSER::Use_pITEM(tagITEM* pITEM) {
     classPACKET* pCPacket = Packet_AllocNLock();
@@ -879,12 +885,12 @@ classUSER::Use_pITEM(tagITEM* pITEM) {
     pCPacket->m_gsv_USE_ITEM.m_nUseItemNO = pITEM->m_nItemNo;
 
     this->GetZONE()->SendPacketToSectors(this, pCPacket);
-    // ÆÄÆ¼¿ø ÇÑÅ×µµ ???
+    // íŒŒí‹°ì› í•œí…Œë„ ???
     // this->SendPacketToPartyExecpNearUSER( pCPacket );
 
     Packet_ReleaseNUnlock(pCPacket);
 
-    // Áö¼Ó¼º È¿°ú ¾ÆÀÌÅÛÀÎ°¡ ??
+    // ì§€ì†ì„± íš¨ê³¼ ì•„ì´í…œì¸ê°€ ??
     if (USEITME_STATUS_STB(pITEM->m_nItemNo)) {
         short nIngSTB = USEITME_STATUS_STB(pITEM->m_nItemNo);
         // short nDuringTime;
@@ -907,7 +913,7 @@ classUSER::Use_pITEM(tagITEM* pITEM) {
     return true;
 }
 
-/// ¼Ò¸ğ¾ÆÀÌÅÛ »ç¿ë ÆĞÅ¶ Ã³¸® :: »ç¿ëÁ¶°Çµî µûÁü
+/// ì†Œëª¨ì•„ì´í…œ ì‚¬ìš© íŒ¨í‚· ì²˜ë¦¬ :: ì‚¬ìš©ì¡°ê±´ë“± ë”°ì§
 bool
 classUSER::Use_InventoryITEM(t_PACKET* pPacket) {
     short nInventoryIDX = pPacket->m_cli_USE_ITEM.m_nInventoryIndex;
@@ -926,7 +932,7 @@ classUSER::Use_InventoryITEM(t_PACKET* pPacket) {
             "Recv_cli_USE_ITEM-2 : pITEM->m_nItemNo >= g_TblUSEITEM.row_count");
     }
 
-    /// ÄğÅ¸ÀÓ Àû¿ë..
+    /// ì¿¨íƒ€ì„ ì ìš©..
     DWORD dwCurTime;
     short nCoolTimeType;
     dwCurTime = 0;
@@ -934,7 +940,7 @@ classUSER::Use_InventoryITEM(t_PACKET* pPacket) {
 
     int iValue = GetCur_AbilityValue(USEITEM_NEED_DATA_TYPE(pITEM->m_nItemNo));
     if (AT_CURRENT_PLANET == USEITEM_NEED_DATA_TYPE(pITEM->m_nItemNo)) {
-        // »ç¿ëÇÒ¼ö ÀÖ´Â Çà¼ºÀ» Ã¼Å©ÇÏ´Â °ÍÀÎ°¡ ????
+        // ì‚¬ìš©í• ìˆ˜ ìˆëŠ” í–‰ì„±ì„ ì²´í¬í•˜ëŠ” ê²ƒì¸ê°€ ????
         if (iValue != USEITEM_NEED_DATA_VALUE(pITEM->m_nItemNo))
             return true;
     }
@@ -945,15 +951,15 @@ classUSER::Use_InventoryITEM(t_PACKET* pPacket) {
     //	DWORD dwClearedSTATUS = 0;
     if (USE_ITEM_SKILL_DOING == ITEM_TYPE(ITEM_TYPE_USE, pITEM->m_nItemNo)) {
         if (!(this->m_dwPayFLAG & PLAY_FLAG_BATTLE)) {
-            /// °ø°İ ¸øÇØ... µ·³»¾ßÇÔ
+            /// ê³µê²© ëª»í•´... ëˆë‚´ì•¼í•¨
             return true;
         }
 
-        /// ½ºÅ³ »ç¿ëÇÏ´Â ¾ÆÀÌÅÛ...
+        /// ìŠ¤í‚¬ ì‚¬ìš©í•˜ëŠ” ì•„ì´í…œ...
         short nSkillIDX = USEITEM_SCROLL_USE_SKILL(pITEM->m_nItemNo);
 
         if (this->Is_SelfSKILL(nSkillIDX)) {
-            if (!this->Do_SelfSKILL(nSkillIDX)) // ´É·ÂÄ¡ ºÎÁ·...
+            if (!this->Do_SelfSKILL(nSkillIDX)) // ëŠ¥ë ¥ì¹˜ ë¶€ì¡±...
                 return true;
         } else if (this->Is_TargetSKILL(nSkillIDX)) {
             if (pPacket->m_HEADER.m_nSize != (sizeof(WORD) + sizeof(cli_USE_ITEM)))
@@ -964,15 +970,15 @@ classUSER::Use_InventoryITEM(t_PACKET* pPacket) {
                 return true;
         } else {
             switch (SKILL_TYPE(nSkillIDX)) {
-                case SKILL_TYPE_18: // ¿öÇÁ !!!
+                case SKILL_TYPE_18: // ì›Œí”„ !!!
                 {
                     if (SKILL_WARP_PLANET_NO(nSkillIDX)
                         != ZONE_PLANET_NO(this->GetZONE()->Get_ZoneNO())) {
-                        /// ¿öÇÁ ¾ÆÀÌÅÛÀº °°Àº Çà¼ºÀ¸·Î¸¸ »ç¿ë°¡´ÉÇÏ´Ù..
+                        /// ì›Œí”„ ì•„ì´í…œì€ ê°™ì€ í–‰ì„±ìœ¼ë¡œë§Œ ì‚¬ìš©ê°€ëŠ¥í•˜ë‹¤..
                         return true;
                     }
 
-                    // MP¾ç = (ÇöÀç¼ÒÁö·®) * 0.3
+                    // MPì–‘ = (í˜„ì¬ì†Œì§€ëŸ‰) * 0.3
                     int iNeedMP = (int)(this->Get_WEIGHT() * 0.05f);
                     if (this->Get_MP() < iNeedMP)
                         return true;
@@ -987,26 +993,26 @@ classUSER::Use_InventoryITEM(t_PACKET* pPacket) {
                     break;
                 }
                 case SKILL_TYPE_16: // emotion
-                    // ¼Ò¸ğµÇµµ·Ï¸¸...
+                    // ì†Œëª¨ë˜ë„ë¡ë§Œ...
                     break;
                 default:
                     return true;
             }
         }
     } else if (USE_ITEM_SKILL_LEARN == ITEM_TYPE(ITEM_TYPE_USE, pITEM->m_nItemNo)) {
-        /// ½ºÅ³ ÀÍÈ÷´Â ¾ÆÀÌÅÛ...
+        /// ìŠ¤í‚¬ ìµíˆëŠ” ì•„ì´í…œ...
         switch (this->Send_gsv_SKILL_LEARN_REPLY(USEITEM_SCROLL_LEARN_SKILL(pITEM->m_nItemNo))) {
             case RESULT_SKILL_LEARN_SUCCESS:
                 break;
             case RESULT_SKILL_LEARN_NEED_JOB:
-            case RESULT_SKILL_LEARN_NEED_SKILL: // ÇÊ¿ä ½ºÅ³ÀÌ ÀÖ´Âµ¥ ¿äÃ»ÇÏ¸é Â©·¯~~~ ÀÖÀ»¼ö ¾ø´Â
-                                                // °æ¿ì...
+            case RESULT_SKILL_LEARN_NEED_SKILL: // í•„ìš” ìŠ¤í‚¬ì´ ìˆëŠ”ë° ìš”ì²­í•˜ë©´ ì§¤ëŸ¬~~~ ìˆì„ìˆ˜ ì—†ëŠ”
+                                                // ê²½ìš°...
                 return false;
-            default: // ¹è¿ìÁö ¸øÇÑ ±âÅ¸ »çÀ¯¸é ¾ÆÀÌÅÛ ±×´ë·Î º¸À¯
+            default: // ë°°ìš°ì§€ ëª»í•œ ê¸°íƒ€ ì‚¬ìœ ë©´ ì•„ì´í…œ ê·¸ëŒ€ë¡œ ë³´ìœ 
                 return true;
         }
     } else if (USE_ITEM_FUEL == ITEM_TYPE(ITEM_TYPE_USE, pITEM->m_nItemNo)) {
-        // Ä«Æ®/Ä³½½±â¾î ¿¬·á ¾ÆÀÌÅÛ...
+        // ì¹´íŠ¸/ìºìŠ¬ê¸°ì–´ ì—°ë£Œ ì•„ì´í…œ...
         tagITEM* pEngine = &m_Inventory.m_ItemRIDE[RIDE_PART_ENGINE];
         if (ITEM_TYPE_RIDE_PART != pEngine->GetTYPE()) {
             return true;
@@ -1019,46 +1025,46 @@ classUSER::Use_InventoryITEM(t_PACKET* pPacket) {
 
         this->Send_gsv_SET_ITEM_LIFE(INVENTORY_RIDE_ITEM0 + RIDE_PART_ENGINE, pEngine->GetLife());
     } else if (USE_ITEM_MAINTAIN_ITEM == ITEM_TYPE(ITEM_TYPE_USE, pITEM->m_nItemNo)) {
-        /// ½Ã°£ ÁöÁ¤ ÄíÆù ¾ÆÀÌÅÛ....
+        /// ì‹œê°„ ì§€ì • ì¿ í° ì•„ì´í…œ....
         switch (USEITEM_ADD_DATA_TYPE(pITEM->m_nItemNo)) {
             case AT_BANK_FREE:
             case AT_BANK_ADDON:
             case AT_STORE_SKIN:
 #ifdef __INC_PLATINUM
                 this->m_GrowAbility.UpdateSTATUS(this->GetCurAbsSEC(),
-                    USEITEM_ADD_DATA_TYPE(pITEM->m_nItemNo), // x ´É·ÂÄ¡¸¦
-                    USEITEM_ADD_DATA_VALUE(pITEM->m_nItemNo), // y ÀÌÈÄ...
-                    USEITEM_STORE_SKIN(pITEM->m_nItemNo)); // z °ªÀ¸·Î ( °³ÀÎ»óÁ¡ ½ºÅ² )
+                    USEITEM_ADD_DATA_TYPE(pITEM->m_nItemNo), // x ëŠ¥ë ¥ì¹˜ë¥¼
+                    USEITEM_ADD_DATA_VALUE(pITEM->m_nItemNo), // y ì´í›„...
+                    USEITEM_STORE_SKIN(pITEM->m_nItemNo)); // z ê°’ìœ¼ë¡œ ( ê°œì¸ìƒì  ìŠ¤í‚¨ )
 #endif
                 break;
         }
-        // USEITEM_STORE_SKIN( pITEM->m_nItemNo );		// ¼³Á¤ÇÒ ...
-        // USEITEM_ADD_DATA_VALUE( pITEM->m_nItemNo );	// Áö¼ÓµÉ ½Ã°£...
+        // USEITEM_STORE_SKIN( pITEM->m_nItemNo );		// ì„¤ì •í•  ...
+        // USEITEM_ADD_DATA_VALUE( pITEM->m_nItemNo );	// ì§€ì†ë  ì‹œê°„...
     } else {
-        /// ÁÖº¯¿¡ »ç¿ë °¡´ÉÇÑ ¾ÆÀÌÅÛÀÌ¸é... °¹¼ö °¨¼Ò...
+        /// ì£¼ë³€ì— ì‚¬ìš© ê°€ëŠ¥í•œ ì•„ì´í…œì´ë©´... ê°¯ìˆ˜ ê°ì†Œ...
         this->Use_pITEM(pITEM);
     }
 
-    /// ¸¶Áö¸· »ç¿ëÇÑ ½Ã°£ ÀúÀå...
+    /// ë§ˆì§€ë§‰ ì‚¬ìš©í•œ ì‹œê°„ ì €ì¥...
     this->m_dwCoolTIME[nCoolTimeType] = dwCurTime;
 
-    // ¼ö·® °¨¼Ò
+    // ìˆ˜ëŸ‰ ê°ì†Œ
     if (--pITEM->m_uiQuantity <= 0) {
-        /// ´Ù ¼Ò¸ğÇß´Ù..
+        /// ë‹¤ ì†Œëª¨í–ˆë‹¤..
         m_Inventory.DeleteITEM(nInventoryIDX);
 
         this->Send_gsv_SET_INV_ONLY((BYTE)nInventoryIDX, pITEM);
     } else {
-        /// ÀÚ½Å ÇÑÅ×¸¸ ¼Ò¸ğ¼º ¾ÆÀÌÅÛ »ç¿ëÇß´Ù°í Àü¼Û.
+        /// ìì‹  í•œí…Œë§Œ ì†Œëª¨ì„± ì•„ì´í…œ ì‚¬ìš©í–ˆë‹¤ê³  ì „ì†¡.
         this->Send_gsv_USE_ITEM(pITEM->m_nItemNo,
-            nInventoryIDX); /// ÀÚ½Å ÇÑÅ×¸¸ ¼Ò¸ğ¼º ¾ÆÀÌÅÛ »ç¿ëÇß´Ù°í Àü¼Û.
+            nInventoryIDX); /// ìì‹  í•œí…Œë§Œ ì†Œëª¨ì„± ì•„ì´í…œ ì‚¬ìš©í–ˆë‹¤ê³  ì „ì†¡.
     }
 
     return true;
 }
 
 //-------------------------------------------------------------------------------------------------
-/// gsv_SET_MONEYnINV ÆĞÅ¶ ÇÒ´ç¹× ÃÊ±âÈ­
+/// gsv_SET_MONEYnINV íŒ¨í‚· í• ë‹¹ë° ì´ˆê¸°í™”
 classPACKET*
 classUSER::Init_gsv_SET_MONEYnINV(WORD wType) {
     classPACKET* pCPacket = Packet_AllocNLock();
@@ -1070,11 +1076,11 @@ classUSER::Init_gsv_SET_MONEYnINV(WORD wType) {
 
     return pCPacket;
 }
-/// gsv_SET_MONEYnINV ÆĞÅ¶ Àü¼Û
+/// gsv_SET_MONEYnINV íŒ¨í‚· ì „ì†¡
 bool
 classUSER::Send_gsv_SET_MONEYnINV(classPACKET* pCPacket) {
     if (pCPacket->m_gsv_SET_MONEYnINV.m_btItemCNT) {
-        // º¯°æµÈ ÀÎº¥Åä¸®°¡ ÀÖÀ»°æ¿ì¸¸ Àü¼ÛÇÑ´Ù.
+        // ë³€ê²½ëœ ì¸ë²¤í† ë¦¬ê°€ ìˆì„ê²½ìš°ë§Œ ì „ì†¡í•œë‹¤.
         pCPacket->m_HEADER.m_nSize +=
             (pCPacket->m_gsv_SET_MONEYnINV.m_btItemCNT * sizeof(tag_SET_INVITEM));
         pCPacket->m_gsv_SET_MONEYnINV.m_i64Money = this->GetCur_MONEY();
@@ -1088,7 +1094,7 @@ classUSER::Send_gsv_SET_MONEYnINV(classPACKET* pCPacket) {
 }
 
 //-------------------------------------------------------------------------------------------------
-/// Ã¤ÆÃ±İÁö, °­Á¦ Á¢¼Ó Á¾·áµî... GMÀÇ ¸í·É Àü¼Û
+/// ì±„íŒ…ê¸ˆì§€, ê°•ì œ ì ‘ì† ì¢…ë£Œë“±... GMì˜ ëª…ë ¹ ì „ì†¡
 bool
 classUSER::Send_gsv_GM_COMMAND(char* szAccount, BYTE btCMD, WORD wBlockTIME) {
     classPACKET* pCPacket = Packet_AllocNLock();
@@ -1109,7 +1115,7 @@ classUSER::Send_gsv_GM_COMMAND(char* szAccount, BYTE btCMD, WORD wBlockTIME) {
 }
 
 //-------------------------------------------------------------------------------------------------
-/// ¼­¹öÀÇ ÇöÀç µ·¾çÀ» Åëº¸ :: Äù½ºÆ® º¸»óµî µ·ÀÇ ¾çÀÌ Æ²·Á Á³À»°æ¿ì È£ÃâµÊ
+/// ì„œë²„ì˜ í˜„ì¬ ëˆì–‘ì„ í†µë³´ :: í€˜ìŠ¤íŠ¸ ë³´ìƒë“± ëˆì˜ ì–‘ì´ í‹€ë ¤ ì¡Œì„ê²½ìš° í˜¸ì¶œë¨
 bool
 classUSER::Send_gsv_SET_MONEYONLY(WORD wType) {
     classPACKET* pCPacket = Packet_AllocNLock();
@@ -1127,7 +1133,7 @@ classUSER::Send_gsv_SET_MONEYONLY(WORD wType) {
 }
 
 //-------------------------------------------------------------------------------------------------
-/// ¿ùµå¼­¹ö¿¡¼­ Ã¤³Î¼­¹ö·Î ÀÌµ¿ÈÄ ¼­¹ö¿¡ µé¾î¿Ã¼ö ÀÖ´ÂÁö °ËÁõÆĞÅ¶ Åëº¸
+/// ì›”ë“œì„œë²„ì—ì„œ ì±„ë„ì„œë²„ë¡œ ì´ë™í›„ ì„œë²„ì— ë“¤ì–´ì˜¬ìˆ˜ ìˆëŠ”ì§€ ê²€ì¦íŒ¨í‚· í†µë³´
 bool
 classUSER::Send_srv_JOIN_SERVER_REPLY(t_PACKET* pRecvPket, char* szAccount) {
     classPACKET* pCPacket = Packet_AllocNLock();
@@ -1145,9 +1151,9 @@ classUSER::Send_srv_JOIN_SERVER_REPLY(t_PACKET* pRecvPket, char* szAccount) {
         pCPacket->m_srv_JOIN_SERVER_REPLY.m_dwID = dwRecvSeqNO;
         pCPacket->m_srv_JOIN_SERVER_REPLY.m_dwPayFLAG = 0;
 
-        // CUserLIST::Add_ACCOUNT ¾È¿¡¼­ ¼³Á¤µÇ´ø °èÁ¤À» ÀÌ°÷À¸·Î ¿Å±è
-        // ¿©±â¼­ º¸³»´Â ÆĞÅ¶ÀÇ ÀÀ´ä ÆĞÅ¶ÀÌ CUserLIST::Add_ACCOUNT¾È¿¡¼­ °èÁ¤ÀÌ
-        // ¼³Á¤µÇ±â Àü¿¡ Ã³¸®µÇ¸é »¶³²~~~~
+        // CUserLIST::Add_ACCOUNT ì•ˆì—ì„œ ì„¤ì •ë˜ë˜ ê³„ì •ì„ ì´ê³³ìœ¼ë¡œ ì˜®ê¹€
+        // ì—¬ê¸°ì„œ ë³´ë‚´ëŠ” íŒ¨í‚·ì˜ ì‘ë‹µ íŒ¨í‚·ì´ CUserLIST::Add_ACCOUNTì•ˆì—ì„œ ê³„ì •ì´
+        // ì„¤ì •ë˜ê¸° ì „ì— ì²˜ë¦¬ë˜ë©´ ë»‘ë‚¨~~~~
         this->m_HashACCOUNT = CStrVAR::GetHASH(szAccount);
         this->Set_ACCOUNT(szAccount);
     } else
@@ -1163,36 +1169,36 @@ classUSER::Send_srv_JOIN_SERVER_REPLY(t_PACKET* pRecvPket, char* szAccount) {
 bool
 classUSER::Send_gsv_JOIN_ZONE(CZoneTHREAD* pZONE) {
     if (this->m_btRideMODE && ZONE_RIDING_REFUSE_FLAG(pZONE->Get_ZoneNO())) {
-        // 0x01 : Ä«Æ® ºÒ°¡, 0x02 : Ä³½½±â¾î ºÒ°¡
+        // 0x01 : ì¹´íŠ¸ ë¶ˆê°€, 0x02 : ìºìŠ¬ê¸°ì–´ ë¶ˆê°€
         if (ITEM_TYPE_RIDE_PART == this->m_Inventory.m_ItemRIDE[RIDE_PART_BODY].GetTYPE()) {
             int iType = ITEM_TYPE(ITEM_TYPE_RIDE_PART,
                 this->m_Inventory.m_ItemRIDE[RIDE_PART_BODY].GetItemNO());
             if ((iType % 3) & ZONE_RIDING_REFUSE_FLAG(this->GetZONE()->Get_ZoneNO())) {
-                // Å¾½Â Á¦ÇÑ~
+                // íƒ‘ìŠ¹ ì œí•œ~
                 this->m_btRideMODE = 0;
             }
         } else {
-            this->m_btRideMODE = 0; // ¹¹³Ä ÀÌ°Ç ??
+            this->m_btRideMODE = 0; // ë­ëƒ ì´ê±´ ??
         }
 
-        // °­Á¦ ÇØÁ¦ µÆ³ª ?
+        // ê°•ì œ í•´ì œ ëë‚˜ ?
         /*if ( 0 == this->m_btRideMODE ) {
-            this->UpdateAbility ();		// Å¾½Â Åä±Û...
+            this->UpdateAbility ();		// íƒ‘ìŠ¹ í† ê¸€...
         }*/
         if (0 == this->m_btRideMODE) {
-            //	2006.03.16/±è´ë¼º - Ä«Æ®³ª Ä³½½±â¾î¸¦ Å»¼ö ¾ø´Â Áö¿ªÀÌ ÀÖ´Ù. (°íºí¸°µ¿±¼)
-            //	- Ä«Æ®¸¦ Å¸°í Ä«Æ®¸¦ Å»¼ö ¾ø´Â Áö¿ª¿¡ µé¾î°¡¸é ½ºÅ³½ÃÀüÀÌ ¾ÈµÇ´Â ¹ö±×
+            //	2006.03.16/ê¹€ëŒ€ì„± - ì¹´íŠ¸ë‚˜ ìºìŠ¬ê¸°ì–´ë¥¼ íƒˆìˆ˜ ì—†ëŠ” ì§€ì—­ì´ ìˆë‹¤. (ê³ ë¸”ë¦°ë™êµ´)
+            //	- ì¹´íŠ¸ë¥¼ íƒ€ê³  ì¹´íŠ¸ë¥¼ íƒˆìˆ˜ ì—†ëŠ” ì§€ì—­ì— ë“¤ì–´ê°€ë©´ ìŠ¤í‚¬ì‹œì „ì´ ì•ˆë˜ëŠ” ë²„ê·¸
             if (ZONE_RIDING_REFUSE_FLAG(pZONE->Get_ZoneNO())
-                > 0) // 1:Ä«Æ® ºÒ°¡, 2:Ä³½½±â¾î ºÒ°¡, 3:¸ğµÎ ºÒ°¡
+                > 0) // 1:ì¹´íŠ¸ ë¶ˆê°€, 2:ìºìŠ¬ê¸°ì–´ ë¶ˆê°€, 3:ëª¨ë‘ ë¶ˆê°€
             {
                 this->m_btRideMODE = 0;
                 this->m_iLinkedCartObjIDX = 0;
-                //	±è¿µÈ¯ 2006.8.29ÀÏ Ã¤Å© À§Ä¡ º¸Á¤
-                // 2006.05.30/±è´ë¼º/Ãß°¡
+                //	ê¹€ì˜í™˜ 2006.8.29ì¼ ì±„í¬ ìœ„ì¹˜ ë³´ì •
+                // 2006.05.30/ê¹€ëŒ€ì„±/ì¶”ê°€
             }
 
-            this->UpdateAbility(); // Å¾½Â Åä±Û...
-            this->Send_gsv_SPEED_CHANGED(); // ½ºÇÇµå º¯°æµÈ °ªÀ» Àü¼Û : Á¸ ¸Ş½ÃÁö·Î Àü¼Û.
+            this->UpdateAbility(); // íƒ‘ìŠ¹ í† ê¸€...
+            this->Send_gsv_SPEED_CHANGED(); // ìŠ¤í”¼ë“œ ë³€ê²½ëœ ê°’ì„ ì „ì†¡ : ì¡´ ë©”ì‹œì§€ë¡œ ì „ì†¡.
             //-------------------------------------
         }
     }
@@ -1204,7 +1210,7 @@ classUSER::Send_gsv_JOIN_ZONE(CZoneTHREAD* pZONE) {
 
     this->m_iTeamNO = TEAMNO_USER;
     if (this->GetZONE()->Get_HashJoinTRIGGER()) {
-        // Á¸¿¡ Á¶ÀÎ½Ã ¹ß»ıÇÒ Æ®¸®°Å...
+        // ì¡´ì— ì¡°ì¸ì‹œ ë°œìƒí•  íŠ¸ë¦¬ê±°...
         if (0 == this->m_IngSTATUS.IsSubSET(FLAG_CHEAT_INVINCIBLE)) {
             this->Do_QuestTRIGGER(this->GetZONE()->Get_HashJoinTRIGGER());
         }
@@ -1247,12 +1253,12 @@ classUSER::Send_gsv_JOIN_ZONE(CZoneTHREAD* pZONE) {
 
     Packet_ReleaseNUnlock(pCPacket);
 
-    // ÀÚ½Å¿¡°Ô ¹«°èºñÀ² ¼³Á¤.
+    // ìì‹ ì—ê²Œ ë¬´ê³„ë¹„ìœ¨ ì„¤ì •.
     return this->Recv_cli_SET_WEIGHT_RATE(this->m_btWeightRate);
 }
 
 //-------------------------------------------------------------------------------------------------
-/// ÀÎº¥Åä¸®¹× Äù½ºÆ® µ¥ÀÌÅ¸ Àü¼Û
+/// ì¸ë²¤í† ë¦¬ë° í€˜ìŠ¤íŠ¸ ë°ì´íƒ€ ì „ì†¡
 bool
 classUSER::Send_gsv_INVENTORYnQUEST_DATA(void) {
     COMPILE_TIME_ASSERT(sizeof(gsv_QUEST_ONLY) < MAX_PACKET_SIZE);
@@ -1275,7 +1281,7 @@ classUSER::Send_gsv_INVENTORYnQUEST_DATA(void) {
     Packet_ReleaseNUnlock(pCPacket);
 
 #ifdef __APPLY_EXTAND_QUEST_VAR
-    ////////////------------------ ÀÓ½Ã... ¾Æ·¡ ÆĞÅ¶ÀÌ ¾È°¡¸é Å¬¶óÀÌ¾ğÆ®¿¡¼­ ÁøÇà¾ÈµÊ
+    ////////////------------------ ì„ì‹œ... ì•„ë˜ íŒ¨í‚·ì´ ì•ˆê°€ë©´ í´ë¼ì´ì–¸íŠ¸ì—ì„œ ì§„í–‰ì•ˆë¨
     // pCPacket = Packet_AllocNLock ();
     // if ( pCPacket ) {
     //	ZeroMemory( pCPacket->m_pDATA, 1020 );
@@ -1293,7 +1299,7 @@ classUSER::Send_gsv_INVENTORYnQUEST_DATA(void) {
     //}
     ////////////------------------
 
-    // Äù½ºÆ® µ¥ÀÌÅ¸
+    // í€˜ìŠ¤íŠ¸ ë°ì´íƒ€
     pCPacket = Packet_AllocNLock();
     if (!pCPacket)
         return false;
@@ -1305,7 +1311,7 @@ classUSER::Send_gsv_INVENTORYnQUEST_DATA(void) {
     this->SendPacket(pCPacket);
     Packet_ReleaseNUnlock(pCPacket);
 
-    // ±¸ÀÔ Èñ¸Á ¸ñ·Ï
+    // êµ¬ì… í¬ë§ ëª©ë¡
     pCPacket = Packet_AllocNLock();
     if (!pCPacket)
         return false;
@@ -1336,7 +1342,7 @@ classUSER::Send_gsv_INVENTORYnQUEST_DATA(void) {
 }
 
 //-------------------------------------------------------------------------------------------------
-/// ¼­¹öÀÇ °æÇèÄ¡¸¦ Àü¼Û :: »ç¿ëÀÚ °æÇèÄ¡°¡ º¯µ¿µÇ¾úÀ»°æ¿ì..
+/// ì„œë²„ì˜ ê²½í—˜ì¹˜ë¥¼ ì „ì†¡ :: ì‚¬ìš©ì ê²½í—˜ì¹˜ê°€ ë³€ë™ë˜ì—ˆì„ê²½ìš°..
 bool
 classUSER::Send_gsv_SETEXP(WORD wFromObjIDX) {
     classPACKET* pCPacket = Packet_AllocNLock();
@@ -1376,7 +1382,7 @@ classUSER::Send_gsv_LEVELUP(short nLevelDIFF) {
     pCPacket->m_gsv_LEVELUP.m_nBonusPoint = this->GetCur_BonusPOINT();
     pCPacket->m_gsv_LEVELUP.m_nSkillPoint = this->GetCur_SkillPOINT();
 
-    // TODO:: ÀÌµ¿ ½ºÇÇµå°¡ ¹Ù²î¾úÀ¸¸é ÁÖº¯¿¡ Àüµ¿...
+    // TODO:: ì´ë™ ìŠ¤í”¼ë“œê°€ ë°”ë€Œì—ˆìœ¼ë©´ ì£¼ë³€ì— ì „ë™...
     this->SendPacket(pCPacket);
     Packet_ReleaseNUnlock(pCPacket);
 
@@ -1384,7 +1390,7 @@ classUSER::Send_gsv_LEVELUP(short nLevelDIFF) {
     if (!pCPacket)
         return false;
 
-    // ÁÖº¯ »ç¿ëÀÚµé¿¡°Ô´Â ´Ü¼øÈ÷ È¿°ú¸¸ º¸ÀÌÀÚ...
+    // ì£¼ë³€ ì‚¬ìš©ìë“¤ì—ê²ŒëŠ” ë‹¨ìˆœíˆ íš¨ê³¼ë§Œ ë³´ì´ì...
     pCPacket->m_HEADER.m_wType = GSV_LEVELUP;
     pCPacket->m_HEADER.m_nSize = sizeof(t_PACKETHEADER) + sizeof(WORD);
     pCPacket->m_gsv_LEVELUP.m_wObjectIDX = this->Get_INDEX();
@@ -1400,7 +1406,7 @@ classUSER::Send_gsv_LEVELUP(short nLevelDIFF) {
 }
 
 //-------------------------------------------------------------------------------------------------
-/// Å¬¶óÀÌ¾ğÆ®¿¡ ¿öÇÁ ÇÏ¶ó´Â ¸í·É Àü¼Û
+/// í´ë¼ì´ì–¸íŠ¸ì— ì›Œí”„ í•˜ë¼ëŠ” ëª…ë ¹ ì „ì†¡
 bool
 classUSER::Send_gsv_TELEPORT_REPLY(tPOINTF& PosWARP, short nZoneNO) {
     classPACKET* pCPacket = Packet_AllocNLock();
@@ -1413,7 +1419,7 @@ classUSER::Send_gsv_TELEPORT_REPLY(tPOINTF& PosWARP, short nZoneNO) {
     pCPacket->m_gsv_TELEPORT_REPLY.m_nZoneNO = nZoneNO;
     pCPacket->m_gsv_TELEPORT_REPLY.m_PosWARP = PosWARP;
     pCPacket->m_gsv_TELEPORT_REPLY.m_wObjectIDX = this->Get_INDEX();
-    pCPacket->m_gsv_TELEPORT_REPLY.m_btRunMODE = this->m_bRunMODE; // °È±â ¶Ù±â »óÅÂ
+    pCPacket->m_gsv_TELEPORT_REPLY.m_btRunMODE = this->m_bRunMODE; // ê±·ê¸° ë›°ê¸° ìƒíƒœ
     pCPacket->m_gsv_TELEPORT_REPLY.m_btRideMODE = this->m_btRideMODE;
 
     this->SendPacket(pCPacket);
@@ -1422,11 +1428,11 @@ classUSER::Send_gsv_TELEPORT_REPLY(tPOINTF& PosWARP, short nZoneNO) {
     return true;
 }
 
-/// °ú±İÀÌ ÁöºÒµÇ¾î¾ß¸¸ ÀÌµ¿°¡´ÉÇÑ Á¸ÀÎÁö Ã¼Å©...
+/// ê³¼ê¸ˆì´ ì§€ë¶ˆë˜ì–´ì•¼ë§Œ ì´ë™ê°€ëŠ¥í•œ ì¡´ì¸ì§€ ì²´í¬...
 bool
 classUSER::Check_WarpPayment(short nZoneNO) {
     if (ZONE_IS_UNDERGROUND(nZoneNO)) {
-        // ´øÁ¯À¸·ç ¸ø°¡ !!!
+        // ë˜ì ¼ìœ¼ë£¨ ëª»ê°€ !!!
         if (ZONE_PLANET_NO(nZoneNO) <= 1) {
             if (!(this->m_dwPayFLAG & PLAY_FLAG_BATTLE)) {
                 this->Send_gsv_BILLING_MESSAGE2(BILLING_MSG_JPN_NEED_CHARGE, 'I', PLAY_FLAG_BATTLE);
@@ -1441,28 +1447,28 @@ classUSER::Check_WarpPayment(short nZoneNO) {
     }
     if (ZONE_PLANET_NO(nZoneNO) >= 4) {
         if (g_pZoneLIST->GetZONE(nZoneNO)->is_clan_zone()) {
-            // ¾ÆÁöÆ®Á¸Àº ¿£Æ®¸®.
+            // ì•„ì§€íŠ¸ì¡´ì€ ì—”íŠ¸ë¦¬.
             if (!(this->m_dwPayFLAG & PLAY_FLAG_BATTLE)) {
-                // 3¹øÂ° Çà¼º±îÁö ÀÌµ¿Àº ¿£Æ®¸®·Î
+                // 3ë²ˆì§¸ í–‰ì„±ê¹Œì§€ ì´ë™ì€ ì—”íŠ¸ë¦¬ë¡œ
                 this->Send_gsv_BILLING_MESSAGE2(BILLING_MSG_JPN_NEED_CHARGE, 'H', PLAY_FLAG_BATTLE);
                 return false;
             }
         } else if (!(this->m_dwPayFLAG & PLAY_FLAG_STARSHIP_PASS)) {
-            // Çà¼ºÀÌµ¿ ¸øÇØ !!!
+            // í–‰ì„±ì´ë™ ëª»í•´ !!!
             this->Send_gsv_BILLING_MESSAGE2(BILLING_MSG_JPN_NEED_CHARGE,
                 'P',
                 PLAY_FLAG_STARSHIP_PASS);
             return false;
         }
     } else if (ZONE_PLANET_NO(nZoneNO) != 1 && !(this->m_dwPayFLAG & PLAY_FLAG_BATTLE)) {
-        // 3¹øÂ° Çà¼º±îÁö ÀÌµ¿Àº ¿£Æ®¸®·Î
+        // 3ë²ˆì§¸ í–‰ì„±ê¹Œì§€ ì´ë™ì€ ì—”íŠ¸ë¦¬ë¡œ
         this->Send_gsv_BILLING_MESSAGE2(BILLING_MSG_JPN_NEED_CHARGE, 'I', PLAY_FLAG_BATTLE);
         return false;
     }
     return true;
 }
 
-/// ¿öÇÁ Ã³¸®...
+/// ì›Œí”„ ì²˜ë¦¬...
 short
 classUSER::Proc_TELEPORT(short nZoneNO, tPOINTF& PosWARP, bool bSkipPayment) {
     if (NULL == this->GetZONE()) {
@@ -1474,16 +1480,16 @@ classUSER::Proc_TELEPORT(short nZoneNO, tPOINTF& PosWARP, bool bSkipPayment) {
         return RET_OK;
     }
 
-    // Çà¼ºÀÌµ¿ °ú±İ Ã¼Å©...
+    // í–‰ì„±ì´ë™ ê³¼ê¸ˆ ì²´í¬...
     if (!bSkipPayment && !this->Check_WarpPayment(nZoneNO))
         return true;
 
     if (g_pZoneLIST->GetZONE(nZoneNO)) {
-        // ·ÎÄÃ·Î ¿î¿µµÇ´Â Á¸ÀÌ´Ù.
+        // ë¡œì»¬ë¡œ ìš´ì˜ë˜ëŠ” ì¡´ì´ë‹¤.
         if (!this->Send_gsv_TELEPORT_REPLY(PosWARP, nZoneNO))
             return RET_FAILED;
 
-        // Á¸¿¡¼­ »©¹ö¸®°í ´ÙÀ½ Á¸À§Ä¡ ÀúÀå....
+        // ì¡´ì—ì„œ ë¹¼ë²„ë¦¬ê³  ë‹¤ìŒ ì¡´ìœ„ì¹˜ ì €ì¥....
         this->GetZONE()->Dec_UserCNT();
         this->GetZONE()->Sub_DIRECT(this);
 
@@ -1491,7 +1497,7 @@ classUSER::Proc_TELEPORT(short nZoneNO, tPOINTF& PosWARP, bool bSkipPayment) {
         this->m_PosCUR = PosWARP;
 
         if (this->Is_CartDriver()) {
-            // Ä«Æ® µå¶óÀÌ¹ö°¡ ¿öÇÁÇÒ¶§½Ã´Â µÚ¿¡ Å¾½ÂÀÚµµ °°ÀÌ ¿öÇÁ~
+            // ì¹´íŠ¸ ë“œë¼ì´ë²„ê°€ ì›Œí”„í• ë•Œì‹œëŠ” ë’¤ì— íƒ‘ìŠ¹ìë„ ê°™ì´ ì›Œí”„~
             classUSER* pUSER = g_pObjMGR->Get_UserOBJ(this->m_iLinkedCartObjIDX);
             if (pUSER) {
                 pUSER->m_iLinkedCartObjIDX = 0;
@@ -1500,13 +1506,13 @@ classUSER::Proc_TELEPORT(short nZoneNO, tPOINTF& PosWARP, bool bSkipPayment) {
 
             this->m_iLinkedCartObjIDX = 0;
         } else if (this->Is_CartGuest() && this->m_iLinkedCartObjIDX) {
-            // ÀÌ·± °æ¿ì´Â ÀÖÀ¸¸é ¾ÈµÇÁö¸¸..È¤½Ã Ä¡Æ®·Î ¼ÒÈ¯À» ÇÑ´Ù´ø°¡ ÇÒ°æ¿ì
+            // ì´ëŸ° ê²½ìš°ëŠ” ìˆìœ¼ë©´ ì•ˆë˜ì§€ë§Œ..í˜¹ì‹œ ì¹˜íŠ¸ë¡œ ì†Œí™˜ì„ í•œë‹¤ë˜ê°€ í• ê²½ìš°
             classUSER* pUSER = g_pObjMGR->Get_UserOBJ(this->m_iLinkedCartObjIDX);
             if (pUSER) {
                 pUSER->m_iLinkedCartObjIDX = 0;
             }
 
-            // °­Á¦ ³»¸®±â
+            // ê°•ì œ ë‚´ë¦¬ê¸°
             this->m_btRideMODE = 0;
             this->m_iLinkedCartObjIDX = 0;
         }
@@ -1514,8 +1520,8 @@ classUSER::Proc_TELEPORT(short nZoneNO, tPOINTF& PosWARP, bool bSkipPayment) {
         return RET_SKIP_PROC;
     }
 
-    // ´Ù¸¥ ¼­¹ö¿¡ ÀÖ´Â Á¸À¸·Î ÀÌµ¿ÇÑ´Ù.
-    // DB¿¡ ±â·ÏÈÄ ¿ùµå ¼­¹ö¿¡ ¿öÇÁ ÆĞÅ¶ Àü¼Û...
+    // ë‹¤ë¥¸ ì„œë²„ì— ìˆëŠ” ì¡´ìœ¼ë¡œ ì´ë™í•œë‹¤.
+    // DBì— ê¸°ë¡í›„ ì›”ë“œ ì„œë²„ì— ì›Œí”„ íŒ¨í‚· ì „ì†¡...
     this->GetZONE()->Dec_UserCNT();
     this->GetZONE()->Sub_DIRECT(this);
 
@@ -1528,7 +1534,7 @@ classUSER::Proc_TELEPORT(short nZoneNO, tPOINTF& PosWARP, bool bSkipPayment) {
 }
 
 //-------------------------------------------------------------------------------------------------
-/// Å¬¶óÀÌ¾ğÆ®ÀÇ ÁÂÇ¥¸¦ º¸Á¤ÇÏ¶ó´Â ÆĞÅ¶...
+/// í´ë¼ì´ì–¸íŠ¸ì˜ ì¢Œí‘œë¥¼ ë³´ì •í•˜ë¼ëŠ” íŒ¨í‚·...
 bool
 classUSER::Send_gsv_ADJUST_POS(bool bOnlySelf) {
     classPACKET* pCPacket = Packet_AllocNLock();
@@ -1552,21 +1558,21 @@ classUSER::Send_gsv_ADJUST_POS(bool bOnlySelf) {
 }
 
 //-------------------------------------------------------------------------------------------------
-/// ½ºÅ³À» ½ÀµæÇßÀ»¶§ °á°ú Åëº¸
+/// ìŠ¤í‚¬ì„ ìŠµë“í–ˆì„ë•Œ ê²°ê³¼ í†µë³´
 BYTE
 classUSER::Send_gsv_SKILL_LEARN_REPLY(short nSkillIDX, bool bCheckCOND) {
     classPACKET* pCPacket = Packet_AllocNLock();
     if (!pCPacket)
         return RESULT_SKILL_LEARN_FAILED;
 
-    // °°Àº Á¾·ùÀÇ ½ºÅ³À» ÀÌ¹Ì º¸À¯ÇÏ°í ÀÖ´Ù¸é ???
+    // ê°™ì€ ì¢…ë¥˜ì˜ ìŠ¤í‚¬ì„ ì´ë¯¸ ë³´ìœ í•˜ê³  ìˆë‹¤ë©´ ???
     BYTE btResult;
     short nSkillSLOT;
 
     if (bCheckCOND)
         btResult = this->Skill_LearnCondition(nSkillIDX);
     else {
-        // Äù½ºÆ®¿¡ ÀÇÇØ º¸»óÀ¸·Î ÁÖ¾îÁö´Â ½ºÅ³ÀÏ °æ¿ì Á¶°Ç ¹«½Ã...
+        // í€˜ìŠ¤íŠ¸ì— ì˜í•´ ë³´ìƒìœ¼ë¡œ ì£¼ì–´ì§€ëŠ” ìŠ¤í‚¬ì¼ ê²½ìš° ì¡°ê±´ ë¬´ì‹œ...
         btResult = RESULT_SKILL_LEARN_SUCCESS;
     }
 
@@ -1600,7 +1606,7 @@ classUSER::Send_gsv_SKILL_LEARN_REPLY(short nSkillIDX, bool bCheckCOND) {
 }
 
 //-------------------------------------------------------------------------------------------------
-/// Å¬¶óÀÌ¾ğÆ®°¡ ¿äÃ»ÇÑ ÄÉ¸¯ÅÍÀÇ HP Àü¼Û
+/// í´ë¼ì´ì–¸íŠ¸ê°€ ìš”ì²­í•œ ì¼€ë¦­í„°ì˜ HP ì „ì†¡
 bool
 classUSER::Send_gsv_HP_REPLY(int iObjectIDX, int iHP) {
     classPACKET* pCPacket = Packet_AllocNLock();
@@ -1619,7 +1625,7 @@ classUSER::Send_gsv_HP_REPLY(int iObjectIDX, int iHP) {
 }
 
 //-------------------------------------------------------------------------------------------------
-/// ±Ó¼Ó¸» ÆĞÅ¶ ..
+/// ê·“ì†ë§ íŒ¨í‚· ..
 bool
 classUSER::Send_gsv_WHISPER(char* szFromAccount, char* szMessage) {
     classPACKET* pCPacket = Packet_AllocNLock();
@@ -1638,7 +1644,7 @@ classUSER::Send_gsv_WHISPER(char* szFromAccount, char* szMessage) {
 }
 
 //-------------------------------------------------------------------------------------------------
-/// °³ÀÎ 1:1 °Å·¡ÀÇ °á°ú ÆĞÅ¶ Àü¼Û
+/// ê°œì¸ 1:1 ê±°ë˜ì˜ ê²°ê³¼ íŒ¨í‚· ì „ì†¡
 bool
 classUSER::Send_gsv_TRADE_P2P(int iObjectIDX, BYTE btResult, char cTradeSLOT) {
     classPACKET* pCPacket = Packet_AllocNLock();
@@ -1657,7 +1663,7 @@ classUSER::Send_gsv_TRADE_P2P(int iObjectIDX, BYTE btResult, char cTradeSLOT) {
     return true;
 }
 
-/// 1:1 °Å·¡½Ã °Å·¡ ½½·ÔÀÌ ¹Ù²î¾úÀ» °æ¿ì ¼­¹öÀÇ °Å·¡½½·Ô ¾ÆÀÌÅÛ Àü¼Û
+/// 1:1 ê±°ë˜ì‹œ ê±°ë˜ ìŠ¬ë¡¯ì´ ë°”ë€Œì—ˆì„ ê²½ìš° ì„œë²„ì˜ ê±°ë˜ìŠ¬ë¡¯ ì•„ì´í…œ ì „ì†¡
 bool
 classUSER::Send_gsv_TRADE_P2P_ITEM(char cTradeSLOT, tagITEM& sITEM) {
     classPACKET* pCPacket = Packet_AllocNLock();
@@ -1677,7 +1683,7 @@ classUSER::Send_gsv_TRADE_P2P_ITEM(char cTradeSLOT, tagITEM& sITEM) {
 }
 
 //-------------------------------------------------------------------------------------------------
-/// Ã¢°íÀÇ ¸ğµç ¾ÆÀÌÅÛ Á¤º¸ Àü¼Û
+/// ì°½ê³ ì˜ ëª¨ë“  ì•„ì´í…œ ì •ë³´ ì „ì†¡
 bool
 classUSER::Send_gsv_BANK_ITEM_LIST(bool bNewBank) {
     classPACKET* pCPacket = Packet_AllocNLock();
@@ -1704,7 +1710,7 @@ classUSER::Send_gsv_BANK_ITEM_LIST(bool bNewBank) {
 #ifdef __INC_PLATINUM
         pCPacket2 = Packet_AllocNLock();
         if (pCPacket2) {
-            // ÇÃ·¹Æ¼³Ñ Ã¢°í ¾ÆÀÌÅÛ...
+            // í”Œë ˆí‹°ë„˜ ì°½ê³  ì•„ì´í…œ...
             pCPacket2->m_gsv_BANK_LIST_REPLY.m_btREPLY = BANK_REPLY_PLATINUM;
             pCPacket2->m_gsv_BANK_LIST_REPLY.m_btItemCNT = 0;
 
@@ -1726,7 +1732,7 @@ classUSER::Send_gsv_BANK_ITEM_LIST(bool bNewBank) {
                 pCPacket2->m_HEADER.m_nSize = sizeof(gsv_BANK_LIST_REPLY)
                     + sizeof(tag_SET_INVITEM) * pCPacket2->m_gsv_BANK_LIST_REPLY.m_btItemCNT;
             } else {
-                // 0°³¶ó º¸³¾ ÇÊ¿ä ¾ø´ç
+                // 0ê°œë¼ ë³´ë‚¼ í•„ìš” ì—†ë‹¹
                 Packet_ReleaseNUnlock(pCPacket2);
                 pCPacket2 = NULL;
             }
@@ -1737,7 +1743,7 @@ classUSER::Send_gsv_BANK_ITEM_LIST(bool bNewBank) {
     pCPacket->m_HEADER.m_wType = GSV_BANK_LIST_REPLY;
     pCPacket->m_HEADER.m_nSize = sizeof(gsv_BANK_LIST_REPLY)
         + sizeof(tag_SET_INVITEM) * pCPacket->m_gsv_BANK_LIST_REPLY.m_btItemCNT;
-    // Ã¢°í¿¡ º¸°üµÈ ÁÙ¸®...
+    // ì°½ê³ ì— ë³´ê´€ëœ ì¤„ë¦¬...
     pCPacket->AppendData(&this->m_Bank.m_i64ZULY, sizeof(__int64));
 
     this->SendPacket(pCPacket);
@@ -1751,7 +1757,7 @@ classUSER::Send_gsv_BANK_ITEM_LIST(bool bNewBank) {
     return true;
 }
 
-/// Ã¢°í ¸®½ºÆ®¿¡ ´ëÇÑ °á°ú ÆĞÅ¶ Àü¼Û
+/// ì°½ê³  ë¦¬ìŠ¤íŠ¸ì— ëŒ€í•œ ê²°ê³¼ íŒ¨í‚· ì „ì†¡
 bool
 classUSER::Send_gsv_BANK_LIST_REPLY(BYTE btReply) {
     classPACKET* pCPacket = Packet_AllocNLock();
@@ -1771,7 +1777,7 @@ classUSER::Send_gsv_BANK_LIST_REPLY(BYTE btReply) {
 }
 
 //-------------------------------------------------------------------------------------------------
-/// ÆÄÆ¼ ¿äÃ» ÆĞÅ¶ Àü¼Û
+/// íŒŒí‹° ìš”ì²­ íŒ¨í‚· ì „ì†¡
 bool
 classUSER::Send_gsv_PARTY_REQ(int iObjectIDXorTAG, BYTE btReq) {
     classPACKET* pCPacket = Packet_AllocNLock();
@@ -1788,7 +1794,7 @@ classUSER::Send_gsv_PARTY_REQ(int iObjectIDXorTAG, BYTE btReq) {
 
     return true;
 }
-/// ÆÄÆ¼ ¿äÃ»¿¡ ´ëÇÑ °á°ú ÆĞÅ¶ Àü¼Û
+/// íŒŒí‹° ìš”ì²­ì— ëŒ€í•œ ê²°ê³¼ íŒ¨í‚· ì „ì†¡
 bool
 classUSER::Send_gsv_PARTY_REPLY(int iObjectIDXorTAG, BYTE btReply) {
     classPACKET* pCPacket = Packet_AllocNLock();
@@ -1807,7 +1813,7 @@ classUSER::Send_gsv_PARTY_REPLY(int iObjectIDXorTAG, BYTE btReply) {
 }
 
 //-------------------------------------------------------------------------------------------------
-/// 1°³ÀÇ ÀÎº¥Åä¸®ÀÇ º¯°æµÈ ¾ÆÀÌÅÛ Àü¼Û
+/// 1ê°œì˜ ì¸ë²¤í† ë¦¬ì˜ ë³€ê²½ëœ ì•„ì´í…œ ì „ì†¡
 bool
 classUSER::Send_gsv_SET_INV_ONLY(BYTE btInvIDX, tagITEM* pITEM, WORD wType) {
     classPACKET* pCPacket = Packet_AllocNLock();
@@ -1828,7 +1834,7 @@ classUSER::Send_gsv_SET_INV_ONLY(BYTE btInvIDX, tagITEM* pITEM, WORD wType) {
 }
 
 //-------------------------------------------------------------------------------------------------
-/// 2°³ÀÇ ÀÎº¥Åä¸®ÀÇ º¯°æµÈ ¾ÆÀÌÅÛ Àü¼Û
+/// 2ê°œì˜ ì¸ë²¤í† ë¦¬ì˜ ë³€ê²½ëœ ì•„ì´í…œ ì „ì†¡
 bool
 classUSER::Send_gsv_SET_TWO_INV_ONLY(WORD wType,
     BYTE btInvIdx1,
@@ -1857,9 +1863,9 @@ classUSER::Send_gsv_SET_TWO_INV_ONLY(WORD wType,
 }
 
 //-------------------------------------------------------------------------------------------------
-/// ¼­¹ö¿¡¼­ Ã³¸® ¼ø¼­»ó ¹Ù·ÎÃ³¸®ÇÏ±â °ï¶õÇÑ ÆĞÅ¶ÀÇ °æ¿ì Å¬¶óÀÌ¾ğÆ®·Î ¿äÃ»ÇÏ¶ó´Â ÆĞÅ¶À» Àü¼ÛÇÏ¸é
-/// Å¬¶óÀÌ¾î¾ğÆ®´Â ±×¿¡ »óÀÀÇÏ´Â ¿äÃ»ÆĞÅ¶À» ¼­¹ö¿¡ Àü¼ÛÇÏ°í ¼­¹ö´Â ±× ÆĞÅ¶À» ¹Ş¾ÒÀ»½Ã Ã³¸®ÇÏ±âÀ§ÇØ
-/// »ç¿ëµÇ´Â ÇÔ¼ö
+/// ì„œë²„ì—ì„œ ì²˜ë¦¬ ìˆœì„œìƒ ë°”ë¡œì²˜ë¦¬í•˜ê¸° ê³¤ë€í•œ íŒ¨í‚·ì˜ ê²½ìš° í´ë¼ì´ì–¸íŠ¸ë¡œ ìš”ì²­í•˜ë¼ëŠ” íŒ¨í‚·ì„ ì „ì†¡í•˜ë©´
+/// í´ë¼ì´ì–´ì–¸íŠ¸ëŠ” ê·¸ì— ìƒì‘í•˜ëŠ” ìš”ì²­íŒ¨í‚·ì„ ì„œë²„ì— ì „ì†¡í•˜ê³  ì„œë²„ëŠ” ê·¸ íŒ¨í‚·ì„ ë°›ì•˜ì„ì‹œ ì²˜ë¦¬í•˜ê¸°ìœ„í•´
+/// ì‚¬ìš©ë˜ëŠ” í•¨ìˆ˜
 bool
 classUSER::Send_gsv_RELAY_REQ(WORD wRelayTYPE, short nZoneGOTO, tPOINTF& PosGOTO) {
     classPACKET* pCPacket = Packet_AllocNLock();
@@ -1879,7 +1885,7 @@ classUSER::Send_gsv_RELAY_REQ(WORD wRelayTYPE, short nZoneGOTO, tPOINTF& PosGOTO
 }
 
 //-------------------------------------------------------------------------------------------------
-/// Å¬¶óÀÌ¾ğÆ®¿¡ Áß°èÇÏ¶ó´Â ÆĞÅ¶À» Àü¼ÛÈÄ¿¡ ¹Ş´Â ÀÀ´ä ÆĞÅ¶ Ã³¸®...
+/// í´ë¼ì´ì–¸íŠ¸ì— ì¤‘ê³„í•˜ë¼ëŠ” íŒ¨í‚·ì„ ì „ì†¡í›„ì— ë°›ëŠ” ì‘ë‹µ íŒ¨í‚· ì²˜ë¦¬...
 short
 classUSER::Recv_cli_RELAY_REPLY(t_PACKET* pPacket) {
     switch (pPacket->m_cli_RELAY_REPLY.m_wRelayTYPE) {
@@ -1892,31 +1898,31 @@ classUSER::Recv_cli_RELAY_REPLY(t_PACKET* pPacket) {
 }
 
 //-------------------------------------------------------------------------------------------------
-/// ¿ùµå ¼­¹ö¿¡¼­ Ã¤³Î¼­¹ö·Î ÀÌµ¿ÈÄ ÇÃ·¹ÀÌµÇ±âÀü¿¡ ÀÎÁõÀ» ¿äÃ»ÇÏ´Â ÆĞÅ¶
-/// ÀÌ ÆĞÅ¶À» ¹ŞÀ¸¸é Ã¤³Î¼­¹ö°¡ ¿ùµå¼­¹ö·Î ºÎÅÍ ÀÎÁõÀ» ¹Ş°í ÀÀ´äÀ» Å¬¶óÀÌ¾ğÆ®·Î º¸³¿
+/// ì›”ë“œ ì„œë²„ì—ì„œ ì±„ë„ì„œë²„ë¡œ ì´ë™í›„ í”Œë ˆì´ë˜ê¸°ì „ì— ì¸ì¦ì„ ìš”ì²­í•˜ëŠ” íŒ¨í‚·
+/// ì´ íŒ¨í‚·ì„ ë°›ìœ¼ë©´ ì±„ë„ì„œë²„ê°€ ì›”ë“œì„œë²„ë¡œ ë¶€í„° ì¸ì¦ì„ ë°›ê³  ì‘ë‹µì„ í´ë¼ì´ì–¸íŠ¸ë¡œ ë³´ëƒ„
 bool
 classUSER::Recv_cli_JOIN_SERVER_REQ(t_PACKET* pPacket) {
-    // GUMS¿¡ Àü¼ÛÇÏ±â À§ÇØ¼­ ºñ¹ø ÀúÀå...
+    // GUMSì— ì „ì†¡í•˜ê¸° ìœ„í•´ì„œ ë¹„ë²ˆ ì €ì¥...
     ::CopyMemory(this->password_buffer,
         pPacket->m_cli_JOIN_SERVER_REQ.password,
         sizeof(DWORD) * 16);
     this->password[64] = 0;
 
-    // ·Î±×ÀÎ ¼­¹ö ¶Ç´Â ¿ùµå ¼­¹ö¿¡ ÀÎÁõ ¿äÃ»..
+    // ë¡œê·¸ì¸ ì„œë²„ ë˜ëŠ” ì›”ë“œ ì„œë²„ì— ì¸ì¦ ìš”ì²­..
     g_pSockLSV->Send_zws_CONFIRM_ACCOUNT_REQ(this->m_iSocketIDX, pPacket);
 
     return true;
 }
 
 //-------------------------------------------------------------------------------------------------
-/// ÄÉ¸¯ÅÍ ¼±ÅÃ ¿äÃ»Ã³¸® :: °³ÀÎ ¼­¹ö¿¡¼­¸¸ »ç¿ëµÊ
+/// ì¼€ë¦­í„° ì„ íƒ ìš”ì²­ì²˜ë¦¬ :: ê°œì¸ ì„œë²„ì—ì„œë§Œ ì‚¬ìš©ë¨
 bool
 classUSER::Recv_cli_SELECT_CHAR(t_PACKET* pPacket,
     bool bFirstZONE,
     BYTE btRunMODE,
     BYTE btRideMODE) {
     // 1 == pSelCharPket->m_cli_SELECT_CHAR.m_btCharNO
-    // ÀÌ¸é »ç¿ëÀÚÇÑÅ× DB¿¡¼­ ÄÉ¸¯ÅÍ ÀĞ¾î¼­ Àü¼Û...
+    // ì´ë©´ ì‚¬ìš©ìí•œí…Œ DBì—ì„œ ì¼€ë¦­í„° ì½ì–´ì„œ ì „ì†¡...
     pPacket->m_cli_SELECT_CHAR.m_btCharNO = bFirstZONE;
     pPacket->m_cli_SELECT_CHAR.m_btRunMODE = btRunMODE;
     pPacket->m_cli_SELECT_CHAR.m_btRideMODE = btRideMODE;
@@ -1935,16 +1941,16 @@ classUSER::Recv_cli_JOIN_ZONE(t_PACKET* pPacket) {
     if (pZONE) {
         this->m_btWeightRate = pPacket->m_cli_JOIN_ZONE.m_btWeightRate;
         if (this->m_btWeightRate >= WEIGHT_RATE_WALK) {
-            // ¶Ù±â ºÒ´É.
+            // ë›°ê¸° ë¶ˆëŠ¥.
             this->m_bRunMODE = false;
         }
         this->m_nPosZ = pPacket->m_cli_JOIN_ZONE.m_nPosZ;
 
         this->Del_ActiveSKILL();
         this->CObjAI::SetCMD_STOP();
-        this->Clear_SummonCNT(); // Á¸ ¿öÇÁ½Ã...
+        this->Clear_SummonCNT(); // ì¡´ ì›Œí”„ì‹œ...
 
-        if (pZONE->Add_OBJECT(this)) { // »ç¿ëÀÚ Á¸¿¡ Âü°¡ ¿äÃ»
+        if (pZONE->Add_OBJECT(this)) { // ì‚¬ìš©ì ì¡´ì— ì°¸ê°€ ìš”ì²­
             pZONE->Inc_UserCNT();
 
             this->m_dwRecoverTIME = 0;
@@ -1960,29 +1966,29 @@ classUSER::Recv_cli_JOIN_ZONE(t_PACKET* pPacket) {
 }
 
 //-------------------------------------------------------------------------------------------------
-/// »ç¸Á½Ã ºÎÇÒ ¿äÃ» ÆĞÅ¶ Ã³¸®
+/// ì‚¬ë§ì‹œ ë¶€í•  ìš”ì²­ íŒ¨í‚· ì²˜ë¦¬
 short
 classUSER::Recv_cli_REVIVE_REQ(BYTE btReviveTYPE, bool bApplyPenalty, bool bSkipPayment) {
     short nZoneNO;
     tPOINTF PosREVIVE;
 
-    // Á×À»¶§ °É¾î³õÀº »óÅÂ¸¸ ÇØÁö...
+    // ì£½ì„ë•Œ ê±¸ì–´ë†“ì€ ìƒíƒœë§Œ í•´ì§€...
     this->m_IngSTATUS.ClearStatusFLAG(ING_FAINTING);
     this->m_dwRecoverTIME = 0;
 
     switch (btReviveTYPE) {
-        case REVIVE_TYPE_SAVE_POS: // ÀúÀåµÈ ºÎÈ°Àå¼Ò¿¡¼­ »ì¾Æ³ª±â..
+        case REVIVE_TYPE_SAVE_POS: // ì €ì¥ëœ ë¶€í™œì¥ì†Œì—ì„œ ì‚´ì•„ë‚˜ê¸°..
             if (ZONE_PLANET_NO(this->m_nReviveZoneNO) == ZONE_PLANET_NO(this->m_nZoneNO)) {
-                // ÀúÀåµÈ Á¸ÀÇ Çà¼º°ú Á×Àº Á¸ÀÇ Çà¼ºÀÌ °°À¸¸é ºÎÈ°Á¸À¸·Î ....
+                // ì €ì¥ëœ ì¡´ì˜ í–‰ì„±ê³¼ ì£½ì€ ì¡´ì˜ í–‰ì„±ì´ ê°™ìœ¼ë©´ ë¶€í™œì¡´ìœ¼ë¡œ ....
                 nZoneNO = this->m_nReviveZoneNO;
                 PosREVIVE = this->m_PosREVIVE;
 
-                PosREVIVE.x += (RANDOM(1001) - 500); // ·£´ı 5¹ÌÅÍ..
+                PosREVIVE.x += (RANDOM(1001) - 500); // ëœë¤ 5ë¯¸í„°..
                 PosREVIVE.y += (RANDOM(1001) - 500);
                 break;
             }
 
-        case REVIVE_TYPE_REVIVE_POS: // ÇöÀç Á¸ÀÇ ºÎÈ°Àå¼Ò¿¡¼­ »ì¾Æ³ª±â
+        case REVIVE_TYPE_REVIVE_POS: // í˜„ì¬ ì¡´ì˜ ë¶€í™œì¥ì†Œì—ì„œ ì‚´ì•„ë‚˜ê¸°
             nZoneNO = this->m_nZoneNO;
 
             if (!m_bSetImmediateRevivePOS) {
@@ -1991,25 +1997,25 @@ classUSER::Recv_cli_REVIVE_REQ(BYTE btReviveTYPE, bool bApplyPenalty, bool bSkip
                 PosREVIVE = this->m_PosImmediateRivive;
             }
 
-            PosREVIVE.x += (RANDOM(1001) - 500); // ·£´ı 5¹ÌÅÍ..
+            PosREVIVE.x += (RANDOM(1001) - 500); // ëœë¤ 5ë¯¸í„°..
             PosREVIVE.y += (RANDOM(1001) - 500);
             
-            // 2%´õ °æÄ¡¸¦ ¾ò¾î¾ß ÇÑ´Ù.
+            // 2%ë” ê²½ì¹˜ë¥¼ ì–»ì–´ì•¼ í•œë‹¤.
             // if ( bApplyPenalty && g_pZoneLIST->GetZONE(this->m_nZoneNO)->pvp_state == PvpState::NoPvp ) {
-            //	// °æÇèÄ¡ ÆĞ³ÎÄ¡ Àû¿ë.
+            //	// ê²½í—˜ì¹˜ íŒ¨ë„ì¹˜ ì ìš©.
             //	this->Set_PenalEXP( PENALTY_EXP_FIELD-PENALTY_EXP_TOWN );
             //}
             break;
 
-        case REVIVE_TYPE_CURRENT_POS: // ÇöÀç Àå¼Ò¿¡¼­...
+        case REVIVE_TYPE_CURRENT_POS: // í˜„ì¬ ì¥ì†Œì—ì„œ...
             nZoneNO = this->m_nZoneNO;
             PosREVIVE = this->m_PosCUR;
             break;
 
-        case REVIVE_TYPE_START_POS: // ÇöÀçÁ¸ÀÇ ½ÃÀÛÀ§Ä¡¿¡¼­
+        case REVIVE_TYPE_START_POS: // í˜„ì¬ì¡´ì˜ ì‹œì‘ìœ„ì¹˜ì—ì„œ
             nZoneNO = this->m_nZoneNO;
             PosREVIVE = this->GetZONE()->Get_StartPOS();
-            PosREVIVE.x += (RANDOM(1001) - 500); // ·£´ı 5¹ÌÅÍ..
+            PosREVIVE.x += (RANDOM(1001) - 500); // ëœë¤ 5ë¯¸í„°..
             PosREVIVE.y += (RANDOM(1001) - 500);
             break;
 
@@ -2021,18 +2027,18 @@ classUSER::Recv_cli_REVIVE_REQ(BYTE btReviveTYPE, bool bApplyPenalty, bool bSkip
     if (bApplyPenalty) {
 #define STB_ING_REVIVE_ROW 57
         if (g_pZoneLIST->GetZONE(this->m_nZoneNO)->is_pvp_zone()) {
-            // PVPÁ¸ÀÌ¸é 10FPS * 30ÃÊ°£ ¹«Àû...
+            // PVPì¡´ì´ë©´ 10FPS * 30ì´ˆê°„ ë¬´ì ...
             this->m_IngSTATUS.UpdateIngSTATUS(this, STB_ING_REVIVE_ROW, 30, 1, 0);
         }
 
-        // ÃÖ´ë HPÀÇ 30%
+        // ìµœëŒ€ HPì˜ 30%
         this->Set_HP(3 * this->GetCur_MaxHP() / 10);
     }
 
-    // 2005. 09. 09 Á×¾ú´Ù »ì¾Æ³ª´Â °æ¿ì´Â Á¸¿¡ ÀÔÀå½Ã °ú±İ Ã¼Å© ¾ÈÇÏµµ·Ï...
+    // 2005. 09. 09 ì£½ì—ˆë‹¤ ì‚´ì•„ë‚˜ëŠ” ê²½ìš°ëŠ” ì¡´ì— ì…ì¥ì‹œ ê³¼ê¸ˆ ì²´í¬ ì•ˆí•˜ë„ë¡...
     return this->Proc_TELEPORT(nZoneNO, PosREVIVE, bSkipPayment);
 }
-/// ºÎÈ° Á¸ º¯°æ ÆĞÅ¶
+/// ë¶€í™œ ì¡´ ë³€ê²½ íŒ¨í‚·
 bool
 classUSER::Recv_cli_SET_REVIVE_POS() {
     if (!this->GetZONE()) {
@@ -2048,7 +2054,7 @@ classUSER::Recv_cli_SET_REVIVE_POS() {
 
 bool
 classUSER::Recv_cli_SET_VAR_REQ(t_PACKET* pPacket) {
-    /// Å¬¶óÀÌ¾ğÆ®¿¡¼­ »ç¿ëÇÏÁö ¾ÊÀ½À¸·Î ÇØÅ·ÀÌ´Ù.
+    /// í´ë¼ì´ì–¸íŠ¸ì—ì„œ ì‚¬ìš©í•˜ì§€ ì•ŠìŒìœ¼ë¡œ í•´í‚¹ì´ë‹¤.
     IS_HACKING(this, "classUSER::cli_SET_VAR_REQ( Script hacking.. )");
     return false;
     /*
@@ -2063,7 +2069,7 @@ classUSER::Recv_cli_SET_VAR_REQ(t_PACKET* pPacket) {
     //		case SV_GRADE :		g_pAVATAR->Set_RANK (iValue);	break;
 
             case SV_CLASS :		this->SetCur_JOB (iValue);		break;
-    //		±âº» ´É·ÂÄ¡´Â Å¬¶óÀÌ¾ğÆ® ÀÓÀÇ·Î ¹Ù²Ü¼ö ¾ø´Ù.
+    //		ê¸°ë³¸ ëŠ¥ë ¥ì¹˜ëŠ” í´ë¼ì´ì–¸íŠ¸ ì„ì˜ë¡œ ë°”ê¿€ìˆ˜ ì—†ë‹¤.
     //		case SV_STR :		this->SetDef_STR (iValue);		break;
     //		case SV_DEX :		this->SetDef_DEX (iValue);		break;
     //		case SV_WIS :		this->SetDef_INT (iValue);		break;
@@ -2079,7 +2085,7 @@ classUSER::Recv_cli_SET_VAR_REQ(t_PACKET* pPacket) {
         pCPacket->m_HEADER.m_wType = GSV_SET_VAR_REPLY;
         pCPacket->m_HEADER.m_nSize = sizeof( gsv_SET_VAR_REPLY );
 
-        // ÀûÀıÄ¡ ¸øÇÑ °ªÀÏ°æ¿ì VarTYPE¿¡ REPLY_GSV_SET_VAR_FAIL_BIT or ½ÃÄÑ ¸®ÅÏÇÑ´Ù.
+        // ì ì ˆì¹˜ ëª»í•œ ê°’ì¼ê²½ìš° VarTYPEì— REPLY_GSV_SET_VAR_FAIL_BIT or ì‹œì¼œ ë¦¬í„´í•œë‹¤.
         pCPacket->m_gsv_SET_VAR_REPLY.m_btVarTYPE = pPacket->m_cli_SET_VAR_REQ.m_btVarTYPE;
         pCPacket->m_gsv_SET_VAR_REPLY.m_iValue	  = iValue;
 
@@ -2091,14 +2097,14 @@ classUSER::Recv_cli_SET_VAR_REQ(t_PACKET* pPacket) {
 }
 
 //-------------------------------------------------------------------------------------------------
-/// °È±â/¶Ù±â, Ä«Æ® Å¸±â/³»¸®±â »óÅÂ º¯°æ
+/// ê±·ê¸°/ë›°ê¸°, ì¹´íŠ¸ íƒ€ê¸°/ë‚´ë¦¬ê¸° ìƒíƒœ ë³€ê²½
 bool
 classUSER::Recv_cli_TOGGLE(t_PACKET* pPacket) {
     if (this->m_IngSTATUS.IsIgnoreSTATUS())
         return true;
     return this->SetCMD_TOGGLE(pPacket->m_cli_TOGGLE.m_btTYPE);
 }
-/// Æ¯Á¤ ¸ğ¼ÇÀ» ÃëÇÑ´Ù´Â ÆĞÅ¶( °¨Á¤°ü·Ã µ¿ÀÛµî... )
+/// íŠ¹ì • ëª¨ì…˜ì„ ì·¨í•œë‹¤ëŠ” íŒ¨í‚·( ê°ì •ê´€ë ¨ ë™ì‘ë“±... )
 bool
 classUSER::Recv_cli_SET_MOTION(t_PACKET* pPacket) {
     if (this->m_IngSTATUS.IsIgnoreSTATUS())
@@ -2109,7 +2115,7 @@ classUSER::Recv_cli_SET_MOTION(t_PACKET* pPacket) {
 }
 
 //-------------------------------------------------------------------------------------------------
-/// µ¿¸Í Ã¤ÆÃ
+/// ë™ë§¹ ì±„íŒ…
 short
 classUSER::Recv_cli_ALLIED_CHAT(t_PACKET* pPacket) {
     char* szMsg;
@@ -2123,7 +2129,7 @@ classUSER::Recv_cli_ALLIED_CHAT(t_PACKET* pPacket) {
             }
         } else if (!this->m_IngSTATUS.IsSET(FLAG_SUB_STORE_MODE)) {
             if (szMsg[0] == '^') {
-                // Å¸ÀÌÆ² ¼³Á¤
+                // íƒ€ì´í‹€ ì„¤ì •
                 if (strlen(&szMsg[1]) >= MAX_USER_TITLE) {
                     strncpy(this->m_szUserTITLE, &szMsg[1], MAX_USER_TITLE);
                     this->m_szUserTITLE[MAX_USER_TITLE] = 0;
@@ -2154,7 +2160,7 @@ classUSER::Recv_cli_ALLIED_CHAT(t_PACKET* pPacket) {
 }
 
 //-------------------------------------------------------------------------------------------------
-/// µ¿¸Í ¿ÜÄ¡±â
+/// ë™ë§¹ ì™¸ì¹˜ê¸°
 short
 classUSER::Recv_cli_ALLIED_SHOUT(t_PACKET* pPacket) {
     char* szMsg;
@@ -2185,7 +2191,7 @@ classUSER::Recv_cli_ALLIED_SHOUT(t_PACKET* pPacket) {
 }
 
 //-------------------------------------------------------------------------------------------------
-/// ÀÏ¹İ Ã¤ÆÃ
+/// ì¼ë°˜ ì±„íŒ…
 short
 classUSER::Recv_cli_CHAT(t_PACKET* pPacket) {
     char* szMsg;
@@ -2200,7 +2206,7 @@ classUSER::Recv_cli_CHAT(t_PACKET* pPacket) {
             }
         } else if (!this->m_IngSTATUS.IsSubSET(FLAG_SUB_STORE_MODE)) {
             if (szMsg[0] == '^') {
-                // Å¸ÀÌÆ² ¼³Á¤
+                // íƒ€ì´í‹€ ì„¤ì •
                 if (strlen(&szMsg[1]) >= MAX_USER_TITLE) {
                     strncpy(this->m_szUserTITLE, &szMsg[1], MAX_USER_TITLE);
                     this->m_szUserTITLE[MAX_USER_TITLE] = 0;
@@ -2225,7 +2231,7 @@ classUSER::Recv_cli_CHAT(t_PACKET* pPacket) {
 }
 
 //-------------------------------------------------------------------------------------------------
-/// ÀÏ¹İ ¿ÜÄ¡±â...
+/// ì¼ë°˜ ì™¸ì¹˜ê¸°...
 short
 classUSER::Recv_cli_SHOUT(t_PACKET* pPacket) {
     //	if ( this->m_dwPayFLAG &
@@ -2252,7 +2258,7 @@ classUSER::Recv_cli_SHOUT(t_PACKET* pPacket) {
 }
 
 //-------------------------------------------------------------------------------------------------
-/// ±Ó¼Ó¸»
+/// ê·“ì†ë§
 bool
 classUSER::Recv_cli_WHISPER(t_PACKET* pPacket) {
     char *szDest, *szMsg;
@@ -2265,7 +2271,7 @@ classUSER::Recv_cli_WHISPER(t_PACKET* pPacket) {
         return true;
 
     if (szDest && szMsg) {
-        // ¿ùµå ¼­¹ö¿¡ ±Ó¼Ó¸» ¸Ş¼¼Áö Àü¼Û.
+        // ì›”ë“œ ì„œë²„ì— ê·“ì†ë§ ë©”ì„¸ì§€ ì „ì†¡.
         classUSER* pUser = g_pUserLIST->Find_CHAR(szDest);
         if (pUser) {
             this->LogCHAT(szMsg, pUser->Get_NAME(), "WHISPER");
@@ -2280,7 +2286,7 @@ classUSER::Recv_cli_WHISPER(t_PACKET* pPacket) {
 }
 
 //-------------------------------------------------------------------------------------------------
-/// ÆÄÆ¼Ã¤ÆÃ
+/// íŒŒí‹°ì±„íŒ…
 short
 classUSER::Recv_cli_PARTY_CHAT(t_PACKET* pPacket) {
     char* szMsg;
@@ -2310,7 +2316,7 @@ classUSER::Recv_cli_PARTY_CHAT(t_PACKET* pPacket) {
 }
 
 //-------------------------------------------------------------------------------------------------
-/// Á¤Áö ¸í·É
+/// ì •ì§€ ëª…ë ¹
 bool
 classUSER::Recv_cli_STOP(t_PACKET* pPacket) {
     this->SetCMD_STOP();
@@ -2318,35 +2324,35 @@ classUSER::Recv_cli_STOP(t_PACKET* pPacket) {
 }
 
 //-------------------------------------------------------------------------------------------------
-/// °ø°İ ¸í·É
+/// ê³µê²© ëª…ë ¹
 bool
 classUSER::Recv_cli_ATTACK(t_PACKET* pPacket) {
     if (!(this->m_dwPayFLAG & PLAY_FLAG_BATTLE)) {
-        // °ø°İ ¸øÇØ... µ·³»¾ßÇÔ
+        // ê³µê²© ëª»í•´... ëˆë‚´ì•¼í•¨
         return true;
     }
 
-    //	if ( this->Get_ActiveSKILL() ) return true;	// ½ºÅ³ ÄÉ½ºÆÃ ÁßÀÏ¶© ¸ø¹Ù²ã
+    //	if ( this->Get_ActiveSKILL() ) return true;	// ìŠ¤í‚¬ ì¼€ìŠ¤íŒ… ì¤‘ì¼ë• ëª»ë°”ê¿”
     if (this->m_IngSTATUS.IsIgnoreSTATUS() || this->Get_WeightRATE() >= WEIGHT_RATE_CANT_ATK) {
-        // ¹«°Ì´Ù.. ¸í·É ºÒ°¡...
+        // ë¬´ê²ë‹¤.. ëª…ë ¹ ë¶ˆê°€...
         return true;
     }
 
-    // Å¾½Â ¸ğµåÀÌ°í ¾ÏÁî ¾ÆÀÌÅÛ¿¡ °ø°İ°Å¸®°¡ ÀÖ¾î¾ß ÇÑ´Ù.
+    // íƒ‘ìŠ¹ ëª¨ë“œì´ê³  ì•”ì¦ˆ ì•„ì´í…œì— ê³µê²©ê±°ë¦¬ê°€ ìˆì–´ì•¼ í•œë‹¤.
     if (this->GetCur_MOVE_MODE() == MOVE_MODE_DRIVE) {
-        // °ø°İ ¹«±â°¡ ÀÖ³Ä ?
+        // ê³µê²© ë¬´ê¸°ê°€ ìˆëƒ ?
         if (m_RideITEM[RIDE_PART_ARMS].m_nItemNo <= 0
             || PAT_ITEM_ATK_RANGE(m_RideITEM[RIDE_PART_ARMS].m_nItemNo) <= 0)
             return true;
 
-        // Ä«Æ®/Ä³½½±â¾î Å¾½ÂÁßÀÌ°í ¿¬·á°¡ ÀÖ³Ä ?
+        // ì¹´íŠ¸/ìºìŠ¬ê¸°ì–´ íƒ‘ìŠ¹ì¤‘ì´ê³  ì—°ë£Œê°€ ìˆëƒ ?
         tagITEM* pItem = &m_Inventory.m_ItemRIDE[RIDE_PART_ENGINE];
         if (pItem->GetLife() <= 0)
             return true;
     } else if (this->GetCur_MOVE_MODE() > MOVE_MODE_DRIVE) {
         return true;
     } else if (this->m_pShotITEM) {
-        // ¼Ò¸ğÅº ÇÊ¿ä½Ã °¹¼ö Ã¼Å©...
+        // ì†Œëª¨íƒ„ í•„ìš”ì‹œ ê°¯ìˆ˜ ì²´í¬...
         if (this->m_pShotITEM->GetQuantity() < 1) {
             return true;
         }
@@ -2363,16 +2369,16 @@ classUSER::Recv_cli_DAMAGE(t_PACKET* pPacket) {
 }
 
 //-------------------------------------------------------------------------------------------------
-/// ÀÌµ¿ ¶Ç´Â ¾ÆÀÌÅÛ ½Àµæ ¸í·É
+/// ì´ë™ ë˜ëŠ” ì•„ì´í…œ ìŠµë“ ëª…ë ¹
 bool
 classUSER::Recv_cli_MOUSECMD(t_PACKET* pPacket) {
     if (this->m_IngSTATUS.IsIgnoreSTATUS())
         return true;
 
-    // Ä«Æ®/Ä³½½±â¾î Å¾½ÂÁßÀÌ°í ¿¬·á°¡ ÀÖ³Ä ?
+    // ì¹´íŠ¸/ìºìŠ¬ê¸°ì–´ íƒ‘ìŠ¹ì¤‘ì´ê³  ì—°ë£Œê°€ ìˆëƒ ?
     if (this->Get_RideMODE()) {
         if (this->GetCur_MOVE_MODE() > MOVE_MODE_DRIVE) {
-            // ¾ò¾î Å¸°í ÀÖ´Â³ÑÀÌ´Ù.
+            // ì–»ì–´ íƒ€ê³  ìˆëŠ”ë„˜ì´ë‹¤.
             return true;
         }
 
@@ -2406,7 +2412,7 @@ classUSER::Recv_cli_MOUSECMD(t_PACKET* pPacket) {
 }
 
 //-------------------------------------------------------------------------------------------------
-/// Å¬¶óÀÌ¾ğÆ®°¡ Àå¾Ö¹°¿¡ ºÎµóÃÄ ´õÀÌ»ó ÀÌµ¿ ¸øÇÒ¶§...
+/// í´ë¼ì´ì–¸íŠ¸ê°€ ì¥ì• ë¬¼ì— ë¶€ë”›ì³ ë”ì´ìƒ ì´ë™ ëª»í• ë•Œ...
 bool
 classUSER::Recv_cli_CANTMOVE(t_PACKET* pPacket) {
     int iCliDist = ::distance((int)m_PosMoveSTART.x,
@@ -2414,7 +2420,7 @@ classUSER::Recv_cli_CANTMOVE(t_PACKET* pPacket) {
         (int)pPacket->m_cli_CANTMOVE.m_PosCUR.x,
         (int)pPacket->m_cli_CANTMOVE.m_PosCUR.y);
     if (iCliDist > m_iMoveDistance) {
-        // ¼­¹ö¿¡ ¼³Á¤µÈ ÃÖÁ¾ À§Ä¡º¸´Ù ´õ ¸Ö¸® °¥¼ö ÀÖ³ª ????
+        // ì„œë²„ì— ì„¤ì •ëœ ìµœì¢… ìœ„ì¹˜ë³´ë‹¤ ë” ë©€ë¦¬ ê°ˆìˆ˜ ìˆë‚˜ ????
         return true; // false;
     }
 
@@ -2431,14 +2437,14 @@ classUSER::Recv_cli_CANTMOVE(t_PACKET* pPacket) {
         (int)pPacket->m_cli_CANTMOVE.m_PosCUR.x,
         (int)pPacket->m_cli_CANTMOVE.m_PosCUR.y);
     if (iCliDist > iSrvDist) {
-        // ÃÖÁ¾ ¸ñÀûÁö¿¡¼­ ´õ ¸Ö´Ù...
+        // ìµœì¢… ëª©ì ì§€ì—ì„œ ë” ë©€ë‹¤...
         this->m_PosGOTO = pPacket->m_cli_CANTMOVE.m_PosCUR;
-        // Å¬¶óÀÌ¾ğÆ®¿¡¼­ Á¤Áö À§Ä¡·Î °­Á¦ ÀÌµ¿ ½ÃÅ²´Ù.
+        // í´ë¼ì´ì–¸íŠ¸ì—ì„œ ì •ì§€ ìœ„ì¹˜ë¡œ ê°•ì œ ì´ë™ ì‹œí‚¨ë‹¤.
         this->m_PosCUR = pPacket->m_cli_CANTMOVE.m_PosCUR;
         // TODO:: update sector ???
 
-        // ¼­¹ö°¡ Å¬¶óÀÌ¾ğÆ®¿¡¼­ ¸·Èù À§Ä¡ º¸´Ù ´õ ¸ÖÀÌ ÀÌµ¿Çß´Ù.
-        // ´õÀÌ»ó ÀÌµ¿ ¸øÇÏµµ·Ï...
+        // ì„œë²„ê°€ í´ë¼ì´ì–¸íŠ¸ì—ì„œ ë§‰íŒ ìœ„ì¹˜ ë³´ë‹¤ ë” ë©€ì´ ì´ë™í–ˆë‹¤.
+        // ë”ì´ìƒ ì´ë™ ëª»í•˜ë„ë¡...
         m_iMoveDistance = -1;
         m_MoveVEC.x = 0;
         m_MoveVEC.y = 0;
@@ -2446,28 +2452,28 @@ classUSER::Recv_cli_CANTMOVE(t_PACKET* pPacket) {
         if (!CObjAI::SetCMD_STOP())
             return true;
     } else {
-        // ÀÌµ¿ÇÒ ÃÖÁ¾ ÁÂÇ¥ ¼öÁ¤.
+        // ì´ë™í•  ìµœì¢… ì¢Œí‘œ ìˆ˜ì •.
         m_iMoveDistance = iCliDist;
-        // °ø°İ ¸í·ÉÀÏ °æ¿ìµµ ÀÌµ¿ ¸í·ÉÈÄ Á¤Áö·Î ...
+        // ê³µê²© ëª…ë ¹ì¼ ê²½ìš°ë„ ì´ë™ ëª…ë ¹í›„ ì •ì§€ë¡œ ...
         if (!CObjAI::SetCMD_MOVE(this->m_PosCUR, pPacket->m_cli_SETPOS.m_PosCUR, 0))
             return true;
     }
 
-    // º¸Á¤ ÁÂÇ¥ Àü¼Û.
+    // ë³´ì • ì¢Œí‘œ ì „ì†¡.
     return this->Send_gsv_ADJUST_POS();
 }
 
 //-------------------------------------------------------------------------------------------------
-/// Å¬¶óÀÌ¾ğÆ®ÀÇ ¹«°Ô ºñÀ²ÀÌ º¯µ¿µÇ¾úÀ»°æ¿ì...
+/// í´ë¼ì´ì–¸íŠ¸ì˜ ë¬´ê²Œ ë¹„ìœ¨ì´ ë³€ë™ë˜ì—ˆì„ê²½ìš°...
 bool
 classUSER::Recv_cli_SET_WEIGHT_RATE(BYTE btWeightRate /*t_PACKET *pPacket*/, bool bSend2Around) {
     this->m_btWeightRate = btWeightRate; /* pPacket->m_cli_SET_WEIGHT_RATE.m_btWeightRate; */
 
     if (this->m_btWeightRate >= WEIGHT_RATE_WALK) {
-        // ¶Ù±â ºÒ´É.
+        // ë›°ê¸° ë¶ˆëŠ¥.
         this->m_bRunMODE = false;
 
-        // ´Ù½Ã ÀÌµ¿½Ã ÀÌµ¿¼Óµµ °è»êµÈ´Ù, ÇöÀç ÀÌµ¿ »óÅÂ´Â Áö¼Ó..
+        // ë‹¤ì‹œ ì´ë™ì‹œ ì´ë™ì†ë„ ê³„ì‚°ëœë‹¤, í˜„ì¬ ì´ë™ ìƒíƒœëŠ” ì§€ì†..
         // if ( this->m_btWeightRate >= WEIGHT_RATE_CANT_ATK ) {
         //	this->Del_ActiveSKILL ();
         //	CObjAI::SetCMD_STOP ();
@@ -2497,7 +2503,7 @@ classUSER::Recv_cli_SET_WEIGHT_RATE(BYTE btWeightRate /*t_PACKET *pPacket*/, boo
 }
 
 //-------------------------------------------------------------------------------------------------
-/// Å¬¶óÀÌ¾ğÆ®°¡ À§Ä¡ º¸Á¤À» ¿äÃ» ÇßÀ»¶§...
+/// í´ë¼ì´ì–¸íŠ¸ê°€ ìœ„ì¹˜ ë³´ì •ì„ ìš”ì²­ í–ˆì„ë•Œ...
 bool
 classUSER::Recv_cli_SETPOS(t_PACKET* pPacket) {
     int iCliDist;
@@ -2507,20 +2513,20 @@ classUSER::Recv_cli_SETPOS(t_PACKET* pPacket) {
         (int)pPacket->m_cli_SETPOS.m_PosCUR.x,
         (int)pPacket->m_cli_SETPOS.m_PosCUR.y);
     if (iCliDist > m_iMoveDistance) {
-        // ¼­¹ö¿¡ ¼³Á¤µÈ ÃÖÁ¾ À§Ä¡º¸´Ù ´õ ¸Ö¸® °¥¼ö ÀÖ³ª ????
-        // Â©¶ó¶ó !!!
+        // ì„œë²„ì— ì„¤ì •ëœ ìµœì¢… ìœ„ì¹˜ë³´ë‹¤ ë” ë©€ë¦¬ ê°ˆìˆ˜ ìˆë‚˜ ????
+        // ì§¤ë¼ë¼ !!!
         return false;
     }
 
-    // ½ºÇÇµåÇÙÀÌ »ç¿ëµÇ°í ÀÖ´Â°¡ ???
+    // ìŠ¤í”¼ë“œí•µì´ ì‚¬ìš©ë˜ê³  ìˆëŠ”ê°€ ???
     int iSrvDist =
         ::distance((int)m_PosMoveSTART.x, (int)m_PosMoveSTART.y, (int)m_PosCUR.x, (int)m_PosCUR.y);
     if (iCliDist >= iSrvDist + 1000) {
-        // iCliDist > iSrvDistº¸´Ù Å«°æ¿ì´Â ¼­¹ö¿¡ ºÎÇÏ°¡ ¹ß»ıÇÏ°Å³ª ½ºÇÁµåÇÙ...
+        // iCliDist > iSrvDistë³´ë‹¤ í°ê²½ìš°ëŠ” ì„œë²„ì— ë¶€í•˜ê°€ ë°œìƒí•˜ê±°ë‚˜ ìŠ¤í”„ë“œí•µ...
         this->Send_gsv_ADJUST_POS();
     } else if (iSrvDist >= iCliDist + 1000) {
-        // ³×Æ®¿÷ ·¢ÀÌ ¹ß»ıÇÑ °æ¿ì´Â iSrvDist > iCliDist ...
-        // ¼­¹ö°¡ Å¬¶óÀÌ¾ğÆ®º¸´Ù 10m ´õ °¬´Ù.
+        // ë„¤íŠ¸ì› ë™ì´ ë°œìƒí•œ ê²½ìš°ëŠ” iSrvDist > iCliDist ...
+        // ì„œë²„ê°€ í´ë¼ì´ì–¸íŠ¸ë³´ë‹¤ 10m ë” ê°”ë‹¤.
         this->Send_gsv_ADJUST_POS();
     }
 
@@ -2528,7 +2534,7 @@ classUSER::Recv_cli_SETPOS(t_PACKET* pPacket) {
 }
 
 //-------------------------------------------------------------------------------------------------
-/// ¾ó±¼, ¸Ó¸®ÅĞ, ¼ºº° º¯È­µî ÁÖÀ§¿¡ Åëº¸~
+/// ì–¼êµ´, ë¨¸ë¦¬í„¸, ì„±ë³„ ë³€í™”ë“± ì£¼ìœ„ì— í†µë³´~
 bool
 classUSER::Send_gsv_CHANGE_SKIN(WORD wAbilityTYPE, int iValue) {
     classPACKET* pCPacket = Packet_AllocNLock();
@@ -2547,7 +2553,7 @@ classUSER::Send_gsv_CHANGE_SKIN(WORD wAbilityTYPE, int iValue) {
 }
 
 //-------------------------------------------------------------------------------------------------
-/// ÀåÂø ¾ÆÀÌÅÛÀÌ º¯°æ µÇ¾úÀ»¶§...
+/// ì¥ì°© ì•„ì´í…œì´ ë³€ê²½ ë˜ì—ˆì„ë•Œ...
 bool
 classUSER::Send_gsv_EQUIP_ITEM(short nEquipInvIDX, tagITEM* pEquipITEM) {
     classPACKET* pCPacket = Packet_AllocNLock();
@@ -2574,17 +2580,17 @@ classUSER::Send_gsv_EQUIP_ITEM(short nEquipInvIDX, tagITEM* pEquipITEM) {
     return true;
 }
 //-------------------------------------------------------------------------------------------------
-/// ÀåÂø ¾ÆÀÌÅÛ º¯°æ
+/// ì¥ì°© ì•„ì´í…œ ë³€ê²½
 bool
 classUSER::Change_EQUIP_ITEM(short nEquipInvIDX, short nWeaponInvIDX) {
     if (nEquipInvIDX < 1 || nEquipInvIDX >= MAX_EQUIP_IDX)
         return false;
 
-    // ¾ç¼Õ¹«±â ÀåÂø½Ã¿¡ ¿Ş¼Õ ¹æÆĞ ÀåÂøÇÒ½Ã¿¡´Â ¾ç¼Õ ¹«±â¸¦ ³»¸®Áö ¾Ê´Â´Ù.
-    // Àåºñ Å»°Å´Â ¹¬ÀÎ...
+    // ì–‘ì†ë¬´ê¸° ì¥ì°©ì‹œì— ì™¼ì† ë°©íŒ¨ ì¥ì°©í• ì‹œì—ëŠ” ì–‘ì† ë¬´ê¸°ë¥¼ ë‚´ë¦¬ì§€ ì•ŠëŠ”ë‹¤.
+    // ì¥ë¹„ íƒˆê±°ëŠ” ë¬µì¸...
     if (EQUIP_IDX_WEAPON_L == nEquipInvIDX && nWeaponInvIDX) {
         if (m_Inventory.m_ItemLIST[EQUIP_IDX_WEAPON_R].IsTwoHands()) {
-            // Å¬¶óÀÌ¾ğÆ®¿¡¼­ °É·¯Á® ¿ÀÁö ¸øÇÏ´Â °æ¿ìµµ ÀÖ³×...
+            // í´ë¼ì´ì–¸íŠ¸ì—ì„œ ê±¸ëŸ¬ì ¸ ì˜¤ì§€ ëª»í•˜ëŠ” ê²½ìš°ë„ ìˆë„¤...
             return true;
         }
     }
@@ -2594,13 +2600,13 @@ classUSER::Change_EQUIP_ITEM(short nEquipInvIDX, short nWeaponInvIDX) {
     BYTE btRecvMP = this->m_btRecoverMP;
 
     bool bResult = true;
-    // ¹Ù²ï ÀÎº¥Åä¸® ±¸Á¶ Àü¼Û..
+    // ë°”ë€ ì¸ë²¤í† ë¦¬ êµ¬ì¡° ì „ì†¡..
     classPACKET* pCPacket = Packet_AllocNLock();
 
     pCPacket->m_gsv_SET_INV_ONLY.m_btItemCNT = 0;
     tagITEM* pEquipITEM = &m_Inventory.m_ItemLIST[nEquipInvIDX];
     if (nWeaponInvIDX == 0) {
-        // Àåºñ Å»°Å...
+        // ì¥ë¹„ íƒˆê±°...
         if (pEquipITEM->GetTYPE() && pEquipITEM->GetTYPE() < ITEM_TYPE_USE) {
             short nInvIDX = this->Add_ITEM(*pEquipITEM);
             if (nInvIDX > 0) {
@@ -2612,66 +2618,66 @@ classUSER::Change_EQUIP_ITEM(short nEquipInvIDX, short nWeaponInvIDX) {
                 pCPacket->m_gsv_SET_INV_ONLY.m_sInvITEM[1].m_btInvIDX = (BYTE)nInvIDX;
                 pCPacket->m_gsv_SET_INV_ONLY.m_sInvITEM[1].m_ITEM = *pEquipITEM;
 
-                // ¼ø¼­ ÁÖÀÇ ¹Ø¿¡²¨ È£ÃâµÇ¸é *pEquipITEMÀÌ »èÁ¦µÈ´Ù.
+                // ìˆœì„œ ì£¼ì˜ ë°‘ì—êº¼ í˜¸ì¶œë˜ë©´ *pEquipITEMì´ ì‚­ì œëœë‹¤.
                 this->ClearITEM(nEquipInvIDX);
 
                 if (EQUIP_IDX_WEAPON_R == nEquipInvIDX) {
-                    // ¿À¸¥¼Õ ¹«±âÁß ¼Ò¸ğÅº ÇØÁ¦...
+                    // ì˜¤ë¥¸ì† ë¬´ê¸°ì¤‘ ì†Œëª¨íƒ„ í•´ì œ...
                     this->m_pShotITEM = NULL;
                 }
             } else {
-                // ºó ÀÎº¥Åä¸®°¡ ¾ø¾î¼­ Àåºñ¸¦ ¹şÀ»¼ö ¾ø´Ù...
+                // ë¹ˆ ì¸ë²¤í† ë¦¬ê°€ ì—†ì–´ì„œ ì¥ë¹„ë¥¼ ë²—ì„ìˆ˜ ì—†ë‹¤...
                 goto _RETURN;
             }
         } else {
-#pragma COMPILE_TIME_MSG("2004. 7. 16 4Â÷ Å¬º£°úÁ¤¿¡¼­ ¸î¸î À¯Àú¿¡°Ô ³ªÅ¸³ª´Â Çö»ó ÀÓ½Ã·Î ...")
-            // IS_HACKING( this, "Change_EQUIP_ITEM-1" );	// ¹¹³Ä ???
+#pragma COMPILE_TIME_MSG("2004. 7. 16 4ì°¨ í´ë² ê³¼ì •ì—ì„œ ëª‡ëª‡ ìœ ì €ì—ê²Œ ë‚˜íƒ€ë‚˜ëŠ” í˜„ìƒ ì„ì‹œë¡œ ...")
+            // IS_HACKING( this, "Change_EQUIP_ITEM-1" );	// ë­ëƒ ???
             // bResult = false;
             goto _RETURN;
         }
     } else {
-        // Àåºñ ÀåÂø...
+        // ì¥ë¹„ ì¥ì°©...
         tagITEM WeaponITEM = m_Inventory.m_ItemLIST[nWeaponInvIDX];
         if (this->Check_EquipCondition(WeaponITEM, nEquipInvIDX) && WeaponITEM.IsEquipITEM()) {
             if (WeaponITEM.IsTwoHands() && m_Inventory.m_ItemEQUIP[EQUIP_IDX_WEAPON_L].GetTYPE()) {
-                // ¾ç¼Õ ¹«±âÀÌ°í ¿Ş¼Õ¿¡ ¹æÆĞ ÀÖ´Ù¸é
-                // ¿Ş¼Õ ¹«±â¸¦ Å»°ÅÇÒ Àåºñ ÀÎº¥Åä¸®¿¡ ºó °ø°£ÀÌ 1°³ ÀÖ¾î¾ß ÇÑ´Ù.
+                // ì–‘ì† ë¬´ê¸°ì´ê³  ì™¼ì†ì— ë°©íŒ¨ ìˆë‹¤ë©´
+                // ì™¼ì† ë¬´ê¸°ë¥¼ íƒˆê±°í•  ì¥ë¹„ ì¸ë²¤í† ë¦¬ì— ë¹ˆ ê³µê°„ì´ 1ê°œ ìˆì–´ì•¼ í•œë‹¤.
                 short nEmptyInvIDX = m_Inventory.GetEmptyInventory(INV_WEAPON);
                 if (nEmptyInvIDX < 0)
                     goto _RETURN;
 
-                // ¿Ş¼Õ¹«±â ÀÎº¥Åä¸®·Î...
+                // ì™¼ì†ë¬´ê¸° ì¸ë²¤í† ë¦¬ë¡œ...
                 tagITEM* pSubWPN = &m_Inventory.m_ItemLIST[EQUIP_IDX_WEAPON_L];
                 m_Inventory.m_ItemLIST[nEmptyInvIDX] = *pSubWPN;
 
-                // ¿Ş¼Õ ÀåÂø ¾ÆÀÌÅÛ »èÁ¦..
+                // ì™¼ì† ì¥ì°© ì•„ì´í…œ ì‚­ì œ..
                 pSubWPN->Clear();
-                this->SetPartITEM(BODY_PART_WEAPON_L, *pSubWPN); // ¿Ş¼Õ ¸ğµ¨ ¾ÆÀÌÅÛ °­Á¦·Î »èÁ¦ !!!
+                this->SetPartITEM(BODY_PART_WEAPON_L, *pSubWPN); // ì™¼ì† ëª¨ë¸ ì•„ì´í…œ ê°•ì œë¡œ ì‚­ì œ !!!
 
                 pCPacket->m_gsv_SET_INV_ONLY.m_btItemCNT = 4;
 
-                // ¿Ş¼Õ ¹«±â »èÁ¦...
+                // ì™¼ì† ë¬´ê¸° ì‚­ì œ...
                 pCPacket->m_gsv_SET_INV_ONLY.m_sInvITEM[2].m_btInvIDX = EQUIP_IDX_WEAPON_L;
                 pCPacket->m_gsv_SET_INV_ONLY.m_sInvITEM[2].m_ITEM.Clear();
 
-                // ÀåÂø Àåºñ µé¾î°£ ÀÎº¥Åä¸® Á¤º¸ Àü¼Û.
+                // ì¥ì°© ì¥ë¹„ ë“¤ì–´ê°„ ì¸ë²¤í† ë¦¬ ì •ë³´ ì „ì†¡.
                 pCPacket->m_gsv_SET_INV_ONLY.m_sInvITEM[3].m_btInvIDX = (BYTE)nEmptyInvIDX;
                 pCPacket->m_gsv_SET_INV_ONLY.m_sInvITEM[3].m_ITEM =
                     m_Inventory.m_ItemLIST[nEmptyInvIDX];
 
-                // ¾ç¼Õ¹«±â ÀåÂøÀÌ¹Ç·Î :: ¹æ¾î·ÂÁõ°¡, Ç×¸¶·ÂÁõ°¡, ¹æÆĞµ¥ÀÌÁö »èÁ¦...
+                // ì–‘ì†ë¬´ê¸° ì¥ì°©ì´ë¯€ë¡œ :: ë°©ì–´ë ¥ì¦ê°€, í•­ë§ˆë ¥ì¦ê°€, ë°©íŒ¨ë°ì´ì§€ ì‚­ì œ...
                 this->m_IngSTATUS.ClearSTATUS(ING_INC_DPOWER);
                 this->m_IngSTATUS.ClearSTATUS(ING_INC_RES);
                 this->m_IngSTATUS.ClearSTATUS(ING_SHIELD_DAMAGE);
             } else {
-                // ÀÏ¹İ Àåºñ & ÇÑ¼Õ ¹«±â
+                // ì¼ë°˜ ì¥ë¹„ & í•œì† ë¬´ê¸°
                 pCPacket->m_gsv_SET_INV_ONLY.m_btItemCNT = 2;
             }
 
             m_Inventory.m_ItemLIST[nWeaponInvIDX] = *pEquipITEM;
             *pEquipITEM = WeaponITEM;
 
-            // Àåºñ ±³È¯.
+            // ì¥ë¹„ êµí™˜.
             pCPacket->m_gsv_SET_INV_ONLY.m_sInvITEM[0].m_btInvIDX = (BYTE)nEquipInvIDX;
             pCPacket->m_gsv_SET_INV_ONLY.m_sInvITEM[0].m_ITEM =
                 m_Inventory.m_ItemLIST[nEquipInvIDX];
@@ -2681,17 +2687,17 @@ classUSER::Change_EQUIP_ITEM(short nEquipInvIDX, short nWeaponInvIDX) {
                 m_Inventory.m_ItemLIST[nWeaponInvIDX];
 
             if (EQUIP_IDX_WEAPON_R == nEquipInvIDX) {
-                // ¿À¸¥¼Õ ¹«±âÁß ¼Ò¸ğÅº »ç¿ëÇÏ³ª ???
+                // ì˜¤ë¥¸ì† ë¬´ê¸°ì¤‘ ì†Œëª¨íƒ„ ì‚¬ìš©í•˜ë‚˜ ???
                 this->Set_ShotITEM(); // classUSER::Change_EQUIP_ITEM
             }
-        } // else Àåºñ ¾ÆÀÌÅÛÀÌ ¾Æ´Ï´Ù...
+        } // else ì¥ë¹„ ì•„ì´í…œì´ ì•„ë‹ˆë‹¤...
     }
 
     if (pCPacket->m_gsv_SET_INV_ONLY.m_btItemCNT) {
-        // ¹«±â º¯°æ½Ã
+        // ë¬´ê¸° ë³€ê²½ì‹œ
         switch (nEquipInvIDX) {
             case EQUIP_IDX_WEAPON_R:
-                // °ø°İ·ÂÁõ°¡, ¸íÁß·ÂÁõ°¡, °ø°İ¼ÓµµÁõ°¡, Å©¸®Æ¼ÄÃÁõ°¡ »èÁ¦...
+                // ê³µê²©ë ¥ì¦ê°€, ëª…ì¤‘ë ¥ì¦ê°€, ê³µê²©ì†ë„ì¦ê°€, í¬ë¦¬í‹°ì»¬ì¦ê°€ ì‚­ì œ...
                 this->m_IngSTATUS.ClearStatusIfENABLED(ING_INC_APOWER);
                 this->m_IngSTATUS.ClearStatusIfENABLED(ING_INC_HIT);
                 this->m_IngSTATUS.ClearStatusIfENABLED(ING_INC_ATK_SPD);
@@ -2699,14 +2705,14 @@ classUSER::Change_EQUIP_ITEM(short nEquipInvIDX, short nWeaponInvIDX) {
                 break;
 
             case EQUIP_IDX_WEAPON_L:
-                // ¹æ¾î·ÂÁõ°¡, Ç×¸¶·ÂÁõ°¡, ¹æÆĞµ¥ÀÌÁö »èÁ¦...
+                // ë°©ì–´ë ¥ì¦ê°€, í•­ë§ˆë ¥ì¦ê°€, ë°©íŒ¨ë°ì´ì§€ ì‚­ì œ...
                 this->m_IngSTATUS.ClearStatusIfENABLED(ING_INC_DPOWER);
                 this->m_IngSTATUS.ClearStatusIfENABLED(ING_INC_RES);
                 this->m_IngSTATUS.ClearStatusIfENABLED(ING_SHIELD_DAMAGE);
                 break;
         }
 
-        // ÄÉ¸¯ÅÍ »óÅÂ ¾÷µ¥ÀÌÆ®.. ÆÄÆ®´Â ¹Ù²îÁö ¾Ê´Â´Ù..
+        // ì¼€ë¦­í„° ìƒíƒœ ì—…ë°ì´íŠ¸.. íŒŒíŠ¸ëŠ” ë°”ë€Œì§€ ì•ŠëŠ”ë‹¤..
         this->SetPartITEM(nEquipInvIDX);
 
         pCPacket->m_HEADER.m_wType = GSV_SET_INV_ONLY;
@@ -2714,7 +2720,7 @@ classUSER::Change_EQUIP_ITEM(short nEquipInvIDX, short nWeaponInvIDX) {
             + pCPacket->m_gsv_SET_INV_ONLY.m_btItemCNT * sizeof(tag_SET_INVITEM);
         this->SendPacket(pCPacket);
 
-        // ÁÖº¯¿¡ ¹«±â ¹Ù²ñÀ» Åëº¸...
+        // ì£¼ë³€ì— ë¬´ê¸° ë°”ë€œì„ í†µë³´...
         this->Send_gsv_EQUIP_ITEM(nEquipInvIDX, pEquipITEM);
 
         // If a costume item is equiped, show this one instead of equiped item
@@ -2727,7 +2733,7 @@ classUSER::Change_EQUIP_ITEM(short nEquipInvIDX, short nWeaponInvIDX) {
         }
 
         if (this->GetPARTY()) {
-            // º¯°æ¿¡ ÀÇÇØ ¿É¼ÇÀÌ ºÙ¾î È¸º¹ÀÌ ¹Ù²î¸é ÆÄÆ¼¿ø¿¡°Ô Àü¼Û.
+            // ë³€ê²½ì— ì˜í•´ ì˜µì…˜ì´ ë¶™ì–´ íšŒë³µì´ ë°”ë€Œë©´ íŒŒí‹°ì›ì—ê²Œ ì „ì†¡.
             if (btCurCON != this->GetCur_CON() || btRecvHP != this->m_btRecoverHP
                 || btRecvMP != this->m_btRecoverMP) {
                 this->m_pPartyBUFF->Change_ObjectIDX(this);
@@ -2743,11 +2749,11 @@ _RETURN:
     return bResult;
 }
 
-/// ÀåÂø ¾ÆÀÌÅÛ º¯°æ ¿äÃ» ÆĞÅ¶Ã³¸®
+/// ì¥ì°© ì•„ì´í…œ ë³€ê²½ ìš”ì²­ íŒ¨í‚·ì²˜ë¦¬
 bool
 classUSER::Recv_cli_EQUIP_ITEM(t_PACKET* pPacket) {
     if (this->Get_ActiveSKILL())
-        return true; // ½ºÅ³ ÄÉ½ºÆÃ ÁßÀÏ¶© ¸ø¹Ù²ã
+        return true; // ìŠ¤í‚¬ ì¼€ìŠ¤íŒ… ì¤‘ì¼ë• ëª»ë°”ê¿”
     if (this->m_IngSTATUS.IsSET(FLAG_ING_IGNORE_ALL))
         return true;
 
@@ -2863,11 +2869,11 @@ classUSER::receive_client_equip_costume_item(t_PACKET* packet) {
 
 //-------------------------------------------------------------------------------------------------
 #define PAT_ITEM_INV0 (MAX_EQUIP_IDX + INV_RIDING * INVENTORY_PAGE_SIZE)
-/// Ä«Æ®/Ä³½½±â¾î ¾ÆÀÌÅÛ º¯°æ ¿äÃ»
+/// ì¹´íŠ¸/ìºìŠ¬ê¸°ì–´ ì•„ì´í…œ ë³€ê²½ ìš”ì²­
 bool
 classUSER::Recv_cli_ASSEMBLE_RIDE_ITEM(t_PACKET* pPacket) {
     if (this->Get_ActiveSKILL())
-        return true; // ½ºÅ³ ÄÉ½ºÆÃ ÁßÀÏ¶© ¸ø¹Ù²ã
+        return true; // ìŠ¤í‚¬ ì¼€ìŠ¤íŒ… ì¤‘ì¼ë• ëª»ë°”ê¿”
     if (this->m_IngSTATUS.IsIgnoreSTATUS())
         return true;
 
@@ -2880,9 +2886,9 @@ classUSER::Recv_cli_ASSEMBLE_RIDE_ITEM(t_PACKET* pPacket) {
         && (nFromInvIDX < PAT_ITEM_INV0 || nFromInvIDX >= PAT_ITEM_INV0 + INVENTORY_PAGE_SIZE))
         return false;
 
-        // ÀÌ¸§		: ±èÃ¢¼ö
-        // ³¯Â¥		: Sep. 27 2005
-        // ¼³¸í		: Ä«Æ®°ÔÀÌÁö°¡ 0ÀÏ¶§ PATÀåºñ Å»Âø ºÒ°¡
+        // ì´ë¦„		: ê¹€ì°½ìˆ˜
+        // ë‚ ì§œ		: Sep. 27 2005
+        // ì„¤ëª…		: ì¹´íŠ¸ê²Œì´ì§€ê°€ 0ì¼ë•Œ PATì¥ë¹„ íƒˆì°© ë¶ˆê°€
 #ifdef __KCHS_BATTLECART__
     if (GetCur_PatHP() <= 0 && GetCur_PatMaxHP() > 0) {
         return true;
@@ -2890,14 +2896,14 @@ classUSER::Recv_cli_ASSEMBLE_RIDE_ITEM(t_PACKET* pPacket) {
 #endif
 
     bool bResult = true;
-    // ¹Ù²ï ÀÎº¥Åä¸® ±¸Á¶ Àü¼Û..
+    // ë°”ë€ ì¸ë²¤í† ë¦¬ êµ¬ì¡° ì „ì†¡..
     classPACKET* pCPacket = Packet_AllocNLock();
 
     pCPacket->m_gsv_SET_INV_ONLY.m_btItemCNT = 0;
     tagITEM* pEquipITEM = &m_Inventory.m_ItemRIDE[nEquipInvIDX];
     if (nFromInvIDX == 0) {
-        // ¾ÆÀÌÅÛ Å»°Å
-        // ½ÂÂ÷ ¸ğµå¿¡¼± ÇÒ¼ö ¾ø´Ù.
+        // ì•„ì´í…œ íƒˆê±°
+        // ìŠ¹ì°¨ ëª¨ë“œì—ì„  í• ìˆ˜ ì—†ë‹¤.
         if (this->GetCur_MOVE_MODE() == MOVE_MODE_DRIVE)
             return true;
 
@@ -2913,19 +2919,19 @@ classUSER::Recv_cli_ASSEMBLE_RIDE_ITEM(t_PACKET* pPacket) {
                 pCPacket->m_gsv_SET_INV_ONLY.m_sInvITEM[1].m_btInvIDX = (BYTE)nInvIDX;
                 pCPacket->m_gsv_SET_INV_ONLY.m_sInvITEM[1].m_ITEM = *pEquipITEM;
 
-                // ¼ø¼­ ÁÖÀÇ ¹Ø¿¡²¨ È£ÃâµÇ¸é *pEquipITEMÀÌ »èÁ¦µÈ´Ù.
+                // ìˆœì„œ ì£¼ì˜ ë°‘ì—êº¼ í˜¸ì¶œë˜ë©´ *pEquipITEMì´ ì‚­ì œëœë‹¤.
                 this->ClearITEM(INVENTORY_RIDE_ITEM0 + nEquipInvIDX);
             } else {
-                // ºó ÀÎº¥Åä¸®°¡ ¾ø¾î¼­ Àåºñ¸¦ ¹şÀ»¼ö ¾ø´Ù...
+                // ë¹ˆ ì¸ë²¤í† ë¦¬ê°€ ì—†ì–´ì„œ ì¥ë¹„ë¥¼ ë²—ì„ìˆ˜ ì—†ë‹¤...
                 goto _RETURN;
             }
         } // else {
-        //	IS_HACKING( this, "Recv_cli_ASSEMBLE_RIDE_ITEM-1" );	// ¹¹³Ä ???
+        //	IS_HACKING( this, "Recv_cli_ASSEMBLE_RIDE_ITEM-1" );	// ë­ëƒ ???
         //	bResult = false;
         //	goto _RETURN;
         //}
     } else {
-        // ¾ÆÀÌÅÛ ÀåÂø...
+        // ì•„ì´í…œ ì¥ì°©...
         tagITEM RideITEM = m_Inventory.m_ItemLIST[nFromInvIDX];
         if (this->Check_PatEquipCondition(RideITEM, nEquipInvIDX)) {
             pCPacket->m_gsv_SET_INV_ONLY.m_btItemCNT = 2;
@@ -2933,7 +2939,7 @@ classUSER::Recv_cli_ASSEMBLE_RIDE_ITEM(t_PACKET* pPacket) {
             m_Inventory.m_ItemLIST[nFromInvIDX] = *pEquipITEM;
             *pEquipITEM = RideITEM;
 
-            // Àåºñ ±³È¯.
+            // ì¥ë¹„ êµí™˜.
             pCPacket->m_gsv_SET_INV_ONLY.m_sInvITEM[0].m_btInvIDX =
                 (BYTE)(INVENTORY_RIDE_ITEM0 + nEquipInvIDX);
             pCPacket->m_gsv_SET_INV_ONLY.m_sInvITEM[0].m_ITEM =
@@ -2942,16 +2948,16 @@ classUSER::Recv_cli_ASSEMBLE_RIDE_ITEM(t_PACKET* pPacket) {
             pCPacket->m_gsv_SET_INV_ONLY.m_sInvITEM[1].m_btInvIDX = (BYTE)nFromInvIDX;
             pCPacket->m_gsv_SET_INV_ONLY.m_sInvITEM[1].m_ITEM = m_Inventory.m_ItemLIST[nFromInvIDX];
 
-            this->UpdateAbility(); // ÀÌ°Å ¾È ÇÏ¸é.. Àåºñ ±³Ã¼ ÇÒ¶§ Ä«Æ®Max PatHP °è¼Ó 0ÀÌ±â
-                                   // ¶§¹®¿¡...
+            this->UpdateAbility(); // ì´ê±° ì•ˆ í•˜ë©´.. ì¥ë¹„ êµì²´ í• ë•Œ ì¹´íŠ¸Max PatHP ê³„ì† 0ì´ê¸°
+                                   // ë•Œë¬¸ì—...
 #ifdef __KCHS_BATTLECART__
-            if (GetCur_PatMaxHP() > 0) // ÄğÅ¸ÀÓÀÌ µ¹°Ô ÇÒ·Á¸é...
+            if (GetCur_PatMaxHP() > 0) // ì¿¨íƒ€ì„ì´ ëŒê²Œ í• ë ¤ë©´...
                 Set_PatHP_MODE(3);
 #endif
         }
         /*
         else {
-            IS_HACKING( this, "Recv_cli_ASSEMBLE_RIDE_ITEM-2" );	// ¹¹³Ä ???
+            IS_HACKING( this, "Recv_cli_ASSEMBLE_RIDE_ITEM-2" );	// ë­ëƒ ???
             bResult = false;
             goto _RETURN;
         }
@@ -2967,7 +2973,7 @@ classUSER::Recv_cli_ASSEMBLE_RIDE_ITEM(t_PACKET* pPacket) {
 
         this->SetRideITEM(nEquipInvIDX);
 
-        // ÁÖº¯¿¡ ¹Ù²ñÀ» Åëº¸...
+        // ì£¼ë³€ì— ë°”ë€œì„ í†µë³´...
         pCPacket = Packet_AllocNLock();
 
         pCPacket->m_HEADER.m_wType = GSV_ASSEMBLE_RIDE_ITEM;
@@ -2994,10 +3000,10 @@ _RETURN:
 }
 
 //-------------------------------------------------------------------------------------------------
-/// ÀÌµ¿¼Óµµ º¯°æÀ» ÁÖº¯¿¡ Åëº¸
+/// ì´ë™ì†ë„ ë³€ê²½ì„ ì£¼ë³€ì— í†µë³´
 bool
 classUSER::Send_gsv_SPEED_CHANGED(bool bUpdateSpeed) {
-    // ¼Óµµ °»½Å...
+    // ì†ë„ ê°±ì‹ ...
     if (bUpdateSpeed)
         this->update_speed();
 
@@ -3019,7 +3025,7 @@ classUSER::Send_gsv_SPEED_CHANGED(bool bUpdateSpeed) {
 
     Packet_ReleaseNUnlock(pCPacket);
 
-    // ÆÄÆ¼¿ø ÇÑÅ×´Â max hp/con/recover_xx ... !!!
+    // íŒŒí‹°ì› í•œí…ŒëŠ” max hp/con/recover_xx ... !!!
     if (this->GetPARTY()) {
         this->m_pPartyBUFF->Change_ObjectIDX(this);
     }
@@ -3028,7 +3034,7 @@ classUSER::Send_gsv_SPEED_CHANGED(bool bUpdateSpeed) {
 }
 
 //-------------------------------------------------------------------------------------------------
-/// NPC »óÁ¡ °Å·¡ÀÀ´ä ÆĞÅ¶
+/// NPC ìƒì  ê±°ë˜ì‘ë‹µ íŒ¨í‚·
 bool
 classUSER::Send_gsv_STORE_TRADE_REPLY(BYTE btResult) {
     classPACKET* pCPacket = Packet_AllocNLock();
@@ -3046,7 +3052,7 @@ classUSER::Send_gsv_STORE_TRADE_REPLY(BYTE btResult) {
 
 //-------------------------------------------------------------------------------------------------
 #define MAX_TRADE_DISTANCE (1000 * 6) // 6 M
-/// NPC »óÁ¡ °Å·¡ ¿äÃ» ÆĞÅ¶
+/// NPC ìƒì  ê±°ë˜ ìš”ì²­ íŒ¨í‚·
 bool
 classUSER::Recv_cli_STORE_TRADE_REQ(t_PACKET* pPacket) {
     if (this->m_IngSTATUS.IsIgnoreSTATUS())
@@ -3056,7 +3062,7 @@ classUSER::Recv_cli_STORE_TRADE_REQ(t_PACKET* pPacket) {
         return false;
 
     if (pPacket->m_cli_STORE_TRADE_REQ.m_dwEconomyTIME != this->GetZONE()->GetEconomyTIME()) {
-        // °æÁ¦ µ¥ÀÌÅ¸°¡ Æ²¸®´Ù...
+        // ê²½ì œ ë°ì´íƒ€ê°€ í‹€ë¦¬ë‹¤...
         return this->Send_gsv_STORE_TRADE_REPLY(STORE_TRADE_RESULT_PRICE_DIFF);
     }
 
@@ -3064,17 +3070,17 @@ classUSER::Recv_cli_STORE_TRADE_REQ(t_PACKET* pPacket) {
     pCharNPC =
         (CObjNPC*)g_pObjMGR->Get_GameOBJ(pPacket->m_cli_STORE_TRADE_REQ.m_wNPCObjIdx, OBJ_NPC);
     if (!pCharNPC) {
-        // »óÁ¡ ÁÖÀÎÀÌ ¾ø¾î???
+        // ìƒì  ì£¼ì¸ì´ ì—†ì–´???
         return this->Send_gsv_STORE_TRADE_REPLY(STORE_TRADE_RESULT_NPC_NOT_FOUND);
     }
 
     BYTE btUnionIDX = NPC_UNION_NO(pCharNPC->Get_CharNO());
     if (btUnionIDX && btUnionIDX != this->GetCur_UNION()) {
-        // Á¶ÇÕ »óÁ¡ÀÎµ¥ ¼Ò¼Ó Á¶ÇÕÀÌ Æ²¸®¸é...
+        // ì¡°í•© ìƒì ì¸ë° ì†Œì† ì¡°í•©ì´ í‹€ë¦¬ë©´...
         return this->Send_gsv_STORE_TRADE_REPLY(STORE_TRADE_RESULT_NOT_UNION_USER);
     }
 
-    // »óÁ¡ npc¿ÍÀÇ °Å·¡ Ã¼Å©...
+    // ìƒì  npcì™€ì˜ ê±°ë˜ ì²´í¬...
     int iDistance = distance((int)m_PosCUR.x,
         (int)m_PosCUR.y,
         (int)pCharNPC->m_PosCUR.x,
@@ -3110,7 +3116,7 @@ classUSER::Recv_cli_STORE_TRADE_REQ(t_PACKET* pPacket) {
             nOffset,
             sizeof(tag_SELL_ITEM) * pPacket->m_cli_STORE_TRADE_REQ.m_cSellCNT);
 
-        // ¹°°Ç ÆÈÀÚ !!!
+        // ë¬¼ê±´ íŒ”ì !!!
         if (!pSellITEMs) {
             IS_HACKING(this, "Recv_cli_STORE_TRADE_REQ-2 :: Invalid Sell Items");
             bResult = false;
@@ -3127,7 +3133,7 @@ classUSER::Recv_cli_STORE_TRADE_REQ(t_PACKET* pPacket) {
 
             pITEM = &m_Inventory.m_ItemLIST[pSellITEMs[nC].m_btInvIDX];
             if (!pITEM->IsEnableSELL()) {
-                // »óÁ¡ ÆÇ¸Å ºÒ°¡ ¾ÆÀÌÅÛÀÌ´Ù.
+                // ìƒì  íŒë§¤ ë¶ˆê°€ ì•„ì´í…œì´ë‹¤.
                 if (pITEM->GetHEADER()) {
                     IS_HACKING(this, "Recv_cli_STORE_TRADE_REQ-3 :: Cant sell to store");
                     bResult = false;
@@ -3137,7 +3143,7 @@ classUSER::Recv_cli_STORE_TRADE_REQ(t_PACKET* pPacket) {
 
             iPriceEA = this->GetZONE()->Get_ItemSellPRICE(*pITEM, this->GetSellSkillVALUE());
 
-            // ÆÇ¸ÅÇÑ ¾ÆÀÌÅÛ ·Î±×¸¦ ³²±è...
+            // íŒë§¤í•œ ì•„ì´í…œ ë¡œê·¸ë¥¼ ë‚¨ê¹€...
             if (pITEM->IsEnableDupCNT()) {
                 if (pSellITEMs[nC].m_wDupCNT >= pITEM->GetQuantity()) {
                     this->GetZONE()->SellITEMs(pITEM, pITEM->GetQuantity());
@@ -3157,7 +3163,7 @@ classUSER::Recv_cli_STORE_TRADE_REQ(t_PACKET* pPacket) {
             }
             this->Add_CurMONEY(abs(iTotValue));
 
-            // º¯°æµÈ ÀÎº¥Åä¸® Á¤º¸ »ı¼º...
+            // ë³€ê²½ëœ ì¸ë²¤í† ë¦¬ ì •ë³´ ìƒì„±...
             pCPacket->m_gsv_SET_MONEYnINV.m_sInvITEM[pCPacket->m_gsv_SET_MONEYnINV.m_btItemCNT]
                 .m_btInvIDX = pSellITEMs[nC].m_btInvIDX;
             pCPacket->m_gsv_SET_MONEYnINV.m_sInvITEM[pCPacket->m_gsv_SET_MONEYnINV.m_btItemCNT]
@@ -3169,13 +3175,13 @@ classUSER::Recv_cli_STORE_TRADE_REQ(t_PACKET* pPacket) {
     short nInvIDX;
     tagITEM sBuyITEM;
     for (nC = 0; nC < pPacket->m_cli_STORE_TRADE_REQ.m_cBuyCNT; nC++) {
-        // ¹«°Ç ±¸ÀÔ !!!
+        // ë¬´ê±´ êµ¬ì… !!!
         if (!pCharNPC->Get_SellITEM(pBuyITEMs[nC].m_cTabNO, pBuyITEMs[nC].m_cColNO, sBuyITEM)) {
             break;
         }
 
         if (btUnionIDX) {
-            // Á¶ÇÕ»óÁ¡...Á¶ÇÕ Æ÷ÀÎÆ®¸¦ ¼Ò¸ğ...
+            // ì¡°í•©ìƒì ...ì¡°í•© í¬ì¸íŠ¸ë¥¼ ì†Œëª¨...
             iPriceEA = ITEM_MAKE_DIFFICULT(sBuyITEM.m_cType, sBuyITEM.m_nItemNo);
             if (tagITEM::IsEnableDupCNT(sBuyITEM.GetTYPE())) {
                 iTotValue = iPriceEA * pBuyITEMs[nC].m_wDupCNT;
@@ -3185,7 +3191,7 @@ classUSER::Recv_cli_STORE_TRADE_REQ(t_PACKET* pPacket) {
             }
 
             if (this->GetCur_UnionPOINT(btUnionIDX) < iTotValue) {
-                // Á¶ÇÕ Æ÷ÀÎÆ® ¾ø´Ù.
+                // ì¡°í•© í¬ì¸íŠ¸ ì—†ë‹¤.
                 this->Send_gsv_STORE_TRADE_REPLY(STORE_TRADE_RESULT_OUT_OF_POINT);
                 break;
             }
@@ -3200,16 +3206,16 @@ classUSER::Recv_cli_STORE_TRADE_REQ(t_PACKET* pPacket) {
                 iTotValue = iPriceEA;
             }
             if (this->GetCur_MONEY() < iTotValue) {
-                // µ· ¾ø´Ù.
+                // ëˆ ì—†ë‹¤.
                 this->Send_gsv_STORE_TRADE_REPLY(STORE_TRADE_RESULT_OUT_OF_MONEY);
                 break;
             }
 
             this->GetZONE()->BuyITEMs(sBuyITEM);
         }
-        this->Set_ItemSN(sBuyITEM); // »óÁ¡¿¡¼­ ±¸ÀÔ½Ã...
+        this->Set_ItemSN(sBuyITEM); // ìƒì ì—ì„œ êµ¬ì…ì‹œ...
 
-        // ¼Ò¸ğ...
+        // ì†Œëª¨...
         if (btUnionIDX) {
             this->SubCur_UnionPOINT(btUnionIDX, iTotValue);
         } else {
@@ -3225,7 +3231,7 @@ classUSER::Recv_cli_STORE_TRADE_REQ(t_PACKET* pPacket) {
             pCPacket->m_gsv_SET_MONEYnINV.m_btItemCNT++;
         } else {
             this->Save_ItemToFILED(
-                sBuyITEM); // »óÁ¡ ±¸ÀÔÈÄ ÀÎº¥Åä¸®°¡ Ãß°¡°¡ ºÒ°¡´ÉÇØ¼­ ¹Û¿¡ 30ºĞ°£ º¸°ü...
+                sBuyITEM); // ìƒì  êµ¬ì…í›„ ì¸ë²¤í† ë¦¬ê°€ ì¶”ê°€ê°€ ë¶ˆê°€ëŠ¥í•´ì„œ ë°–ì— 30ë¶„ê°„ ë³´ê´€...
         }
     }
 
@@ -3242,7 +3248,7 @@ _RETURN:
 }
 
 //-------------------------------------------------------------------------------------------------
-/// ´ÜÃà¾ÆÀÌÄÜ ¼³Á¤ ÆĞÅ¶
+/// ë‹¨ì¶•ì•„ì´ì½˜ ì„¤ì • íŒ¨í‚·
 bool
 classUSER::Recv_cli_SET_HOTICON(t_PACKET* pPacket) {
     if (pPacket->m_cli_SET_HOTICON.m_btListIDX >= MAX_HOT_ICONS)
@@ -3268,7 +3274,7 @@ classUSER::Recv_cli_SET_HOTICON(t_PACKET* pPacket) {
 }
 
 //-------------------------------------------------------------------------------------------------
-/// Å¬¶óÀÌ¾ğÆ®¿ÍÀÇ µ¿±âÈ­¸¦ ¸ÂÃß±â À§ÇØ ÇöÀç ¼³Á¤µÈ ³²Àº ÃÑ¾ËÀÇ °¹¼ö Àü¼Û
+/// í´ë¼ì´ì–¸íŠ¸ì™€ì˜ ë™ê¸°í™”ë¥¼ ë§ì¶”ê¸° ìœ„í•´ í˜„ì¬ ì„¤ì •ëœ ë‚¨ì€ ì´ì•Œì˜ ê°¯ìˆ˜ ì „ì†¡
 bool
 classUSER::Send_BulltCOUNT() {
     tagITEM* pShotITEM = &this->m_Inventory.m_ItemSHOT[this->m_btShotTYPE];
@@ -3277,7 +3283,7 @@ classUSER::Send_BulltCOUNT() {
     return this->Send_gsv_SET_INV_ONLY(btInvIDX, pShotITEM);
 }
 
-/// ÃÑ¾Ë Å¸ÀÔ º¯°æ Àü¼Û
+/// ì´ì•Œ íƒ€ì… ë³€ê²½ ì „ì†¡
 bool
 classUSER::Send_gsv_SET_BULLET(BYTE btShotTYPE) {
     classPACKET* pCPacket = Packet_AllocNLock();
@@ -3304,11 +3310,11 @@ classUSER::Send_gsv_SET_BULLET(BYTE btShotTYPE) {
     return true;
 }
 
-/// ÃÑ¾Ë º¯°æ ¿äÃ» ÆĞÅ¶
+/// ì´ì•Œ ë³€ê²½ ìš”ì²­ íŒ¨í‚·
 bool
 classUSER::Recv_cli_SET_BULLET(t_PACKET* pPacket) {
     if (this->Get_ActiveSKILL())
-        return true; // ½ºÅ³ ÄÉ½ºÆÃ ÁßÀÏ¶© ¸ø¹Ù²ã
+        return true; // ìŠ¤í‚¬ ì¼€ìŠ¤íŒ… ì¤‘ì¼ë• ëª»ë°”ê¿”
     if (this->m_IngSTATUS.IsIgnoreSTATUS())
         return true;
 
@@ -3318,12 +3324,12 @@ classUSER::Recv_cli_SET_BULLET(t_PACKET* pPacket) {
 
     bool bResult = true;
     if (pPacket->m_cli_SET_BULLET.m_wInventoryIDX) {
-        // ±³È¯ ? ÀåÂø ? Ãß°¡ ?
+        // êµí™˜ ? ì¥ì°© ? ì¶”ê°€ ?
         tagITEM* pInvITEM = &m_Inventory.m_ItemLIST[pPacket->m_cli_SET_BULLET.m_wInventoryIDX];
         if (0 == pInvITEM->GetHEADER()) {
             goto _RETURN;
         }
-        // ÀåÂø À§Ä¡°¡ ¸Â´Â ¼Ò¸ğÅºÀÎ°¡ ???
+        // ì¥ì°© ìœ„ì¹˜ê°€ ë§ëŠ” ì†Œëª¨íƒ„ì¸ê°€ ???
         if (!pInvITEM->IsEtcITEM()) {
             IS_HACKING(this, "Invalid bullet position");
             bResult = false;
@@ -3365,18 +3371,18 @@ classUSER::Recv_cli_SET_BULLET(t_PACKET* pPacket) {
         tagITEM* pShotITEM = &m_Inventory.m_ItemSHOT[pPacket->m_cli_SET_BULLET.m_wShotTYPE];
 
         if (pShotITEM->GetHEADER() == pInvITEM->GetHEADER()) {
-            // °°Àº ¾ÆÀÌÅÛÀº °¹¼ö¸¦ ´õÇÑ´Ù.
+            // ê°™ì€ ì•„ì´í…œì€ ê°¯ìˆ˜ë¥¼ ë”í•œë‹¤.
             if (pShotITEM->GetQuantity() + pInvITEM->GetQuantity() > MAX_DUP_ITEM_QUANTITY) {
-                // ´ú¾î ³õÀÚ...
+                // ëœì–´ ë†“ì...
                 pInvITEM->m_uiQuantity -= (MAX_DUP_ITEM_QUANTITY - pShotITEM->GetQuantity());
                 pShotITEM->m_uiQuantity = MAX_DUP_ITEM_QUANTITY;
             } else {
-                // ´õÇÏ°í »èÁ¦.
+                // ë”í•˜ê³  ì‚­ì œ.
                 pShotITEM->m_uiQuantity += pInvITEM->GetQuantity();
                 this->ClearITEM(pPacket->m_cli_SET_BULLET.m_wInventoryIDX);
             }
         } else {
-            // ±³Ã¼...
+            // êµì²´...
             tagITEM sTmpItem;
             sTmpItem = *pShotITEM;
             *pShotITEM = *pInvITEM;
@@ -3391,12 +3397,12 @@ classUSER::Recv_cli_SET_BULLET(t_PACKET* pPacket) {
             pPacket->m_cli_SET_BULLET.m_wInventoryIDX;
         pCPacket->m_gsv_SET_INV_ONLY.m_sInvITEM[1].m_ITEM = *pInvITEM;
     } else {
-        // Å»°Å...
-        // Àåºñ Å»°Å...
+        // íƒˆê±°...
+        // ì¥ë¹„ íƒˆê±°...
         tagITEM* pShotITEM = &m_Inventory.m_ItemSHOT[pPacket->m_cli_SET_BULLET.m_wShotTYPE];
 
         if (0 == pShotITEM->GetHEADER()) {
-            // ¸ğµÎ ¼Ò¸ğµÆ´Âµ¥ Å¬¶óÀÌ¾ğÆ®¿¡¼­´Â ³²Àº°ÍÀ¸·Î ¿ÀÀÎ... »èÁ¦ÇÏ¶ó´Â ÆĞÅ¶ Àü¼Û.
+            // ëª¨ë‘ ì†Œëª¨ëëŠ”ë° í´ë¼ì´ì–¸íŠ¸ì—ì„œëŠ” ë‚¨ì€ê²ƒìœ¼ë¡œ ì˜¤ì¸... ì‚­ì œí•˜ë¼ëŠ” íŒ¨í‚· ì „ì†¡.
             this->Send_gsv_SET_INV_ONLY(
                 INVENTORY_SHOT_ITEM0 + pPacket->m_cli_SET_BULLET.m_wShotTYPE,
                 pShotITEM);
@@ -3412,10 +3418,10 @@ classUSER::Recv_cli_SET_BULLET(t_PACKET* pPacket) {
             pCPacket->m_gsv_SET_INV_ONLY.m_sInvITEM[1].m_btInvIDX = (BYTE)nInvIDX;
             pCPacket->m_gsv_SET_INV_ONLY.m_sInvITEM[1].m_ITEM = *pShotITEM;
 
-            // ¼ø¼­ ÁÖÀÇ ¹Ø¿¡²¨ È£ÃâµÇ¸é *pEquipITEMÀÌ »èÁ¦µÈ´Ù.
+            // ìˆœì„œ ì£¼ì˜ ë°‘ì—êº¼ í˜¸ì¶œë˜ë©´ *pEquipITEMì´ ì‚­ì œëœë‹¤.
             this->ClearITEM(INVENTORY_SHOT_ITEM0 + pPacket->m_cli_SET_BULLET.m_wShotTYPE);
         } else {
-            // ºó ÀÎº¥Åä¸®°¡ ¾ø¾î¼­ ÃÑ¾Ë Å»°Å ¸øÇÔ...
+            // ë¹ˆ ì¸ë²¤í† ë¦¬ê°€ ì—†ì–´ì„œ ì´ì•Œ íƒˆê±° ëª»í•¨...
             goto _RETURN;
         }
     }
@@ -3427,11 +3433,11 @@ classUSER::Recv_cli_SET_BULLET(t_PACKET* pPacket) {
     this->SendPacket(pCPacket);
     Packet_ReleaseNUnlock(pCPacket);
 
-    { // ·ÎÄÃ º¯¼ö ¼±¾ğ...
+    { // ë¡œì»¬ ë³€ìˆ˜ ì„ ì–¸...
 
         t_eSHOT eShotTYPE = this->m_Inventory.m_ItemEQUIP[EQUIP_IDX_WEAPON_R].GetShotTYPE();
         if (eShotTYPE == this->m_btShotTYPE) {
-            // ¹Ù²ï ÃÑ¾ËÀÌ ÇöÀç ¹«±â¿Í ¿¬°ü µÇ´Â°¡?
+            // ë°”ë€ ì´ì•Œì´ í˜„ì¬ ë¬´ê¸°ì™€ ì—°ê´€ ë˜ëŠ”ê°€?
             this->Set_ShotITEM(eShotTYPE); // classUSER::Recv_cli_SET_BULLET
         }
 
@@ -3444,7 +3450,7 @@ _RETURN:
 }
 
 //-------------------------------------------------------------------------------------------------
-/// ¾ÆÀÌÅÛ Á¦Á¶ °á°ú Åëº¸
+/// ì•„ì´í…œ ì œì¡° ê²°ê³¼ í†µë³´
 bool
 classUSER::Send_gsv_CREATE_ITEM_REPLY(BYTE btResult,
     short nStepORInvIDX,
@@ -3471,7 +3477,7 @@ classUSER::Send_gsv_CREATE_ITEM_REPLY(BYTE btResult,
 
     return true;
 }
-/// ¾ÆÀÌÅÛ Á¦Á¶ ¿äÃ» ¹ŞÀ½
+/// ì•„ì´í…œ ì œì¡° ìš”ì²­ ë°›ìŒ
 bool
 classUSER::Recv_cli_CREATE_ITEM_REQ(t_PACKET* pPacket) {
     if (this->m_IngSTATUS.IsIgnoreSTATUS())
@@ -3485,38 +3491,38 @@ classUSER::Recv_cli_CREATE_ITEM_REQ(t_PACKET* pPacket) {
         return true;
     }
     if (this->m_nCreateItemEXP > 0) {
-        // ¸ŞÅ©·Î³ª ÇØÅ·À¸·Î Á¦Á¶ ÆĞÅ¶ »ı¼ºÇØ¼­ º¸³¾¶§...
+        // ë©”í¬ë¡œë‚˜ í•´í‚¹ìœ¼ë¡œ ì œì¡° íŒ¨í‚· ìƒì„±í•´ì„œ ë³´ë‚¼ë•Œ...
         return true;
     }
     this->m_nCreateItemEXP = 0;
 
     short nSkillIDX = this->m_Skills.m_nSkillINDEX[pPacket->m_cli_CREATE_ITEM_REQ.m_btSkillSLOT];
 
-    // ½ºÅ³ÀÇ Á¦Á¶ ¹øÈ£¿Í ¸¸µé·Á´Â ¾ÆÀÌÅÛÀÇ Á¦Á¶¹øÈ£ ºñ±³...
+    // ìŠ¤í‚¬ì˜ ì œì¡° ë²ˆí˜¸ì™€ ë§Œë“¤ë ¤ëŠ” ì•„ì´í…œì˜ ì œì¡°ë²ˆí˜¸ ë¹„êµ...
     if (SKILL_ITEM_MAKE_NUM(nSkillIDX)
         != ITEM_MAKE_NUM(pPacket->m_cli_CREATE_ITEM_REQ.m_cTargetItemTYPE,
             pPacket->m_cli_CREATE_ITEM_REQ.m_nTargetItemNO)) {
         return true;
     }
 
-    // ½ºÅ³ ·¹º§ ºñ±³...
+    // ìŠ¤í‚¬ ë ˆë²¨ ë¹„êµ...
     if (SKILL_LEVEL(nSkillIDX) < ITEM_SKILL_LEV(pPacket->m_cli_CREATE_ITEM_REQ.m_cTargetItemTYPE,
             pPacket->m_cli_CREATE_ITEM_REQ.m_nTargetItemNO)) {
         return IS_HACKING(this,
-            "Recv_cli_CREATE_ITEM_REQ-2 :: Invalid SKILL_LEVEL"); // ERROR:: Å©°Å³ª °°¾Æ¾ß
-                                                                  // ÇÏ´Âµ¥ ???
+            "Recv_cli_CREATE_ITEM_REQ-2 :: Invalid SKILL_LEVEL"); // ERROR:: í¬ê±°ë‚˜ ê°™ì•„ì•¼
+                                                                  // í•˜ëŠ”ë° ???
     }
 
-    // ½ºÅ³ »ç¿ë °¡´ÉÇÑ°¡ ???
+    // ìŠ¤í‚¬ ì‚¬ìš© ê°€ëŠ¥í•œê°€ ???
     if (!this->Skill_ActionCondition(nSkillIDX)) {
         return this->Send_gsv_CREATE_ITEM_REPLY(RESULT_CREATE_ITEM_INVALID_CONDITION, 0);
     }
 
-    // ½ÇÁ¦ ÇÊ¿ä ¼öÄ¡ ¼Ò¸ğ Àû¿ë...
+    // ì‹¤ì œ í•„ìš” ìˆ˜ì¹˜ ì†Œëª¨ ì ìš©...
     this->Skill_UseAbilityValue(nSkillIDX); // Recv_cli_CREATE_ITEM_REQ
 
     short nI, nProductIDX;
-    // ¾ÆÀÌÅÛ Á¦Á¶¹øÈ£
+    // ì•„ì´í…œ ì œì¡°ë²ˆí˜¸
     nProductIDX = ITEM_PRODUCT_IDX(pPacket->m_cli_CREATE_ITEM_REQ.m_cTargetItemTYPE,
         pPacket->m_cli_CREATE_ITEM_REQ.m_nTargetItemNO);
 
@@ -3524,53 +3530,53 @@ classUSER::Recv_cli_CREATE_ITEM_REQ(t_PACKET* pPacket) {
     float fPRO_POINT[4], fSUC_POINT[4];
     tagITEM *pInvITEM, sOutITEM, sUsedITEM[4];
 
-    // ¸¸µé·Á´Â ¾ÆÀÌÅÛÀÇ Á¦Á¶ ³­ÀÌµµ...
+    // ë§Œë“¤ë ¤ëŠ” ì•„ì´í…œì˜ ì œì¡° ë‚œì´ë„...
     short nITEM_DIF = ITEM_MAKE_DIFFICULT(pPacket->m_cli_CREATE_ITEM_REQ.m_cTargetItemTYPE,
         pPacket->m_cli_CREATE_ITEM_REQ.m_nTargetItemNO);
-    // ¸¸µé·Á´Â ¾ÆÀÌÅÛÀÇ Ç°Áú ¼öÄ¡...
+    // ë§Œë“¤ë ¤ëŠ” ì•„ì´í…œì˜ í’ˆì§ˆ ìˆ˜ì¹˜...
     short nITEM_QUAL = ITEM_QUALITY(pPacket->m_cli_CREATE_ITEM_REQ.m_cTargetItemTYPE,
         pPacket->m_cli_CREATE_ITEM_REQ.m_nTargetItemNO);
-    // »ç¿ëµÇ´Â Àç·á °¹¼ö...
+    // ì‚¬ìš©ë˜ëŠ” ì¬ë£Œ ê°¯ìˆ˜...
     for (nNUM_MAT = 1, nI = 1; nI < CREATE_ITEM_STEP; nI++) {
         if (PRODUCT_NEED_ITEM_NO(nProductIDX, nI))
             nNUM_MAT++;
     }
 
-    // ÀçÁ¶ ½ÃÀÛÀ» ÁÖº¯¿¡ Åëº¸...
+    // ì¬ì¡° ì‹œì‘ì„ ì£¼ë³€ì— í†µë³´...
     this->Send_gsv_ITEM_RESULT_REPORT(REPORT_ITEM_CREATE_START,
         pPacket->m_cli_CREATE_ITEM_REQ.m_cTargetItemTYPE,
         pPacket->m_cli_CREATE_ITEM_REQ.m_nTargetItemNO);
 
     short nRand, nUsedCNT = 0;
-    // Check: ¸¸µé°íÀÚ ÇÏ´Â ¾ÆÀÌÅÛ¿¡ ÇÊ¿äÇÑ Àç·áµéÀÇ Á¾·ù¿Í °¹¼ö°¡ ÇÕ´çÇÑ°¡ ÆÇ´Ü.
+    // Check: ë§Œë“¤ê³ ì í•˜ëŠ” ì•„ì´í…œì— í•„ìš”í•œ ì¬ë£Œë“¤ì˜ ì¢…ë¥˜ì™€ ê°¯ìˆ˜ê°€ í•©ë‹¹í•œê°€ íŒë‹¨.
     for (nI = 0; nI < CREATE_ITEM_STEP; nI++) {
         nInvIDX = pPacket->m_cli_CREATE_ITEM_REQ.m_nUseItemINV[nI];
         pInvITEM = &this->m_Inventory.m_ItemLIST[nInvIDX];
 
         if (0 == PRODUCT_NEED_ITEM_NO(nProductIDX, nI)) {
             if (0 != nI) {
-                // ÇÊ¿äÇÑ Àç·á°¡ ¾ø´Ù.
+                // í•„ìš”í•œ ì¬ë£Œê°€ ì—†ë‹¤.
                 continue;
             }
             if (0 == pInvITEM->GetHEADER()) {
-                // ¸¶¿ì½º·Î ¸¶±¸ Å¬¸¯½Ã ¿©±â·Î µé¾î¿Ã¼ö ÀÖ´Ù..
+                // ë§ˆìš°ìŠ¤ë¡œ ë§ˆêµ¬ í´ë¦­ì‹œ ì—¬ê¸°ë¡œ ë“¤ì–´ì˜¬ìˆ˜ ìˆë‹¤..
                 return this->Send_gsv_CREATE_ITEM_REPLY(RESULT_CREATE_ITEM_INVALID_ITEM, 0);
             }
 
-            // Ã¹¹øÂ° ¿ø·á Á¾·ù³ª, Àç·á ¾ÆÀÌÅÛ ºñ±³ ,,, µÑÁß ÇÏ³ª ..
+            // ì²«ë²ˆì§¸ ì›ë£Œ ì¢…ë¥˜ë‚˜, ì¬ë£Œ ì•„ì´í…œ ë¹„êµ ,,, ë‘˜ì¤‘ í•˜ë‚˜ ..
             if (PRODUCT_RAW_MATERIAL(nProductIDX)) {
-                // ¿ø·á Á¾·ùÀÏ °æ¿ì...
+                // ì›ë£Œ ì¢…ë¥˜ì¼ ê²½ìš°...
                 if (PRODUCT_RAW_MATERIAL(nProductIDX)
                     != ITEM_TYPE(pInvITEM->GetTYPE(), pInvITEM->GetItemNO())) {
                     return this->Send_gsv_CREATE_ITEM_REPLY(RESULT_CREATE_ITEM_INVALID_ITEM, 0);
                 }
             } else {
-                // LIST_PRODUCT.STB µ¥ÀÌÅ¸°¡ Àß¸ø ÀÔ·ÂµÇ¾î ÀÖ´Ù.
+                // LIST_PRODUCT.STB ë°ì´íƒ€ê°€ ì˜ëª» ì…ë ¥ë˜ì–´ ìˆë‹¤.
                 return true;
             }
         } else {
             if (0 == pInvITEM->GetHEADER()) {
-                // Å¬¶óÀÌ¾ğÆ®¿¡¼­ ÀÌ°æ¿ì¿¡µµ ¿äÃ»ÇÑ´Ù.. ÀÌ¹Ì ¼Ò¸ğµÈ ¾ÆÀÌÅÛÀ» µÇµ¹¸±¼ö ¾ø´Â ¹®Á¦ !!!
+                // í´ë¼ì´ì–¸íŠ¸ì—ì„œ ì´ê²½ìš°ì—ë„ ìš”ì²­í•œë‹¤.. ì´ë¯¸ ì†Œëª¨ëœ ì•„ì´í…œì„ ë˜ëŒë¦´ìˆ˜ ì—†ëŠ” ë¬¸ì œ !!!
                 return this->Send_gsv_CREATE_ITEM_REPLY(RESULT_CREATE_ITEM_INVALID_ITEM,
                     nI,
                     fPRO_POINT);
@@ -3583,7 +3589,7 @@ classUSER::Recv_cli_CREATE_ITEM_REQ(t_PACKET* pPacket) {
             }
         }
 
-        // Àåºñ ¾ÆÀÌÅÛÀÌ ¾Æ´Ò °æ¿ì ÇÊ¿ä °¹¼ö ºñ±³...
+        // ì¥ë¹„ ì•„ì´í…œì´ ì•„ë‹ ê²½ìš° í•„ìš” ê°¯ìˆ˜ ë¹„êµ...
         if (pInvITEM->IsEnableDupCNT()) {
             if (pInvITEM->GetQuantity() < (WORD)PRODUCT_NEED_ITEM_CNT(nProductIDX, nI)) {
                 return this->Send_gsv_CREATE_ITEM_REPLY(RESULT_CREATE_ITEM_NEED_ITEM, nI);
@@ -3593,7 +3599,7 @@ classUSER::Recv_cli_CREATE_ITEM_REQ(t_PACKET* pPacket) {
         nRand = RANDOM(100);
         switch (nI) {
             case 0: {
-                // 1¹øÂ° ¿øÀç·á ¾ÆÀÌÅÛ Ç°Áú¿¡¼­ ¾òÀ½.
+                // 1ë²ˆì§¸ ì›ì¬ë£Œ ì•„ì´í…œ í’ˆì§ˆì—ì„œ ì–»ìŒ.
                 nMAT_QUAL = ITEM_QUALITY(pInvITEM->GetTYPE(), pInvITEM->GetItemNO());
 
                 fSUC_POINT[0] = (nITEM_DIF + 35) * (nITEM_QUAL + 15) / 16.f;
@@ -3658,7 +3664,7 @@ classUSER::Recv_cli_CREATE_ITEM_REQ(t_PACKET* pPacket) {
     if (!sOutITEM.IsEnableDupCNT()) {
         sOutITEM.m_nLife = MAX_ITEM_LIFE;
 
-        // ³»±¸µµ
+        // ë‚´êµ¬ë„
         int iTEMP = (int)((ITEM_DURABITY(sOutITEM.m_cType, sOutITEM.GetItemNO()) + 15)
             * (nPLUS * 1.3F + SKILL_LEVEL(nSkillIDX) * 2 + 120) / (RANDOM(100) + 81) * 0.6f);
         if (iTEMP > 100)
@@ -3679,7 +3685,7 @@ classUSER::Recv_cli_CREATE_ITEM_REQ(t_PACKET* pPacket) {
                         / (iTEMP + 17)
                     - 85);
             if (iITEM_OP > 0) {
-                sOutITEM.m_bIsAppraisal = 1; // °¨Á¤ ¹ŞÀº°É·ç...
+                sOutITEM.m_bIsAppraisal = 1; // ê°ì • ë°›ì€ê±¸ë£¨...
                 int iMod =
                     (int)((ITEM_QUALITY(sOutITEM.GetTYPE(), sOutITEM.GetItemNO()) + 12) * 3.2f);
                 if (iMod < 300)
@@ -3688,16 +3694,16 @@ classUSER::Recv_cli_CREATE_ITEM_REQ(t_PACKET* pPacket) {
                     sOutITEM.m_nGEM_OP = iITEM_OP % 300;
             }
         }
-        this->Set_ItemSN(sOutITEM); // ¾ÆÀÌÅÛ Á¦Á¶½Ã...
+        this->Set_ItemSN(sOutITEM); // ì•„ì´í…œ ì œì¡°ì‹œ...
     } else {
-        // ¹«Á¶°Ç 1°³ Á¦Á¶µÈ´Ù...
+        // ë¬´ì¡°ê±´ 1ê°œ ì œì¡°ëœë‹¤...
         sOutITEM.m_uiQuantity = 1;
     }
 
-    // sOutITEM ÀÎº¥Åä¸®¿¡ ³Ö°í ¼º°ø Àü¼Û.
+    // sOutITEM ì¸ë²¤í† ë¦¬ì— ë„£ê³  ì„±ê³µ ì „ì†¡.
     nI = this->Add_ITEM(sOutITEM);
     if (nI <= 0) {
-        this->Save_ItemToFILED(sOutITEM); // Á¦Á¶½Ã ÀÎº¥Åä¸®°¡ Ãß°¡°¡ ºÒ°¡´ÉÇØ¼­ ¹Û¿¡ 30ºĞ°£ º¸°ü...
+        this->Save_ItemToFILED(sOutITEM); // ì œì¡°ì‹œ ì¸ë²¤í† ë¦¬ê°€ ì¶”ê°€ê°€ ë¶ˆê°€ëŠ¥í•´ì„œ ë°–ì— 30ë¶„ê°„ ë³´ê´€...
     }
 
     this->m_nCreateItemEXP = 1
@@ -3708,7 +3714,7 @@ classUSER::Recv_cli_CREATE_ITEM_REQ(t_PACKET* pPacket) {
 }
 
 //-------------------------------------------------------------------------------------------------
-/// Á¦Á¶, Á¦·Ã °á°ú ÀÀ´ä¿¡ ´ëÇÑ Åëº¸
+/// ì œì¡°, ì œë ¨ ê²°ê³¼ ì‘ë‹µì— ëŒ€í•œ í†µë³´
 bool
 classUSER::Send_gsv_ITEM_RESULT_REPORT(BYTE btReport, BYTE btItemType, short nItemNo) {
     classPACKET* pCPacket = Packet_AllocNLock();
@@ -3728,7 +3734,7 @@ classUSER::Send_gsv_ITEM_RESULT_REPORT(BYTE btReport, BYTE btItemType, short nIt
     Packet_ReleaseNUnlock(pCPacket);
     return true;
 }
-/// Á¦Á¶, Á¦·Ã °á°ú ÀÀ´ä
+/// ì œì¡°, ì œë ¨ ê²°ê³¼ ì‘ë‹µ
 bool
 classUSER::Recv_cli_ITEM_RESULT_REPORT(t_PACKET* pPacket) {
     switch (pPacket->m_cli_ITEM_RESULT_REPORT.m_btREPORT) {
@@ -3754,14 +3760,14 @@ classUSER::Recv_cli_ITEM_RESULT_REPORT(t_PACKET* pPacket) {
 }
 
 //-------------------------------------------------------------------------------------------------
-/// Æ¯Á¤ ÄÉ¸¯ÀÇ HP¸¦ ¿äÃ»
+/// íŠ¹ì • ì¼€ë¦­ì˜ HPë¥¼ ìš”ì²­
 bool
 classUSER::Recv_cli_HP_REQ(t_PACKET* pPacket) {
     CObjCHAR* pCHAR;
     pCHAR = g_pObjMGR->Get_CharOBJ(pPacket->m_cli_HP_REQ.m_wObjectIDX, true);
 
     if (pCHAR) {
-        // TODO:: ¹®Á¦... »óÅÂ¸¸ º¸ÀÚ´Âµ¥ Å¸°ÙÀÌ ¹Ù²î³× ¤Ñ,.¤Ñ;
+        // TODO:: ë¬¸ì œ... ìƒíƒœë§Œ ë³´ìëŠ”ë° íƒ€ê²Ÿì´ ë°”ë€Œë„¤ ã…¡,.ã…¡;
         // this->Set_TargetIDX( pPacket->m_cli_HP_REQ.m_wObjectIDX );
 
         return Send_gsv_HP_REPLY(pPacket->m_cli_HP_REQ.m_wObjectIDX, pCHAR->Get_HP());
@@ -3771,7 +3777,7 @@ classUSER::Recv_cli_HP_REQ(t_PACKET* pPacket) {
 }
 
 //-------------------------------------------------------------------------------------------------
-/// ¼Ò¸ğ ¾ÆÀÌÅÛ »ç¿ë¿äÃ»
+/// ì†Œëª¨ ì•„ì´í…œ ì‚¬ìš©ìš”ì²­
 bool
 classUSER::Recv_cli_USE_ITEM(t_PACKET* pPacket) {
     if (this->m_IngSTATUS.IsSET(FLAG_ING_IGNORE_ALL))
@@ -3779,7 +3785,7 @@ classUSER::Recv_cli_USE_ITEM(t_PACKET* pPacket) {
 
     if (pPacket->m_cli_USE_ITEM.m_nInventoryIndex < 0
         || pPacket->m_cli_USE_ITEM.m_nInventoryIndex >= INVENTORY_TOTAL_SIZE) {
-        // ÆĞÅ¶ÀÌ Á¶ÀÛµÈ°ÍÀÎ°¡?
+        // íŒ¨í‚·ì´ ì¡°ì‘ëœê²ƒì¸ê°€?
         return IS_HACKING(this, "Recv_cli_USE_ITEM-1");
     }
 
@@ -3787,10 +3793,10 @@ classUSER::Recv_cli_USE_ITEM(t_PACKET* pPacket) {
 }
 
 //-------------------------------------------------------------------------------------------------
-/// ¾ÆÀÌÅÛÀ» ¹Ù´Û¿¡ ¶³±À
+/// ì•„ì´í…œì„ ë°”ë‹¦ì— ë–¨êµ¼
 bool
 classUSER::Recv_cli_DROP_ITEM(t_PACKET* pPacket) {
-    // 1:1°Å·¡Áß ¾ÆÀÌÅÛ µå·Ó ±İÁö..
+    // 1:1ê±°ë˜ì¤‘ ì•„ì´í…œ ë“œë¡­ ê¸ˆì§€..
     if (this->m_btTradeBIT & (BIT_TRADE_READY | BIT_TRADE_DONE))
         return true;
     if (this->m_IngSTATUS.IsIgnoreSTATUS())
@@ -3798,12 +3804,12 @@ classUSER::Recv_cli_DROP_ITEM(t_PACKET* pPacket) {
 
     tagITEM sDropITEM;
 
-    // ÀåÂøÃ¢¿¡¼­ ÇÊµå·Î Á÷Á¢ µå·Ó ¾ÈµÇµµ·Ï...
+    // ì¥ì°©ì°½ì—ì„œ í•„ë“œë¡œ ì§ì ‘ ë“œë¡­ ì•ˆë˜ë„ë¡...
     if (pPacket->m_cli_DROP_ITEM.m_btInventoryIndex < MAX_EQUIP_IDX
         || pPacket->m_cli_DROP_ITEM.m_btInventoryIndex >= INVENTORY_TOTAL_SIZE) {
 
         if (0 == pPacket->m_cli_DROP_ITEM.m_btInventoryIndex) {
-            // µ·...
+            // ëˆ...
             sDropITEM.m_cType = ITEM_TYPE_MONEY;
             if (pPacket->m_cli_DROP_ITEM.m_uiQuantity > this->GetCur_MONEY()) {
                 sDropITEM.m_uiMoney = this->GetCur_MONEY();
@@ -3821,32 +3827,32 @@ classUSER::Recv_cli_DROP_ITEM(t_PACKET* pPacket) {
             if (sDropITEM.m_uiMoney <= 0)
                 return true;
 
-            // ¹Ù²ï µ· Á¤º¸ Àü¼Û..
+            // ë°”ë€ ëˆ ì •ë³´ ì „ì†¡..
             this->Send_gsv_SET_MONEYONLY(GSV_SET_MONEY_ONLY);
         } else {
-            // ÆĞÅ¶ÀÌ Á¶ÀÛµÈ°ÍÀÎ°¡?
+            // íŒ¨í‚·ì´ ì¡°ì‘ëœê²ƒì¸ê°€?
             return IS_HACKING(this, "Recv_cli_DROP_ITEM-2");
         }
     } else {
         tagITEM* pITEM = &this->m_Inventory.m_ItemLIST[pPacket->m_cli_DROP_ITEM.m_btInventoryIndex];
         if (0 == pITEM->GetHEADER()) {
-            // ºó ¾ÆÀÌÅÛ...
+            // ë¹ˆ ì•„ì´í…œ...
             return true;
         }
         if (!pITEM->IsEnableDROP()) {
-            // µå·Ó ºÒ°¡ ¾ÆÀÌÅÛÀÌ´Ù.
+            // ë“œë¡­ ë¶ˆê°€ ì•„ì´í…œì´ë‹¤.
             CStrVAR* pStrVAR = this->GetZONE()->GetStrVAR();
             return IS_HACKING(this, "Recv_cli_DROP_ITEM-3 : cant drop item");
         }
 
         sDropITEM = *pITEM;
         if (pITEM->IsEnableDupCNT()) {
-            // ¸ÅÅ©·Îµî¿¡¼­ -°ªÀÌ ÀÔ·ÂµÉ°æ¿ì...
+            // ë§¤í¬ë¡œë“±ì—ì„œ -ê°’ì´ ì…ë ¥ë ê²½ìš°...
             if (pPacket->m_cli_DROP_ITEM.m_uiQuantity < 0) {
                 return IS_HACKING(this, "Recv_cli_DROP_ITEM-minus quantity");
             }
 
-            // °¹¼ö ¸¸Å­...
+            // ê°¯ìˆ˜ ë§Œí¼...
             if (pPacket->m_cli_DROP_ITEM.m_uiQuantity >= pITEM->GetQuantity()) {
                 sDropITEM.m_uiQuantity = pITEM->GetQuantity();
                 // Clear !!!
@@ -3856,22 +3862,22 @@ classUSER::Recv_cli_DROP_ITEM(t_PACKET* pPacket) {
                 sDropITEM.m_uiQuantity = pPacket->m_cli_DROP_ITEM.m_uiQuantity;
             }
 
-            // ¶³¾îÁø°Í °¹¼ö°¡ 0ÀÌ´Ù ...
+            // ë–¨ì–´ì§„ê²ƒ ê°¯ìˆ˜ê°€ 0ì´ë‹¤ ...
             if (sDropITEM.GetQuantity() <= 0)
                 return true;
 
             this->m_Battle.m_nWEIGHT -=
                 (ITEM_WEIGHT(sDropITEM.m_cType, sDropITEM.m_nItemNo) * sDropITEM.GetQuantity());
         } else {
-            // ÅëÃ¤·Î :: ³»ºÎ¿¡¼­ ¹«°Ô »«´Ù...
+            // í†µì±„ë¡œ :: ë‚´ë¶€ì—ì„œ ë¬´ê²Œ ëº€ë‹¤...
             this->ClearITEM(pPacket->m_cli_DROP_ITEM.m_btInventoryIndex);
         }
 
-        // ¹Ù²ï ÀÎº¥Åä¸® ±¸Á¶ Àü¼Û..
+        // ë°”ë€ ì¸ë²¤í† ë¦¬ êµ¬ì¡° ì „ì†¡..
         this->Send_gsv_SET_INV_ONLY(pPacket->m_cli_DROP_ITEM.m_btInventoryIndex, pITEM);
     }
 
-    // ¶³¾îÁø ¾ÆÀÌÅÛ Àü¼Û..
+    // ë–¨ì–´ì§„ ì•„ì´í…œ ì „ì†¡..
     if (sDropITEM.GetHEADER()) {
         CObjITEM* pObjITEM = new CObjITEM;
         if (pObjITEM) {
@@ -3880,8 +3886,8 @@ classUSER::Recv_cli_DROP_ITEM(t_PACKET* pPacket) {
             PosSET.x = this->m_PosCUR.x + RANDOM(201) - 100;
             PosSET.y = this->m_PosCUR.y + RANDOM(201) - 100;
 
-            pObjITEM->InitItemOBJ(this, PosSET, this->m_PosSECTOR, sDropITEM); // »ç¿ëÀÚ µå·Ó.
-            this->GetZONE()->Add_DIRECT(pObjITEM); // µå·Ó ¾ÆÀÌÅÛ
+            pObjITEM->InitItemOBJ(this, PosSET, this->m_PosSECTOR, sDropITEM); // ì‚¬ìš©ì ë“œë¡­.
+            this->GetZONE()->Add_DIRECT(pObjITEM); // ë“œë¡­ ì•„ì´í…œ
         }
     }
 
@@ -3892,14 +3898,14 @@ classUSER::Recv_cli_DROP_ITEM(t_PACKET* pPacket) {
 bool
 classUSER::Check_ItemEventMSG(tagITEM& sITEM) {
     // if ( sITEM.GetTYPE() >= ITEM_TYPE_JEWEL && sITEM.GetTYPE() < ITEM_TYPE_RIDE_PART ) {
-    //	// ¼­¹ö °øÁö ÇÊ¿äÇÑ ÀÌº¥Æ® ¾ÆÀÌÅÛÀÌ³Ä ???
+    //	// ì„œë²„ ê³µì§€ í•„ìš”í•œ ì´ë²¤íŠ¸ ì•„ì´í…œì´ëƒ ???
     //	int iMsgID = ITEM_ANNOUNCE_TYPE( sITEM.GetTYPE(), sITEM.GetItemNO() );
     //	if ( 0 == ::Get_ServerLangTYPE() && 1 == iMsgID ) {
     //		CStrVAR *pCStr = this->GetZONE()->GetStrVAR ();
 
-    //		//pCStr->Printf ( "/na %d-Ã¤³Î ¼­¹öÀÇ %s´Ô²²¼­ %s ¾ÆÀÌÅÛÀ» È¹µæ ÇÏ¼Ì½À´Ï´Ù.",
+    //		//pCStr->Printf ( "/na %d-ì±„ë„ ì„œë²„ì˜ %së‹˜ê»˜ì„œ %s ì•„ì´í…œì„ íšë“ í•˜ì…¨ìŠµë‹ˆë‹¤.",
     //			// CLIB_GameSRV::GetInstance()->GetChannelNO(),
-    //		pCStr->Printf ( "/na %s´Ô²²¼­ %s ¾ÆÀÌÅÛÀ» È¹µæ ÇÏ¼Ì½À´Ï´Ù.",
+    //		pCStr->Printf ( "/na %së‹˜ê»˜ì„œ %s ì•„ì´í…œì„ íšë“ í•˜ì…¨ìŠµë‹ˆë‹¤.",
     //			this->Get_NAME(),
     //			ITEM_NAME(sITEM.GetTYPE(), sITEM.GetItemNO() ) );
     //		g_pSockLSV->Send_gsv_CHEAT_REQ( this, 0, 0, pCStr->Get() );
@@ -3913,16 +3919,16 @@ classUSER::Check_ItemEventMSG(tagITEM& sITEM) {
 }
 
 //-------------------------------------------------------------------------------------------------
-/// ¹Ù´ÛÀÇ ¾ÆÀÌÅÛÀ» ½Àµæ...
+/// ë°”ë‹¦ì˜ ì•„ì´í…œì„ ìŠµë“...
 bool
 classUSER::Pick_ITEM(CObjITEM* pITEM) {
-    // µ· ¾ÆÀÌÅÛÀÏ °æ¿ì... ITEM_TYPE( type )¿¡¼­ »¶~~~~
+    // ëˆ ì•„ì´í…œì¼ ê²½ìš°... ITEM_TYPE( type )ì—ì„œ ë»‘~~~~
     if (ITEM_TYPE_USE == pITEM->m_ITEM.GetTYPE()
         && USE_ITEM_VOLATILITY_ITEM == ITEM_TYPE(ITEM_TYPE_USE, pITEM->m_ITEM.GetItemNO())) {
-        // ½Àµæ½Ã ¹Ù·Î ¼Ò¸ğµÇ´Â ¾ÆÀÌÅÛ...
+        // ìŠµë“ì‹œ ë°”ë¡œ ì†Œëª¨ë˜ëŠ” ì•„ì´í…œ...
         this->Use_pITEM(&pITEM->m_ITEM);
 
-        pITEM->m_iRemainTIME = -1; // Pick_ITEM:: ½Àµæ½Ã µ· »èÁ¦µÇµµ·Ï...
+        pITEM->m_iRemainTIME = -1; // Pick_ITEM:: ìŠµë“ì‹œ ëˆ ì‚­ì œë˜ë„ë¡...
         pITEM->m_bDropperIsUSER = false;
 
         return true;
@@ -3937,7 +3943,7 @@ classUSER::Pick_ITEM(CObjITEM* pITEM) {
     pCPacket->m_gsv_GET_FIELDITEM_REPLY.m_wServerItemIDX =
         pITEM->Get_INDEX(); // pPacket->m_cli_GET_FIELDITEM_REQ.m_wServerItemIDX;
 
-    // °³ÀÎ ÀÎº¥Åä¸®¿¡ ³Ö´Â´Ù.
+    // ê°œì¸ ì¸ë²¤í† ë¦¬ì— ë„£ëŠ”ë‹¤.
     pCPacket->m_gsv_GET_FIELDITEM_REPLY.m_nInventoryListNO = this->Add_ITEM(pITEM->m_ITEM);
     if (pCPacket->m_gsv_GET_FIELDITEM_REPLY.m_nInventoryListNO >= 0) {
 
@@ -3948,32 +3954,32 @@ classUSER::Pick_ITEM(CObjITEM* pITEM) {
             this->Set_ItemSN(
                 this->m_Inventory
                     .m_ItemLIST[pCPacket->m_gsv_GET_FIELDITEM_REPLY
-                                    .m_nInventoryListNO] /* pITEM->m_ITEM */); // ÇÊµå¿¡¼­ ½Àµæ½Ã...
+                                    .m_nInventoryListNO] /* pITEM->m_ITEM */); // í•„ë“œì—ì„œ ìŠµë“ì‹œ...
         }
 
         if (!pITEM->m_bDropperIsUSER) {
-            // »ç¿ëÀÚ°¡ ¹ö¸° ¾ÆÀÌÅÛÀÌ ¾Æ´Ï¶ó¸é...
+            // ì‚¬ìš©ìê°€ ë²„ë¦° ì•„ì´í…œì´ ì•„ë‹ˆë¼ë©´...
             this->Check_ItemEventMSG(pITEM->m_ITEM);
         }
 
-        pITEM->m_iRemainTIME = -1; // Pick_ITEM:: ½Àµæ½Ã »èÁ¦µÇµµ·Ï...
+        pITEM->m_iRemainTIME = -1; // Pick_ITEM:: ìŠµë“ì‹œ ì‚­ì œë˜ë„ë¡...
         pITEM->m_bDropperIsUSER = false;
         /*
-        // Å×½ºÆ® ÀÌº¥Æ® ¾ÆÀÌÅÛ...
+        // í…ŒìŠ¤íŠ¸ ì´ë²¤íŠ¸ ì•„ì´í…œ...
         if ( pITEM->m_ITEM.GetTYPE() == ITEM_TYPE_NATURAL && pITEM->m_ITEM.GetItemNO() == 245 ) {
             CStrVAR *pCStr = this->GetZONE()->GetStrVAR ();
 
-            g_pZoneLIST->Send_gsv_ANNOUNCE_CHAT( "¡Ù¡Ú¡Ù¡Ú ÃàÇÏ ÇÕ´Ï´Ù ¡Ú¡Ù¡Ú¡Ù", NULL  );
-            pCStr->Printf ( "%s´Ô²²¼­ %s Áö¿ª¿¡¼­ ÀÌº¥Æ® ¾ÆÀÌÅÛ %sÀ» È¹µæ ÇÏ¼Ì½À´Ï´Ù.",
+            g_pZoneLIST->Send_gsv_ANNOUNCE_CHAT( "â˜†â˜…â˜†â˜… ì¶•í•˜ í•©ë‹ˆë‹¤ â˜…â˜†â˜…â˜†", NULL  );
+            pCStr->Printf ( "%së‹˜ê»˜ì„œ %s ì§€ì—­ì—ì„œ ì´ë²¤íŠ¸ ì•„ì´í…œ %sì„ íšë“ í•˜ì…¨ìŠµë‹ˆë‹¤.",
                 this->Get_NAME(),
                 this->GetZONE()->Get_NAME(),
                 ITEM_NAME(ITEM_TYPE_NATURAL, pITEM->m_ITEM.GetItemNO() ) );
             g_pZoneLIST->Send_gsv_ANNOUNCE_CHAT( pCStr->Get(), NULL  );
-            pCStr->Printf ( "%s´Ô²²¼­´Â È¹µæÇÑ ¾ÆÀÌÅÛÀ» ¸¶À»ÀÇ ÇÏÃ÷¼ÒÈ¯¼ú»ç¿¡°Ô °¡Á®´Ù ÁÖ¼¼¿ä.",
+            pCStr->Printf ( "%së‹˜ê»˜ì„œëŠ” íšë“í•œ ì•„ì´í…œì„ ë§ˆì„ì˜ í•˜ì¸ ì†Œí™˜ìˆ ì‚¬ì—ê²Œ ê°€ì ¸ë‹¤ ì£¼ì„¸ìš”.",
         this->Get_NAME() ); g_pZoneLIST->Send_gsv_ANNOUNCE_CHAT( pCStr->Get(), NULL  );
         }
         */
-        // ZoneThread¿¡¼­ SetZone(NULL)ÀÌ µÇ¸é¼­ ... ¾ÆÀÌÅÛ »èÁ¦ ÆĞÅ¶ Àü¼Û.
+        // ZoneThreadì—ì„œ SetZone(NULL)ì´ ë˜ë©´ì„œ ... ì•„ì´í…œ ì‚­ì œ íŒ¨í‚· ì „ì†¡.
     } else
         pCPacket->m_gsv_GET_FIELDITEM_REPLY.m_btResult = REPLY_GET_FIELDITEM_REPLY_TOO_MANY;
 
@@ -3983,7 +3989,7 @@ classUSER::Pick_ITEM(CObjITEM* pITEM) {
     return true;
 }
 
-/// ¹Ù´ÛÀÇ ¾ÆÀÌÅÛ ½Àµæ ÆĞÅ¶ ¿äÃ» ¹ŞÀ½
+/// ë°”ë‹¦ì˜ ì•„ì´í…œ ìŠµë“ íŒ¨í‚· ìš”ì²­ ë°›ìŒ
 bool
 classUSER::Recv_cli_GET_FIELDITEM_REQ(t_PACKET* pPacket) {
     if (this->m_IngSTATUS.IsIgnoreSTATUS())
@@ -3994,33 +4000,33 @@ classUSER::Recv_cli_GET_FIELDITEM_REQ(t_PACKET* pPacket) {
     CObjITEM* pITEM = g_pObjMGR->Get_ItemOBJ(pPacket->m_cli_GET_FIELDITEM_REQ.m_wServerItemIDX);
     if (pITEM) {
         if (pITEM->Check_PartyRIGHT(this->GetPARTY())) {
-            // ÆÄÆ¼ ÇÃ·¹ÀÌÁßÀÌ°í, ¼ÒÀ¯±ÇÀÌ ³» ÆÄÆ¼¿¡ ÀÖ´Ù...
+            // íŒŒí‹° í”Œë ˆì´ì¤‘ì´ê³ , ì†Œìœ ê¶Œì´ ë‚´ íŒŒí‹°ì— ìˆë‹¤...
             if (this->GetPARTY()->Is_ShareMODE()) {
-                // ¸ÕÀú ¸Ô´Â°Ô ÀÓÀÚ´Ù,, ´Ü µ·ÀÏ°æ¿ì °øÅë ºĞ¹è...
+                // ë¨¼ì € ë¨¹ëŠ”ê²Œ ì„ìë‹¤,, ë‹¨ ëˆì¼ê²½ìš° ê³µí†µ ë¶„ë°°...
                 if (ITEM_TYPE_MONEY == pITEM->m_ITEM.GetTYPE()) {
-                    // µ·ÀÌ°í.. ÆÄÆ¼ÁßÀÌ¸ç.. ¾ÆÀÌÅÛ ¼ÒÀ¯±ÇÀÌ ÆÄÆ¼¿¡ ÀÖ°í...
-                    // ¾ÆÀÌÅÛ ºĞ¹è ¹æ½ÄÀÌ µ· ÀÚµ¿ºĞ¹è.. ¾ÆÀÌÅÛ ¼ÒÀ¯±ÇÀÌ ÆÄÆ¼¿¡
+                    // ëˆì´ê³ .. íŒŒí‹°ì¤‘ì´ë©°.. ì•„ì´í…œ ì†Œìœ ê¶Œì´ íŒŒí‹°ì— ìˆê³ ...
+                    // ì•„ì´í…œ ë¶„ë°° ë°©ì‹ì´ ëˆ ìë™ë¶„ë°°.. ì•„ì´í…œ ì†Œìœ ê¶Œì´ íŒŒí‹°ì—
 
                     this->GetPARTY()->Share_MONEY(pITEM->m_ITEM.GetMoney());
 
-                    pITEM->m_iRemainTIME = -1; // ½ÀµæµÈ µ· »èÁ¦µÇµµ·Ï...
+                    pITEM->m_iRemainTIME = -1; // ìŠµë“ëœ ëˆ ì‚­ì œë˜ë„ë¡...
                     pITEM->m_bDropperIsUSER = false;
 
                     return true;
                 }
-                // ½ÃµµÇÑ³Ñ ÀÓÀÚ
+                // ì‹œë„í•œë„˜ ì„ì
                 return this->Pick_ITEM(pITEM);
             }
 
-            // ¼ø¼­ÀÎ »ç¿ëÀÚ¿¡°Ô ÀÚµ¿À¸·Î ÁØ´Ù,,, ¼ø¼­ÀÚ°¡ µıÁ¸¿¡ ÀÖÀ¸¸é ¸ÔÀº³ÑÀÌ Â÷Áö...
+            // ìˆœì„œì¸ ì‚¬ìš©ìì—ê²Œ ìë™ìœ¼ë¡œ ì¤€ë‹¤,,, ìˆœì„œìê°€ ë”´ì¡´ì— ìˆìœ¼ë©´ ë¨¹ì€ë„˜ì´ ì°¨ì§€...
             return this->GetPARTY()->Give_Item2ORDER(this, pITEM);
         } else if (pITEM->Is_FREE()) {
-            // ¼ÒÀ¯±Ç ¾ø´Â ¾ÆÀÌÅÛÀÌ´Ù... <<-- ÀÌ°Íµµ ÆÄÆ¼½Ã¿¡´Â ¼ø¼­ ºĞ¹è???
+            // ì†Œìœ ê¶Œ ì—†ëŠ” ì•„ì´í…œì´ë‹¤... <<-- ì´ê²ƒë„ íŒŒí‹°ì‹œì—ëŠ” ìˆœì„œ ë¶„ë°°???
             return this->Pick_ITEM(pITEM);
         } else if (pITEM->Check_PrivateRIGHT(this->Get_INDEX()))
             return this->Pick_ITEM(pITEM);
 
-        // ±ÇÇÑ ¾ø´Ù..
+        // ê¶Œí•œ ì—†ë‹¤..
         btResult = REPLY_GET_FIELDITEM_REPLY_NO_RIGHT;
     } else {
         btResult = REPLY_GET_FIELDITEM_REPLY_NONE;
@@ -4044,7 +4050,7 @@ classUSER::Recv_cli_GET_FIELDITEM_REQ(t_PACKET* pPacket) {
 }
 
 //-------------------------------------------------------------------------------------------------
-/// ÁÙ¸®¸¦ Ã¢°í<->ÀÎº¥ °£¿¡ ÀÌµ¿
+/// ì¤„ë¦¬ë¥¼ ì°½ê³ <->ì¸ë²¤ ê°„ì— ì´ë™
 bool
 classUSER::Recv_cli_MOVE_ZULY(t_PACKET* pPacket) {
     if (!(this->m_dwPayFLAG & PLAY_FLAG_STOCK_SPACE)) {
@@ -4064,7 +4070,7 @@ classUSER::Recv_cli_MOVE_ZULY(t_PACKET* pPacket) {
     pCPacket->m_HEADER.m_nSize = sizeof(gsv_MOVE_ZULY);
 
     switch (pPacket->m_cli_MOVE_ZULY.m_btMoveTYPE) {
-        case MOVE_ZULY_TYPE_INV2BANK: // º¸°ü
+        case MOVE_ZULY_TYPE_INV2BANK: // ë³´ê´€
             if (pPacket->m_cli_MOVE_ZULY.m_i64MoveZuly > this->GetCur_MONEY()) {
                 goto _RETURN;
             }
@@ -4072,7 +4078,7 @@ classUSER::Recv_cli_MOVE_ZULY(t_PACKET* pPacket) {
             this->m_Bank.m_i64ZULY += pPacket->m_cli_MOVE_ZULY.m_i64MoveZuly;
 
             break;
-        case MOVE_ZULY_TYPE_BANK2INV: // ²¨³¿
+        case MOVE_ZULY_TYPE_BANK2INV: // êº¼ëƒ„
             if (pPacket->m_cli_MOVE_ZULY.m_i64MoveZuly > this->m_Bank.m_i64ZULY) {
                 goto _RETURN;
             }
@@ -4098,7 +4104,7 @@ _RETURN:
     return bResult;
 }
 
-/// ¾ÆÀÌÅÛÀ» Ã¢°í<->ÀÎº¥ °£¿¡ ÀÌµ¿
+/// ì•„ì´í…œì„ ì°½ê³ <->ì¸ë²¤ ê°„ì— ì´ë™
 bool
 classUSER::Recv_cli_MOVE_ITEM(t_PACKET* pPacket) {
     if (!(this->m_dwPayFLAG & PLAY_FLAG_STOCK_SPACE)) {
@@ -4132,13 +4138,13 @@ classUSER::Recv_cli_MOVE_ITEM(t_PACKET* pPacket) {
                 goto _RETURN;
             }
 
-            // ·ºÀÌ ¹ß»ıÇÏ¿© °°Àº ¾ÆÀÌÅÛÀ» µÎ¹ø ¿Å±æ°æ¿ì ÀÖÀ»¼ö ÀÖ´Ù.
+            // ë ‰ì´ ë°œìƒí•˜ì—¬ ê°™ì€ ì•„ì´í…œì„ ë‘ë²ˆ ì˜®ê¸¸ê²½ìš° ìˆì„ìˆ˜ ìˆë‹¤.
             pSourITEM = &this->m_Inventory.m_ItemLIST[pPacket->m_cli_MOVE_ITEM.m_btFromIDX];
             if (pSourITEM->IsEmpty()) {
-                goto _RETURN; // bResult = true±â¶§¹®¿¡ Â©¸®Áø ¾Ê´Â´Ù.;
+                goto _RETURN; // bResult = trueê¸°ë•Œë¬¸ì— ì§¤ë¦¬ì§„ ì•ŠëŠ”ë‹¤.;
             }
 
-            // ¸Ş¸ğ¸® Á¶ÀÛ¿¡ ÀÇÇØ ¹Ù²î´Â°Å ¹æÁö
+            // ë©”ëª¨ë¦¬ ì¡°ì‘ì— ì˜í•´ ë°”ë€ŒëŠ”ê±° ë°©ì§€
             if (pSourITEM->GetHEADER() != pPacket->m_cli_MOVE_ITEM.m_MoveITEM.GetHEADER()) {
                 IS_HACKING(this, "Difference keeping item");
                 bResult = false;
@@ -4152,16 +4158,16 @@ classUSER::Recv_cli_MOVE_ITEM(t_PACKET* pPacket) {
             UINT iDupCnt;
             if (pSourITEM->IsEnableDupCNT()) {
                 sMoveITEM.m_nItemNo =
-                    pSourITEM->GetItemNO(); // ¸Ş¸ğ¸® Á¶ÀÛÀ¸·Î ¾ÆÀÌÅÛ ¹øÈ£ ¹Ù²î´Â°Å Â÷´Ü !!!
+                    pSourITEM->GetItemNO(); // ë©”ëª¨ë¦¬ ì¡°ì‘ìœ¼ë¡œ ì•„ì´í…œ ë²ˆí˜¸ ë°”ë€ŒëŠ”ê±° ì°¨ë‹¨ !!!
                 iDupCnt = pPacket->m_cli_MOVE_ITEM.m_MoveITEM.GetQuantity();
-                // ¿Å±â·Á´Â °¹¼ö°¡ ´õ ¸¹À¸¸é...
+                // ì˜®ê¸°ë ¤ëŠ” ê°¯ìˆ˜ê°€ ë” ë§ìœ¼ë©´...
                 if (iDupCnt > pSourITEM->GetQuantity() || iDupCnt > MAX_DUP_ITEM_QUANTITY) {
-                    goto _RETURN; // bResult = true±â¶§¹®¿¡ Â©¸®Áø ¾Ê´Â´Ù.;
+                    goto _RETURN; // bResult = trueê¸°ë•Œë¬¸ì— ì§¤ë¦¬ì§„ ì•ŠëŠ”ë‹¤.;
                 }
                 if (pSourITEM->GetQuantity() > MAX_DUP_ITEM_QUANTITY) {
                     this->m_Inventory.m_i64Money = 0;
                     pSourITEM->Clear();
-                    goto _RETURN; // bResult = true±â¶§¹®¿¡ Â©¸®Áø ¾Ê´Â´Ù.;
+                    goto _RETURN; // bResult = trueê¸°ë•Œë¬¸ì— ì§¤ë¦¬ì§„ ì•ŠëŠ”ë‹¤.;
                 }
 #ifdef __INC_PLATINUM
                 if (this->m_GrowAbility.IsBankFREE(this->GetCurAbsSEC()))
@@ -4174,7 +4180,7 @@ classUSER::Recv_cli_MOVE_ITEM(t_PACKET* pPacket) {
                         iDupCnt);
             } else {
                 sMoveITEM.m_dwBody =
-                    pSourITEM->m_dwBody; // ¸Ş¸ğ¸® Á¶ÀÛÀ¸·Î ¿É¼ÇÀÌ ¹Ù²î´Â°Å Â÷´Ü !!!
+                    pSourITEM->m_dwBody; // ë©”ëª¨ë¦¬ ì¡°ì‘ìœ¼ë¡œ ì˜µì…˜ì´ ë°”ë€ŒëŠ”ê±° ì°¨ë‹¨ !!!
 #ifdef __INC_PLATINUM
                 if (this->m_GrowAbility.IsBankFREE(this->GetCurAbsSEC()))
                     iFee = 0;
@@ -4186,8 +4192,8 @@ classUSER::Recv_cli_MOVE_ITEM(t_PACKET* pPacket) {
                         1);
             }
             if (this->GetCur_MONEY() < iFee) {
-                // º¸°ü·á ¾ø´Ù.
-                goto _RETURN; // bResult = true±â¶§¹®¿¡ Â©¸®Áø ¾Ê´Â´Ù.;
+                // ë³´ê´€ë£Œ ì—†ë‹¤.
+                goto _RETURN; // bResult = trueê¸°ë•Œë¬¸ì— ì§¤ë¦¬ì§„ ì•ŠëŠ”ë‹¤.;
             }
 
             sMoveITEM.m_iSN = pSourITEM->m_iSN;
@@ -4201,10 +4207,10 @@ classUSER::Recv_cli_MOVE_ITEM(t_PACKET* pPacket) {
                     BANKSLOT_PLATINUM_0,
                     BANKSLOT_PLATINUM_0 + BANKSLOT_PLATINUM);
             } else if (this->m_GrowAbility.IsBankAddON(this->GetCurAbsSEC())) {
-                // Ã¢°í È®Àå½½·Ô °¡´É......
+                // ì°½ê³  í™•ì¥ìŠ¬ë¡¯ ê°€ëŠ¥......
                 nToSlotIDX = this->m_Bank.Add_ITEM(sMoveITEM, 0, BANKSLOT_DEFAULT + BANKSLOT_ADDON);
             } else {
-                // ÀÏ¹İ Ã¢°í....
+                // ì¼ë°˜ ì°½ê³ ....
                 nToSlotIDX = this->m_Bank.Add_ITEM(sMoveITEM, 0, BANKSLOT_DEFAULT);
             }
 
@@ -4230,7 +4236,7 @@ classUSER::Recv_cli_MOVE_ITEM(t_PACKET* pPacket) {
         }
 
         case MOVE_ITEM_TYPE_BANK2INV: {
-            // ²¨³» °¡´Â°Ç °áÁ¦¿Í »ó°ü¾ø´Ù..
+            // êº¼ë‚´ ê°€ëŠ”ê±´ ê²°ì œì™€ ìƒê´€ì—†ë‹¤..
             if (pPacket->m_cli_MOVE_ITEM.m_btFromIDX >= BANKSLOT_TOTAL) {
                 bResult = false;
                 goto _RETURN;
@@ -4258,13 +4264,13 @@ classUSER::Recv_cli_MOVE_ITEM(t_PACKET* pPacket) {
                     goto _RETURN;
                 }
 
-                // ¿Å±â·Á´Â °¹¼ö°¡ ´õ ¸¹À¸¸é...
+                // ì˜®ê¸°ë ¤ëŠ” ê°¯ìˆ˜ê°€ ë” ë§ìœ¼ë©´...
                 if (pPacket->m_cli_MOVE_ITEM.m_MoveITEM.GetQuantity() > pSourITEM->GetQuantity()
                     || pPacket->m_cli_MOVE_ITEM.m_MoveITEM.GetQuantity() > MAX_DUP_ITEM_QUANTITY) {
                     goto _RETURN;
                 }
             } else {
-                sMoveITEM.m_dwBody = pSourITEM->m_dwBody; // ¸Ş¸ğ¸® Á¶ÀÛÀ¸·Î ¿É¼Ç ¹Ù²î´Â°Å Â÷´Ü..
+                sMoveITEM.m_dwBody = pSourITEM->m_dwBody; // ë©”ëª¨ë¦¬ ì¡°ì‘ìœ¼ë¡œ ì˜µì…˜ ë°”ë€ŒëŠ”ê±° ì°¨ë‹¨..
             }
 
             sOriITEM = *pSourITEM;
@@ -4310,16 +4316,16 @@ _RETURN:
 }
 
 //-------------------------------------------------------------------------------------------------
-/// Ã¢°í¸®½ºÆ® ¿äÃ» ¹ŞÀ½
+/// ì°½ê³ ë¦¬ìŠ¤íŠ¸ ìš”ì²­ ë°›ìŒ
 bool
 classUSER::Recv_cli_BANK_LIST_REQ(t_PACKET* pPacket) {
     if (this->m_IngSTATUS.IsIgnoreSTATUS())
         return true;
     if (BANK_UNLOADED == this->m_btBankData) {
-        // DB¿¡ ÀºÇà ¾ÆÀÌÅÛ ¿äÃ»...
+        // DBì— ì€í–‰ ì•„ì´í…œ ìš”ì²­...
         if (BANK_REQ_OPEN == pPacket->m_cli_BANK_LIST_REQ.m_btREQ)
             return g_pThreadSQL->Add_SqlPacketWithACCOUNT(this, pPacket);
-        // ÀºÇà µ¥ÀÌÅ¸ ¿­¸®Áöµµ ¾Ê¾Ò´Âµ¥ ºñ¹øÀ» ¹Ù²ã???
+        // ì€í–‰ ë°ì´íƒ€ ì—´ë¦¬ì§€ë„ ì•Šì•˜ëŠ”ë° ë¹„ë²ˆì„ ë°”ê¿”???
         return true;
     }
 
@@ -4329,14 +4335,14 @@ classUSER::Recv_cli_BANK_LIST_REQ(t_PACKET* pPacket) {
 
     if (this->m_BankPASSWORD.Get()) {
         if (pPacket->m_HEADER.m_nSize > sizeof(cli_BANK_LIST_REQ)) {
-            // ºñ¹ø Æ²¸®¸é...
+            // ë¹„ë²ˆ í‹€ë¦¬ë©´...
             short nOffset = sizeof(cli_BANK_LIST_REQ);
             char* szPassWD = Packet_GetStringPtr(pPacket, nOffset);
             if (!szPassWD
                 || strcmp(this->m_BankPASSWORD.Get(), pPacket->m_cli_BANK_LIST_REQ.m_szPassword))
                 return this->Send_gsv_BANK_LIST_REPLY(BANK_REPLY_INVALID_PASSWORD);
         } else {
-            // ºñ¹ø³Ö°í ÆĞÅ¶Àü¼ÛÇÏ¶ó°í...
+            // ë¹„ë²ˆë„£ê³  íŒ¨í‚·ì „ì†¡í•˜ë¼ê³ ...
             return this->Send_gsv_BANK_LIST_REPLY(BANK_REPLY_NEED_PASSWORD);
         }
     }
@@ -4345,7 +4351,7 @@ classUSER::Recv_cli_BANK_LIST_REQ(t_PACKET* pPacket) {
 }
 
 //-------------------------------------------------------------------------------------------------
-/// ¿öÇÁ ¿äÃ» ÆĞÅ¶
+/// ì›Œí”„ ìš”ì²­ íŒ¨í‚·
 #define MAX_WARP_OBJECT_DISTANCE (1000 * 5)
 short
 classUSER::Recv_cli_TELEPORT_REQ(t_PACKET* pPacket) {
@@ -4371,13 +4377,13 @@ classUSER::Recv_cli_TELEPORT_REQ(t_PACKET* pPacket) {
     }
 
     if (sizeof(cli_TELEPORT_REQ) == pPacket->m_HEADER.m_nSize) {
-        // ½ºÇÙÃ¼Å©¿ë Å¬¶óÀÌ¾ğÆ® ÁÂÇ¥ ºñ±³
+        // ìŠ¤í•µì²´í¬ìš© í´ë¼ì´ì–¸íŠ¸ ì¢Œí‘œ ë¹„êµ
         int iDistance = distance((int)m_PosCUR.x,
             (int)m_PosCUR.y,
             (int)pPacket->m_cli_TELEPORT_REQ.m_PosCUR.x,
             (int)pPacket->m_cli_TELEPORT_REQ.m_PosCUR.y);
         if (iDistance > MAX_WARP_OBJECT_DISTANCE) {
-            // ¼­¹öÀÇ À§Ä¡·Î Å¬¶óÀÌ¾ğÆ® º¹±Í...
+            // ì„œë²„ì˜ ìœ„ì¹˜ë¡œ í´ë¼ì´ì–¸íŠ¸ ë³µê·€...
             return this->Send_gsv_ADJUST_POS(true);
         }
     } else {
@@ -4396,7 +4402,7 @@ classUSER::Recv_cli_TELEPORT_REQ(t_PACKET* pPacket) {
 }
 
 //-------------------------------------------------------------------------------------------------
-/// ½ºÅÈ º¯°æ ¿äÃ» ¹ŞÀ½
+/// ìŠ¤íƒ¯ ë³€ê²½ ìš”ì²­ ë°›ìŒ
 bool
 classUSER::Recv_cli_USE_BPOINT_REQ(t_PACKET* pPacket) {
     if (this->m_IngSTATUS.IsSET(FLAG_ING_IGNORE_ALL))
@@ -4408,16 +4414,16 @@ classUSER::Recv_cli_USE_BPOINT_REQ(t_PACKET* pPacket) {
 
     short nNeedPoints, nAbilityValue, nCurSpeed;
 
-    // ±âº» ´É·ÂÄ¡ »ó½Â...
+    // ê¸°ë³¸ ëŠ¥ë ¥ì¹˜ ìƒìŠ¹...
     nNeedPoints = this->Get_NeedPoint2AbilityUP(pPacket->m_cli_USE_BPOINT_REQ.m_btAbilityNO);
     if (this->GetCur_BonusPOINT() < nNeedPoints) {
-        // Æ÷ÀÎÆ® ¸ğÀß¶õ´Ù..
+        // í¬ì¸íŠ¸ ëª¨ì˜ë€ë‹¤..
         return true;
     }
 
     if (this->m_BasicAbility.m_nBasicA[pPacket->m_cli_USE_BPOINT_REQ.m_btAbilityNO]
         >= GameStaticConfig::MAX_STAT) {
-        // ´õÀÌ»ó ¿Ã¸±¼ö ¾ø´Ù.
+        // ë”ì´ìƒ ì˜¬ë¦´ìˆ˜ ì—†ë‹¤.
         return true;
     }
 
@@ -4450,10 +4456,10 @@ classUSER::Recv_cli_USE_BPOINT_REQ(t_PACKET* pPacket) {
 }
 
 //-------------------------------------------------------------------------------------------------
-/// 1:1 °Å·¡½Ã Á¤»óÀûÀÎ °Å·¡ »óÈ²ÀÎÁö Ã¼Å©...
+/// 1:1 ê±°ë˜ì‹œ ì •ìƒì ì¸ ê±°ë˜ ìƒí™©ì¸ì§€ ì²´í¬...
 bool
 classUSER::Check_TradeITEM() {
-    // 1°³ÀÇ ¾ÆÀÌÅÛÀ» ÇØÅ·À¸·Î ¿©·¯ °Å·¡ ½½·Ô¿¡ ¿Ã·Á ³õ°í °Å·¡ ½ÃµµÇÒ¶§...
+    // 1ê°œì˜ ì•„ì´í…œì„ í•´í‚¹ìœ¼ë¡œ ì—¬ëŸ¬ ê±°ë˜ ìŠ¬ë¡¯ì— ì˜¬ë ¤ ë†“ê³  ê±°ë˜ ì‹œë„í• ë•Œ...
     // char cCheckedSlot[ INVENTORY_TOTAL_SIZE ];
     //::ZeroMemory( cCheckedSlot, INVENTORY_TOTAL_SIZE );
 
@@ -4464,19 +4470,19 @@ classUSER::Check_TradeITEM() {
 
             if (m_TradeITEM[nI].m_Item.GetHEADER()
                 != m_Inventory.m_ItemLIST[m_TradeITEM[nI].m_nInvIDX].GetHEADER()) {
-                // Å¸ÀÔ Ã¼Å©...
+                // íƒ€ì… ì²´í¬...
                 return false;
             }
             if (m_Inventory.m_ItemLIST[m_TradeITEM[nI].m_nInvIDX].IsEnableDupCNT()) {
-                // Áßº¹ °¹¼ö ¾ÆÀÌÅÛ..
+                // ì¤‘ë³µ ê°¯ìˆ˜ ì•„ì´í…œ..
                 if (m_Inventory.m_ItemLIST[m_TradeITEM[nI].m_nInvIDX].GetQuantity()
                     < m_TradeITEM[nI].m_Item.GetQuantity()) {
-                    // ¼ö·® Ã¼Å©..
+                    // ìˆ˜ëŸ‰ ì²´í¬..
                     return false;
                 }
             } else if (m_TradeITEM[nI].m_Item.m_dwBody
                 != m_Inventory.m_ItemLIST[m_TradeITEM[nI].m_nInvIDX].m_dwBody) {
-                // Àåºñ ¾ÆÀÌÅÛÀÏ °æ¿ì ¿É¼Ç/Á¦¹Ö/°­È­ Ã¼Å©...
+                // ì¥ë¹„ ì•„ì´í…œì¼ ê²½ìš° ì˜µì…˜/ì œë°/ê°•í™” ì²´í¬...
                 return false;
             }
 
@@ -4493,15 +4499,15 @@ classUSER::Check_TradeITEM() {
     return true;
 }
 
-/// 1:1 °Å·¡ ¿Ï·á½Ã °Ç³×ÁØ ¾ÆÀÌÅÛÀ» ÀÎº¥Åä¸®¿¡¼­ Á¦°Å
+/// 1:1 ê±°ë˜ ì™„ë£Œì‹œ ê±´ë„¤ì¤€ ì•„ì´í…œì„ ì¸ë²¤í† ë¦¬ì—ì„œ ì œê±°
 void
 classUSER::RemoveTradeItemFromINV(classUSER* pTradeUSER, classPACKET* pCPacket) {
     for (short nI = 0; nI < TRADE_MONEY_SLOT_NO; nI++) {
         if (this->m_TradeITEM[nI].m_Item.GetTYPE()) {
-            // ¾ÆÀÌÅÛ Áá´Ù.. »©ÀÚ !!!
+            // ì•„ì´í…œ ì¤¬ë‹¤.. ë¹¼ì !!!
             this->Sub_ITEM(m_TradeITEM[nI].m_nInvIDX, m_TradeITEM[nI].m_Item);
 
-            // º¯°æµÈ ÀÎº¥Åä¸®
+            // ë³€ê²½ëœ ì¸ë²¤í† ë¦¬
             pCPacket->m_gsv_SET_MONEYnINV.m_sInvITEM[pCPacket->m_gsv_SET_MONEYnINV.m_btItemCNT]
                 .m_btInvIDX = (BYTE)m_TradeITEM[nI].m_nInvIDX;
             pCPacket->m_gsv_SET_MONEYnINV.m_sInvITEM[pCPacket->m_gsv_SET_MONEYnINV.m_btItemCNT]
@@ -4511,13 +4517,13 @@ classUSER::RemoveTradeItemFromINV(classUSER* pTradeUSER, classPACKET* pCPacket) 
     }
 
     if (this->m_TradeITEM[TRADE_MONEY_SLOT_NO].m_Item.GetTYPE()) {
-        // µ·Áá´Ù... »©ÀÚ !!!
+        // ëˆì¤¬ë‹¤... ë¹¼ì !!!
         this->Sub_ITEM(m_TradeITEM[TRADE_MONEY_SLOT_NO].m_nInvIDX,
             m_TradeITEM[TRADE_MONEY_SLOT_NO].m_Item);
     }
 }
 
-/// 1:1°Å·¡ ¿Ï·á½Ã ¹ŞÀº ¾ÆÀÌÅÛÀ» ÀÎº¥Åä¸®¿¡ Ãß°¡
+/// 1:1ê±°ë˜ ì™„ë£Œì‹œ ë°›ì€ ì•„ì´í…œì„ ì¸ë²¤í† ë¦¬ì— ì¶”ê°€
 void
 classUSER::AddTradeItemToINV(classUSER* pTradeUSER /*tagTradeITEM *pTradeITEM*/,
     classPACKET* pCPacket) {
@@ -4525,10 +4531,10 @@ classUSER::AddTradeItemToINV(classUSER* pTradeUSER /*tagTradeITEM *pTradeITEM*/,
 
     for (nI = 0; nI < TRADE_MONEY_SLOT_NO; nI++) {
         if (pTradeUSER->m_TradeITEM[nI].m_Item.GetTYPE()) {
-            // ´õÇÏÀÚ !!!
+            // ë”í•˜ì !!!
             nInvIDX = this->Add_ITEM(pTradeUSER->m_TradeITEM[nI].m_Item);
 
-            // º¯°æµÈ ÀÎº¥Åä¸®
+            // ë³€ê²½ëœ ì¸ë²¤í† ë¦¬
             if (nInvIDX > 0) {
                 pCPacket->m_gsv_SET_MONEYnINV.m_sInvITEM[pCPacket->m_gsv_SET_MONEYnINV.m_btItemCNT]
                     .m_btInvIDX = (BYTE)nInvIDX;
@@ -4538,24 +4544,24 @@ classUSER::AddTradeItemToINV(classUSER* pTradeUSER /*tagTradeITEM *pTradeITEM*/,
             } else {
                 this->Save_ItemToFILED(
                     pTradeUSER->m_TradeITEM[nI]
-                        .m_Item); // 1:1 °Å·¡ÈÄ ¾ÆÀÌÅÛ ¹Ù´Û¿¡ µå·Ó....¼ÒÀ¯½Ã°£ ±æ°Ô~~~~
+                        .m_Item); // 1:1 ê±°ë˜í›„ ì•„ì´í…œ ë°”ë‹¦ì— ë“œë¡­....ì†Œìœ ì‹œê°„ ê¸¸ê²Œ~~~~
             }
         }
     }
 
     if (pTradeUSER->m_TradeITEM[TRADE_MONEY_SLOT_NO].m_Item.GetTYPE()) {
-        // µ· ¹Ş¾ÒÀ½..
+        // ëˆ ë°›ì•˜ìŒ..
         this->Add_ITEM(pTradeUSER->m_TradeITEM[TRADE_MONEY_SLOT_NO].m_Item);
     }
 }
 
 //-------------------------------------------------------------------------------------------------
-/// °Å·¡ ¿äÃ» ÆĞÅ¶..
+/// ê±°ë˜ ìš”ì²­ íŒ¨í‚·..
 bool
 classUSER::Recv_cli_TRADE_P2P(t_PACKET* pPacket) {
     if (this->m_iIndex == pPacket->m_cli_TRADE_P2P.m_wObjectIDX) {
-        // ·ÎÁîÇØÄ¿ deebeeÀÇ ¸ŞÀÏ·Î ÀÎÇØ ¾Ë°ÔµÈ ÇØÅ·¹æ¹ı ::
-        // 1:1°Å·¡½Ã ÇØÅ·À» ÅëÇØ¼­ ÀÚ½Å°ú °Å·¡¸¦ ÇÏ°Ô ÇÏ´Â ¹æ¹ıÀ¸·Î ¾ÆÀÌÅÛ º¹»ç...
+        // ë¡œì¦ˆí•´ì»¤ deebeeì˜ ë©”ì¼ë¡œ ì¸í•´ ì•Œê²Œëœ í•´í‚¹ë°©ë²• ::
+        // 1:1ê±°ë˜ì‹œ í•´í‚¹ì„ í†µí•´ì„œ ìì‹ ê³¼ ê±°ë˜ë¥¼ í•˜ê²Œ í•˜ëŠ” ë°©ë²•ìœ¼ë¡œ ì•„ì´í…œ ë³µì‚¬...
         return IS_HACKING(this, "Recv_cli_TRADE_P2P :: Trade from self");
     }
 
@@ -4564,7 +4570,7 @@ classUSER::Recv_cli_TRADE_P2P(t_PACKET* pPacket) {
     pUSER = g_pObjMGR->Get_UserOBJ(pPacket->m_cli_TRADE_P2P.m_wObjectIDX);
     if (pUSER) {
         switch (pPacket->m_cli_TRADE_P2P.m_btRESULT) {
-            case RESULT_TRADE_REQUEST: // °Å·¡ ¿äÃ»
+            case RESULT_TRADE_REQUEST: // ê±°ë˜ ìš”ì²­
             {
                 if (!(this->m_dwPayFLAG & PLAY_FLAG_TRADE)) {
                     return true;
@@ -4575,7 +4581,7 @@ classUSER::Recv_cli_TRADE_P2P(t_PACKET* pPacket) {
                 }
 
                 if (pUSER->m_iTradeUserIDX || pUSER->m_IngSTATUS.IsIgnoreSTATUS()) {
-                    // ´ë»óÀÌ ¹Ù»Ú´Ù..
+                    // ëŒ€ìƒì´ ë°”ì˜ë‹¤..
                     return this->Send_gsv_TRADE_P2P(pPacket->m_cli_TRADE_P2P.m_wObjectIDX,
                         RESULT_TRADE_BUSY);
                 }
@@ -4585,7 +4591,7 @@ classUSER::Recv_cli_TRADE_P2P(t_PACKET* pPacket) {
                     (int)pUSER->m_PosCUR.x,
                     (int)pUSER->m_PosCUR.y);
                 if (iDistance > MAX_TRADE_DISTANCE) {
-                    // °Å·¡ ¿äÃ» pUSER¿ÍÀÇ °Å¸®´Â Ã¼Å©ÈÄ ÀÚ½Å¿¡°Ô °Å·¡Ãë¼Ò Àü¼Û...
+                    // ê±°ë˜ ìš”ì²­ pUSERì™€ì˜ ê±°ë¦¬ëŠ” ì²´í¬í›„ ìì‹ ì—ê²Œ ê±°ë˜ì·¨ì†Œ ì „ì†¡...
                     return this->Send_gsv_TRADE_P2P(pPacket->m_cli_TRADE_P2P.m_wObjectIDX,
                         RESULT_TRADE_TOO_FAR);
                 }
@@ -4595,7 +4601,7 @@ classUSER::Recv_cli_TRADE_P2P(t_PACKET* pPacket) {
                 break;
             }
 
-            case RESULT_TRADE_ACCEPT: // °Å·¡ ½ÂÀÎ Çß´Ù.
+            case RESULT_TRADE_ACCEPT: // ê±°ë˜ ìŠ¹ì¸ í–ˆë‹¤.
             {
                 if (pUSER->m_iTradeUserIDX != this->Get_INDEX()) {
                     return this->Send_gsv_TRADE_P2P(pPacket->m_cli_TRADE_P2P.m_wObjectIDX,
@@ -4617,8 +4623,8 @@ classUSER::Recv_cli_TRADE_P2P(t_PACKET* pPacket) {
                 break;
             }
 
-            case RESULT_TRADE_REJECT: // °Å·¡ °ÅºÎ.
-            case RESULT_TRADE_CANCEL: // °Å·¡ µµÁß Ãë¼Ò.
+            case RESULT_TRADE_REJECT: // ê±°ë˜ ê±°ë¶€.
+            case RESULT_TRADE_CANCEL: // ê±°ë˜ ë„ì¤‘ ì·¨ì†Œ.
             {
                 if (pUSER->m_iTradeUserIDX == this->Get_INDEX()) {
                     pUSER->m_btTradeBIT = pUSER->m_iTradeUserIDX = 0;
@@ -4627,9 +4633,9 @@ classUSER::Recv_cli_TRADE_P2P(t_PACKET* pPacket) {
                 break;
             }
 
-            case RESULT_TRADE_DONE: // °Å·¡ ½ÇÇà.
+            case RESULT_TRADE_DONE: // ê±°ë˜ ì‹¤í–‰.
             {
-                // ¼­·Î ´ë»ó¿¡ º¯È­°¡ ¾ø³ª ?
+                // ì„œë¡œ ëŒ€ìƒì— ë³€í™”ê°€ ì—†ë‚˜ ?
                 if (this->m_iTradeUserIDX != pUSER->Get_INDEX()
                     || pUSER->m_iTradeUserIDX != this->Get_INDEX()) {
                     this->m_btTradeBIT = this->m_iTradeUserIDX = 0;
@@ -4638,14 +4644,14 @@ classUSER::Recv_cli_TRADE_P2P(t_PACKET* pPacket) {
                         RESULT_TRADE_CANCEL);
                 }
 
-                // µÑ´Ù ÁØºñ°¡ ¿Ï·á µÆ³ª ?
+                // ë‘˜ë‹¤ ì¤€ë¹„ê°€ ì™„ë£Œ ëë‚˜ ?
                 this->m_btTradeBIT |= BIT_TRADE_DONE;
                 if (pUSER->m_btTradeBIT != (BIT_TRADE_READY | BIT_TRADE_DONE)
                     || this->m_btTradeBIT != (BIT_TRADE_READY | BIT_TRADE_DONE)) {
                     return true;
                 }
 
-                // Á×°Å³ª °³ÀÎ»óÁ¡ ¸ğµå³Ä ?
+                // ì£½ê±°ë‚˜ ê°œì¸ìƒì  ëª¨ë“œëƒ ?
                 if (this->m_IngSTATUS.IsIgnoreSTATUS() || pUSER->m_IngSTATUS.IsIgnoreSTATUS()
                     || !this->Check_TradeITEM() || !pUSER->Check_TradeITEM()) {
                     this->m_btTradeBIT = this->m_iTradeUserIDX = 0;
@@ -4657,7 +4663,7 @@ classUSER::Recv_cli_TRADE_P2P(t_PACKET* pPacket) {
                     return true;
                 }
 
-                // ½ÇÁ¦ ¹°°Ç ±³È¯ ÇÒ°÷...
+                // ì‹¤ì œ ë¬¼ê±´ êµí™˜ í• ê³³...
                 classPACKET* pCPacket1 = Packet_AllocNLock();
                 classPACKET* pCPacket2 = Packet_AllocNLock();
 
@@ -4696,14 +4702,14 @@ classUSER::Recv_cli_TRADE_P2P(t_PACKET* pPacket) {
                 this->Send_gsv_TRADE_P2P(pUSER->Get_INDEX(), RESULT_TRADE_DONE, 0);
                 return true;
             }
-            case RESULT_TRADE_CHECK_READY: // °Å·¡ ÁØºñ ¿Ï·á.
+            case RESULT_TRADE_CHECK_READY: // ê±°ë˜ ì¤€ë¹„ ì™„ë£Œ.
                 this->m_btTradeBIT |= BIT_TRADE_READY;
                 break;
-            case RESULT_TRADE_UNCHECK_READY: // °Å·¡ ÁØºñ ÇØÁ¦
+            case RESULT_TRADE_UNCHECK_READY: // ê±°ë˜ ì¤€ë¹„ í•´ì œ
                 this->m_btTradeBIT = 0;
                 pUSER->m_btTradeBIT &= ~BIT_TRADE_DONE;
                 break;
-            case RESULT_TRADE_OUT_OF_INV: // ÀÎº¥Åä¸®°¡ ²ËÂ÷¼­ ¹ŞÀ»¼ö ¾ø´Ù.
+            case RESULT_TRADE_OUT_OF_INV: // ì¸ë²¤í† ë¦¬ê°€ ê½‰ì°¨ì„œ ë°›ì„ìˆ˜ ì—†ë‹¤.
                 if (pPacket->m_cli_TRADE_P2P.m_cTradeSLOT < 0
                     || pPacket->m_cli_TRADE_P2P.m_cTradeSLOT >= MAX_TRADE_ITEM_SLOT) {
                     return IS_HACKING(this, "Recv_cli_TRADE_P2P");
@@ -4717,7 +4723,7 @@ classUSER::Recv_cli_TRADE_P2P(t_PACKET* pPacket) {
             pPacket->m_cli_TRADE_P2P.m_btRESULT,
             pPacket->m_cli_TRADE_P2P.m_cTradeSLOT);
     } else {
-        // ´ë»óÀÌ ¾ø´Ù.
+        // ëŒ€ìƒì´ ì—†ë‹¤.
         this->m_btTradeBIT = this->m_iTradeUserIDX = 0;
         this->Send_gsv_TRADE_P2P(this->m_iTradeUserIDX, RESULT_TRADE_NOT_TARGET);
     }
@@ -4725,7 +4731,7 @@ classUSER::Recv_cli_TRADE_P2P(t_PACKET* pPacket) {
     return true;
 }
 
-/// °Å·¡ ¾ÆÀÌÅÛ µî·Ï..
+/// ê±°ë˜ ì•„ì´í…œ ë“±ë¡..
 bool
 classUSER::Recv_cli_TRADE_P2P_ITEM(t_PACKET* pPacket) {
     if (this->m_IngSTATUS.IsIgnoreSTATUS())
@@ -4745,7 +4751,7 @@ classUSER::Recv_cli_TRADE_P2P_ITEM(t_PACKET* pPacket) {
     classUSER* pUSER;
     pUSER = g_pObjMGR->Get_UserOBJ(this->m_iTradeUserIDX);
     if (NULL == pUSER) {
-        // °Å·¡ ´ë»óÀÌ ¾ø¾î Á³´Ù... °Å·¡ Ãë¼Ò ...
+        // ê±°ë˜ ëŒ€ìƒì´ ì—†ì–´ ì¡Œë‹¤... ê±°ë˜ ì·¨ì†Œ ...
         this->Send_gsv_TRADE_P2P(this->m_iTradeUserIDX, RESULT_TRADE_NOT_TARGET);
         this->m_iTradeUserIDX = 0;
         return true;
@@ -4760,11 +4766,11 @@ classUSER::Recv_cli_TRADE_P2P_ITEM(t_PACKET* pPacket) {
     tagITEM* pTradeITEM = &this->m_TradeITEM[pPacket->m_cli_TRADE_P2P_ITEM.m_cTradeSLOT].m_Item;
     if (pPacket->m_cli_TRADE_P2P_ITEM.m_uiQuantity > 0) {
         // HACKING !!! :: 2004. 10. 11
-        // pPacket->m_cli_TRADE_P2P_ITEM.m_nInventoryIndex == 0ÀÌ°í TRADE_MONEY_SLOT_NO !=
-        // pPacket->m_cli_TRADE_P2P_ITEM.m_cTradeSLOT µµ·Ï Á¶ÀÛÇØ¼­ ÆĞÅ¶À» º¸³»´Â ³ÑÀÌ ÀÖÀ½. ÇìÅ·¿¡
-        // ÀÇÇØ µ·ÀÌ µé¾î¿Â´Ù... ³ª»Û ½§~
+        // pPacket->m_cli_TRADE_P2P_ITEM.m_nInventoryIndex == 0ì´ê³  TRADE_MONEY_SLOT_NO !=
+        // pPacket->m_cli_TRADE_P2P_ITEM.m_cTradeSLOT ë„ë¡ ì¡°ì‘í•´ì„œ íŒ¨í‚·ì„ ë³´ë‚´ëŠ” ë„˜ì´ ìˆìŒ. í—¤í‚¹ì—
+        // ì˜í•´ ëˆì´ ë“¤ì–´ì˜¨ë‹¤... ë‚˜ìœ ì‰‘~
         if (TRADE_MONEY_SLOT_NO == pPacket->m_cli_TRADE_P2P_ITEM.m_cTradeSLOT) {
-            // µ·
+            // ëˆ
             pPacket->m_cli_TRADE_P2P_ITEM.m_cTradeSLOT = TRADE_MONEY_SLOT_NO;
             pTradeITEM->m_cType = ITEM_TYPE_MONEY;
 
@@ -4773,8 +4779,8 @@ classUSER::Recv_cli_TRADE_P2P_ITEM(t_PACKET* pPacket) {
             }
             pTradeITEM->m_uiMoney = pPacket->m_cli_TRADE_P2P_ITEM.m_uiQuantity;
         } else {
-            // HACKING !!! :: 2005. 05. 30 °°Àº ÀÎº¥ÀÇ ¾ÆÀÌÅÛÀ» ´Ù¸¥ °Å·¡ ½½·Ô¿¡ µî·ÏÇÏ¿©...¾ÆÀÌÅÛ
-            // º¹»ç~
+            // HACKING !!! :: 2005. 05. 30 ê°™ì€ ì¸ë²¤ì˜ ì•„ì´í…œì„ ë‹¤ë¥¸ ê±°ë˜ ìŠ¬ë¡¯ì— ë“±ë¡í•˜ì—¬...ì•„ì´í…œ
+            // ë³µì‚¬~
             for (short nT = 0; nT < TRADE_MONEY_SLOT_NO; nT++) {
                 if (this->m_TradeITEM[nT].m_nInvIDX
                     == pPacket->m_cli_TRADE_P2P_ITEM.m_nInventoryIndex) {
@@ -4783,7 +4789,7 @@ classUSER::Recv_cli_TRADE_P2P_ITEM(t_PACKET* pPacket) {
                 }
             }
 
-            // ÀÌ¹Ì °Å·¡¾ÆÀÌÅÛÀÌ ÀÖ´Â ½½·ÔÀÌ´Ù. ( ·ÎÁîÇØÄ¿ deebeeÀÇ ¸ŞÀÏ·Î ÀÎÇØ ¾Ë°ÔµÈ ÇØÅ·¹æ¹ı )
+            // ì´ë¯¸ ê±°ë˜ì•„ì´í…œì´ ìˆëŠ” ìŠ¬ë¡¯ì´ë‹¤. ( ë¡œì¦ˆí•´ì»¤ deebeeì˜ ë©”ì¼ë¡œ ì¸í•´ ì•Œê²Œëœ í•´í‚¹ë°©ë²• )
             if (this->m_TradeITEM[pPacket->m_cli_TRADE_P2P_ITEM.m_cTradeSLOT].m_Item.GetItemNO()
                 != 0)
                 return IS_HACKING(this, "Recv_cli_TRADE_P2P_ITEM-4 : Invalid trade slot");
@@ -4791,13 +4797,13 @@ classUSER::Recv_cli_TRADE_P2P_ITEM(t_PACKET* pPacket) {
             *pTradeITEM =
                 this->m_Inventory.m_ItemLIST[pPacket->m_cli_TRADE_P2P_ITEM.m_nInventoryIndex];
             if (!pTradeITEM->IsEnableDROP()) {
-                // 1:1 °Å·¡ ºÒ°¡ Ç°¸ñ..
+                // 1:1 ê±°ë˜ ë¶ˆê°€ í’ˆëª©..
                 return true;
             }
 
             if (0 == pPacket->m_cli_TRADE_P2P_ITEM.m_nInventoryIndex
                 || ITEM_TYPE_MONEY == pTradeITEM->GetTYPE()) {
-                // Hacking ... ÆĞÅ¶ Á¶ÀÛÀÎ°¡???
+                // Hacking ... íŒ¨í‚· ì¡°ì‘ì¸ê°€???
                 IS_HACKING(this, "classUSER::Recv_cli_TRADE_P2P_ITEM( Hacking Money slot )");
                 this->SetCur_MONEY(0);
                 return false;
@@ -4805,7 +4811,7 @@ classUSER::Recv_cli_TRADE_P2P_ITEM(t_PACKET* pPacket) {
 
             if (tagITEM::IsEnableDupCNT(pTradeITEM->GetTYPE())) {
                 if (pPacket->m_cli_TRADE_P2P_ITEM.m_uiQuantity > pTradeITEM->GetQuantity()) {
-                    // ¼ö·®ÀÌ ¸ğÀÚ¶ó´Ù.
+                    // ìˆ˜ëŸ‰ì´ ëª¨ìë¼ë‹¤.
                     pPacket->m_cli_TRADE_P2P_ITEM.m_uiQuantity = pTradeITEM->GetQuantity();
                 }
 
@@ -4813,7 +4819,7 @@ classUSER::Recv_cli_TRADE_P2P_ITEM(t_PACKET* pPacket) {
             }
         }
     } else {
-        pTradeITEM->Clear(); // °Å·¡ Ç°¸ñ¿¡¼­ »¯´Ù...
+        pTradeITEM->Clear(); // ê±°ë˜ í’ˆëª©ì—ì„œ ëºë‹¤...
     }
 
     this->m_TradeITEM[pPacket->m_cli_TRADE_P2P_ITEM.m_cTradeSLOT].m_nInvIDX =
@@ -4825,7 +4831,7 @@ classUSER::Recv_cli_TRADE_P2P_ITEM(t_PACKET* pPacket) {
 }
 
 //-------------------------------------------------------------------------------------------------
-/// °³ÀÎ »óÁ¡ÀÌ ¿­·ÈÀ½À» Åëº¸
+/// ê°œì¸ ìƒì ì´ ì—´ë ¸ìŒì„ í†µë³´
 bool
 classUSER::Send_gsv_P_STORE_OPENED() {
     classPACKET* pCPacket = Packet_AllocNLock();
@@ -4850,7 +4856,7 @@ classUSER::Send_gsv_P_STORE_OPENED() {
 }
 
 //-------------------------------------------------------------------------------------------------
-/// ±¸ÀÔ Èñ¸Á ¾ÆÀÌÅÛÀ» µî·Ï
+/// êµ¬ì… í¬ë§ ì•„ì´í…œì„ ë“±ë¡
 bool
 classUSER::Recv_cli_SET_WISHITEM(t_PACKET* pPacket) {
     if (tagITEM::IsValidITEM(&pPacket->m_cli_SET_WISHITEM.m_ITEM))
@@ -4860,15 +4866,15 @@ classUSER::Recv_cli_SET_WISHITEM(t_PACKET* pPacket) {
 }
 
 //-------------------------------------------------------------------------------------------------
-/// °³ÀÎ »óÁ¡ ¿­±â ¿äÃ»À» ¹ŞÀ½
+/// ê°œì¸ ìƒì  ì—´ê¸° ìš”ì²­ì„ ë°›ìŒ
 bool
 classUSER::Recv_cli_P_STORE_OPEN(t_PACKET* pPacket) {
     if (!(this->m_dwPayFLAG & PAY_FLAG_JP_TRADE))
         return true;
 
-    // PVPÁ¸¿¡¼­´Â °³ÀÎ»óÁ¡ ¿­¼ö ¾ø´Ù...
+    // PVPì¡´ì—ì„œëŠ” ê°œì¸ìƒì  ì—´ìˆ˜ ì—†ë‹¤...
     if (this->Get_ActiveSKILL())
-        return true; // ½ºÅ³ ÄÉ½ºÆÃ ÁßÀÏ¶© ¸ø¹Ù²ã
+        return true; // ìŠ¤í‚¬ ì¼€ìŠ¤íŒ… ì¤‘ì¼ë• ëª»ë°”ê¿”
     if (!g_pZoneLIST->GetZONE(this->m_nZoneNO)->is_clan_zone())
         return true;
 
@@ -4885,8 +4891,8 @@ classUSER::Recv_cli_P_STORE_OPEN(t_PACKET* pPacket) {
     if (!this->SetCMD_STOP() || this->Get_RideMODE())
         return true;
 
-    // »óÁ¡ ¿­±â »óÅÂ·Î
-    // Á¤Áö ¸í·É »óÅÂ·Î ?
+    // ìƒì  ì—´ê¸° ìƒíƒœë¡œ
+    // ì •ì§€ ëª…ë ¹ ìƒíƒœë¡œ ?
     this->m_STORE.m_bActive = true;
     this->Set_COMMAND(CMD_STORE);
 
@@ -4901,13 +4907,13 @@ classUSER::Recv_cli_P_STORE_OPEN(t_PACKET* pPacket) {
         if (pPacket->m_cli_P_STORE_OPEN.m_ITEMs[nI].m_btInvIDX >= INVENTORY_TOTAL_SIZE)
             continue;
 
-        // ¹¹³Ä... ÇØÅ· ??
+        // ë­ëƒ... í•´í‚¹ ??
         if (!tagITEM::IsValidITEM(&pPacket->m_cli_P_STORE_OPEN.m_ITEMs[nI].m_ITEM))
             continue;
 
-        // °Å·¡ ÇÒ¼ö ÀÖ´Â ¾ÆÀÌÅÛÀÎ°¡ ???
+        // ê±°ë˜ í• ìˆ˜ ìˆëŠ” ì•„ì´í…œì¸ê°€ ???
         if (!pPacket->m_cli_P_STORE_OPEN.m_ITEMs[nI].m_ITEM.IsEnableDROP()) {
-            // ¾ÆÀÌÅÛ °Å·¡ À¯ÇüÀÌ 2,3¹ø ÀÌ¸é °³ÀÎ »óÁ¡ °Å·¡ ºÒ°¡..
+            // ì•„ì´í…œ ê±°ë˜ ìœ í˜•ì´ 2,3ë²ˆ ì´ë©´ ê°œì¸ ìƒì  ê±°ë˜ ë¶ˆê°€..
             this->m_STORE.m_SellITEM[nI].Clear();
             continue;
         }
@@ -4921,7 +4927,7 @@ classUSER::Recv_cli_P_STORE_OPEN(t_PACKET* pPacket) {
         if (pInvITEM->IsEnableDupCNT()
             && pInvITEM->GetQuantity()
                 > pPacket->m_cli_P_STORE_OPEN.m_ITEMs[nI].m_ITEM.GetQuantity()) {
-            // Áßº¹µÈ °¹¼ö¾ÆÀÌÅÛÀÌ°í ¼ÒÁö·®º¸´Ù Àû°Ô ÆÈ·Á°í ÇÏ¸é...
+            // ì¤‘ë³µëœ ê°¯ìˆ˜ì•„ì´í…œì´ê³  ì†Œì§€ëŸ‰ë³´ë‹¤ ì ê²Œ íŒ”ë ¤ê³  í•˜ë©´...
             this->m_STORE.m_SellITEM[nI] = pPacket->m_cli_P_STORE_OPEN.m_ITEMs[nI].m_ITEM;
         } else {
             this->m_STORE.m_SellITEM[nI] = *pInvITEM;
@@ -4942,17 +4948,17 @@ classUSER::Recv_cli_P_STORE_OPEN(t_PACKET* pPacket) {
 
         this->m_STORE.m_WishITEM[nI].Clear();
 
-        // ¹¹³Ä... ÇØÅ· ??
+        // ë­ëƒ... í•´í‚¹ ??
         if (!tagITEM::IsValidITEM(&pPacket->m_cli_P_STORE_OPEN.m_ITEMs[nI].m_ITEM))
             continue;
 
         if (!pPacket->m_cli_P_STORE_OPEN.m_ITEMs[nJ].m_ITEM.IsEnableDROP()) {
-            // ¾ÆÀÌÅÛ °Å·¡ À¯ÇüÀÌ 2,3¹ø ÀÌ¸é °³ÀÎ »óÁ¡ °Å·¡ ºÒ°¡..
+            // ì•„ì´í…œ ê±°ë˜ ìœ í˜•ì´ 2,3ë²ˆ ì´ë©´ ê°œì¸ ìƒì  ê±°ë˜ ë¶ˆê°€..
             continue;
         }
 
         bValid = true;
-        // °°Àº ¹°°ÇÀ» ¼­·Î Æ²¸° °¡°İ¿¡ ¿Ã·Á¼­...¾ÕÂÊÀÇ ½Ñ°¡°İÀ¸·Î ±¸¸ÅµÇ´Â ¹ö±×...
+        // ê°™ì€ ë¬¼ê±´ì„ ì„œë¡œ í‹€ë¦° ê°€ê²©ì— ì˜¬ë ¤ì„œ...ì•ìª½ì˜ ì‹¼ê°€ê²©ìœ¼ë¡œ êµ¬ë§¤ë˜ëŠ” ë²„ê·¸...
         for (nK = 0; nK < nI; nK++) {
             if (this->m_STORE.m_WishITEM[nK].GetHEADER()
                     == pPacket->m_cli_P_STORE_OPEN.m_ITEMs[nJ].m_ITEM.GetHEADER()
@@ -4993,7 +4999,7 @@ classUSER::Recv_cli_P_STORE_OPEN(t_PACKET* pPacket) {
 }
 
 //-------------------------------------------------------------------------------------------------
-/// °³ÀÎ »óÁ¡ Á¾·á...
+/// ê°œì¸ ìƒì  ì¢…ë£Œ...
 bool
 classUSER::Recv_cli_P_STORE_CLOSE(t_PACKET* pPacket) {
     if (!this->m_STORE.m_bActive)
@@ -5014,14 +5020,14 @@ classUSER::Recv_cli_P_STORE_CLOSE(t_PACKET* pPacket) {
     this->m_STORE.m_bActive = false;
     this->m_IngSTATUS.ClearSubFLAG(FLAG_SUB_STORE_MODE);
 
-    // ÁÖº¯¿¡ Åëº¸ ¾øÀÌ Á¤Áö ¸í·É »óÅÂ·Î...
+    // ì£¼ë³€ì— í†µë³´ ì—†ì´ ì •ì§€ ëª…ë ¹ ìƒíƒœë¡œ...
     this->CObjAI::SetCMD_STOP();
 
     return true;
 }
 
 //-------------------------------------------------------------------------------------------------
-/// °³ÀÎ »óÁ¡ ¹°Ç° ¸ñ·ÏÀ» ¿äÃ»
+/// ê°œì¸ ìƒì  ë¬¼í’ˆ ëª©ë¡ì„ ìš”ì²­
 bool
 classUSER::Recv_cli_P_STORE_LIST_REQ(t_PACKET* pPacket) {
     classUSER* pStoreOWNER =
@@ -5082,7 +5088,7 @@ classUSER::Recv_cli_P_STORE_LIST_REQ(t_PACKET* pPacket) {
 }
 
 //-------------------------------------------------------------------------------------------------
-/// °³ÀÎ »óÁ¡°Å·¡ ÆĞÅ¶ ÃÊ±âÈ­...
+/// ê°œì¸ ìƒì ê±°ë˜ íŒ¨í‚· ì´ˆê¸°í™”...
 classPACKET*
 classUSER::Init_gsv_P_STORE_RESULT(WORD wObjectIDX) {
     classPACKET* pCPacket = Packet_AllocNLock();
@@ -5100,7 +5106,7 @@ classUSER::Init_gsv_P_STORE_RESULT(WORD wObjectIDX) {
 bool classUSER::Send_gsv_P_STORE_RESULT( classPACKET *pCPacket, BYTE btResult )
 {
     if ( pCPacket->m_gsv_SET_MONEYnINV.m_btItemCNT ) {
-        // º¯°æµÈ ÀÎº¥Åä¸®°¡ ÀÖÀ»°æ¿ì¸¸ Àü¼ÛÇÑ´Ù.
+        // ë³€ê²½ëœ ì¸ë²¤í† ë¦¬ê°€ ìˆì„ê²½ìš°ë§Œ ì „ì†¡í•œë‹¤.
         pCPacket->m_HEADER.m_nSize += ( pCPacket->m_gsv_SET_MONEYnINV.m_btItemCNT * sizeof(
 tagPS_SLOT_ITEM ) );
     }
@@ -5113,7 +5119,7 @@ tagPS_SLOT_ITEM ) );
     return true;
 }
 */
-/// °³ÀÎ »óÁ¡ °Å·¡ °á°ú ÆĞÅ¶ Åëº¸
+/// ê°œì¸ ìƒì  ê±°ë˜ ê²°ê³¼ íŒ¨í‚· í†µë³´
 bool
 classUSER::Send_gsv_P_STORE_RESULT(WORD wObjectIDX, BYTE btResult) {
     classPACKET* pCPacket = Packet_AllocNLock();
@@ -5134,7 +5140,7 @@ classUSER::Send_gsv_P_STORE_RESULT(WORD wObjectIDX, BYTE btResult) {
 }
 
 //-------------------------------------------------------------------------------------------------
-/// °³ÀÎ »óÁ¡¿¡¼­ ¹°Ç° ±¸ÀÔ Èñ¸Á...
+/// ê°œì¸ ìƒì ì—ì„œ ë¬¼í’ˆ êµ¬ì… í¬ë§...
 bool
 classUSER::Recv_cli_P_STORE_BUY_REQ(t_PACKET* pPacket) {
     if (pPacket->m_cli_P_STORE_BUY_REQ.m_btItemCNT >= MAX_P_STORE_ITEM_SLOT) {
@@ -5144,7 +5150,7 @@ classUSER::Recv_cli_P_STORE_BUY_REQ(t_PACKET* pPacket) {
         return IS_HACKING(this, "Recv_cli_P_STORE_BUY_REQ :: Trade from self private store");
     }
 
-    // 1:1°Å·¡Áß »óÁ¡ °Å·¡Áß ±İÁö..
+    // 1:1ê±°ë˜ì¤‘ ìƒì  ê±°ë˜ì¤‘ ê¸ˆì§€..
     if (this->m_btTradeBIT & (BIT_TRADE_READY | BIT_TRADE_DONE))
         return true;
 
@@ -5161,13 +5167,13 @@ classUSER::Recv_cli_P_STORE_BUY_REQ(t_PACKET* pPacket) {
 
         BYTE btStoreSLOT, btTradeRESULT;
         tagITEM *pInvSellITEM, *pSlotITEM, sBuyITEM, sSubITEM;
-        __int64 biNeedMoney; // 0xffffffff * °¹¼ö -> DWORD°ªÀÌ ¹üÀ§ ÃÊ°úÇØ¼­ ÀûÀº ±İ¾×À¸·Î ¼±Á¤µÇ´ø
-                             // ¹ö±× ¼öÁ¤..
+        __int64 biNeedMoney; // 0xffffffff * ê°¯ìˆ˜ -> DWORDê°’ì´ ë²”ìœ„ ì´ˆê³¼í•´ì„œ ì ì€ ê¸ˆì•¡ìœ¼ë¡œ ì„ ì •ë˜ë˜
+                             // ë²„ê·¸ ìˆ˜ì •..
         short nBuyerInvIDX;
 
         btTradeRESULT = RESULT_P_STORE_BOUGHT_ALL;
         for (short nI = 0; nI < pPacket->m_cli_P_STORE_BUY_REQ.m_btItemCNT; nI++) {
-            // °³ÀÎ »óÁ¡¿¡¼­ ¹°°ÇÀ» ±¸¸Å...
+            // ê°œì¸ ìƒì ì—ì„œ ë¬¼ê±´ì„ êµ¬ë§¤...
             btStoreSLOT = pPacket->m_cli_P_STORE_BUY_REQ.m_BuyITEMs[nI].m_btSLOT;
             if (btStoreSLOT >= MAX_P_STORE_ITEM_SLOT) {
                 return IS_HACKING(this,
@@ -5176,7 +5182,7 @@ classUSER::Recv_cli_P_STORE_BUY_REQ(t_PACKET* pPacket) {
 
             pSlotITEM = &pStoreOWNER->m_STORE.m_SellITEM[btStoreSLOT];
             if (!pSlotITEM->GetTYPE()) {
-                // ´Ù ÆÈ·È´Ù.
+                // ë‹¤ íŒ”ë ¸ë‹¤.
                 btTradeRESULT = RESULT_P_STORE_BOUGHT_PART;
                 continue;
             }
@@ -5185,18 +5191,18 @@ classUSER::Recv_cli_P_STORE_BUY_REQ(t_PACKET* pPacket) {
                 &pStoreOWNER->m_Inventory.m_ItemLIST[pStoreOWNER->m_STORE.m_nInvIDX[btStoreSLOT]];
             sBuyITEM = pPacket->m_cli_P_STORE_BUY_REQ.m_BuyITEMs[nI].m_SlotITEM;
             if (pInvSellITEM->GetHEADER() != sBuyITEM.GetHEADER()) {
-                // ¹¹³Ä ÀÌ°Ç ??
+                // ë­ëƒ ì´ê±´ ??
                 continue;
             }
 
             if (pSlotITEM->IsEnableDupCNT()) {
-                // Áßº¹ °¹¼ö ¾ÆÀÌÅÛÀÏ°æ¿ì...
+                // ì¤‘ë³µ ê°¯ìˆ˜ ì•„ì´í…œì¼ê²½ìš°...
                 if (pInvSellITEM->GetQuantity() < pSlotITEM->GetQuantity()) {
-                    // ¼ÒÁöÇÑ°Å º¸´Ù ÆÇ¸ÅÇÏ·Á´Â°ÍÀÌ ¸¹´Ù¸é...
+                    // ì†Œì§€í•œê±° ë³´ë‹¤ íŒë§¤í•˜ë ¤ëŠ”ê²ƒì´ ë§ë‹¤ë©´...
                     pSlotITEM->m_uiQuantity = pInvSellITEM->GetQuantity();
                 }
                 if (pSlotITEM->GetQuantity() < sBuyITEM.GetQuantity()) {
-                    // °¹¼ö°¡ ºÎÁ·ÇÏ´Ù, °¹¼ö ¼öÁ¤..
+                    // ê°¯ìˆ˜ê°€ ë¶€ì¡±í•˜ë‹¤, ê°¯ìˆ˜ ìˆ˜ì •..
                     sBuyITEM.m_uiQuantity = pSlotITEM->GetQuantity();
                     btTradeRESULT = RESULT_P_STORE_BOUGHT_PART;
                 }
@@ -5204,21 +5210,21 @@ classUSER::Recv_cli_P_STORE_BUY_REQ(t_PACKET* pPacket) {
                 biNeedMoney = ((__int64)(pStoreOWNER->m_STORE.m_dwSellPricePerEA[btStoreSLOT])
                     * sBuyITEM.GetQuantity());
             } else {
-                sBuyITEM.m_dwBody = pInvSellITEM->m_dwBody; // ¸Ş¸ğ¸® Á¶ÀÛÀ¸·Î ¿É¼ÇÀÌ ¹Ù²î´Â°É ¹æÁö
-                // ÀåºñÀÏ °æ¿ì ¾ÆÀÌÅÛ ½Ã¸®¾ó...
+                sBuyITEM.m_dwBody = pInvSellITEM->m_dwBody; // ë©”ëª¨ë¦¬ ì¡°ì‘ìœ¼ë¡œ ì˜µì…˜ì´ ë°”ë€ŒëŠ”ê±¸ ë°©ì§€
+                // ì¥ë¹„ì¼ ê²½ìš° ì•„ì´í…œ ì‹œë¦¬ì–¼...
                 sBuyITEM.m_iSN = pInvSellITEM->m_iSN;
                 biNeedMoney = (__int64)(pStoreOWNER->m_STORE.m_dwSellPricePerEA[btStoreSLOT]);
             }
             if (this->GetCur_MONEY() < biNeedMoney) {
-                // ±¸¸Å ¿äÃ»Àü¿¡ µ· °è»êÇØ¼­ º¸³»¾ßÁö..
+                // êµ¬ë§¤ ìš”ì²­ì „ì— ëˆ ê³„ì‚°í•´ì„œ ë³´ë‚´ì•¼ì§€..
                 // btTradeRESULT |= RESULT_P_STORE_NEED_MONEY;
                 continue;
             }
 
-            // ¾ÆÀÌÅÛ ÀÌµ¿...
+            // ì•„ì´í…œ ì´ë™...
             sSubITEM = sBuyITEM;
             nBuyerInvIDX =
-                this->Add_ITEM(sBuyITEM); // pBuyITEM = È£ÃâÈÄ ´õÇØÁø °á°úÀÇ ÀÎº¥Åä¸® ¾ÆÀÌÅÛ
+                this->Add_ITEM(sBuyITEM); // pBuyITEM = í˜¸ì¶œí›„ ë”í•´ì§„ ê²°ê³¼ì˜ ì¸ë²¤í† ë¦¬ ì•„ì´í…œ
             if (nBuyerInvIDX > 0) {
                 pInvSellITEM->SubtractOnly(sSubITEM);
                 pSlotITEM->SubtractOnly(sSubITEM);
@@ -5226,7 +5232,7 @@ classUSER::Recv_cli_P_STORE_BUY_REQ(t_PACKET* pPacket) {
                 this->m_Inventory.m_i64Money -= biNeedMoney;
                 pStoreOWNER->m_Inventory.m_i64Money += biNeedMoney;
 
-                // ±¸ÀÔÀÚ ÀÎº¥ °»½Å
+                // êµ¬ì…ì ì¸ë²¤ ê°±ì‹ 
                 pBuyerPacket->m_gsv_SET_MONEYnINV
                     .m_sInvITEM[pBuyerPacket->m_gsv_SET_MONEYnINV.m_btItemCNT]
                     .m_btInvIDX = (BYTE)nBuyerInvIDX;
@@ -5235,7 +5241,7 @@ classUSER::Recv_cli_P_STORE_BUY_REQ(t_PACKET* pPacket) {
                     .m_ITEM = sBuyITEM;
                 pBuyerPacket->m_gsv_SET_MONEYnINV.m_btItemCNT++;
 
-                // ÆÇ¸ÅÀÚ ÀÎº¥ °»½Å
+                // íŒë§¤ì ì¸ë²¤ ê°±ì‹ 
                 pSellerPacket->m_gsv_SET_MONEYnINV
                     .m_sInvITEM[pSellerPacket->m_gsv_SET_MONEYnINV.m_btItemCNT]
                     .m_btInvIDX = (BYTE)pStoreOWNER->m_STORE.m_nInvIDX[btStoreSLOT];
@@ -5244,7 +5250,7 @@ classUSER::Recv_cli_P_STORE_BUY_REQ(t_PACKET* pPacket) {
                     .m_ITEM = *pInvSellITEM;
                 pSellerPacket->m_gsv_SET_MONEYnINV.m_btItemCNT++;
 
-                // »óÁ¡ ¹°Ç°ÀÇ °»½ÅµÈ ³»¿ª...
+                // ìƒì  ë¬¼í’ˆì˜ ê°±ì‹ ëœ ë‚´ì—­...
                 pStorePacket->m_gsv_P_STORE_RESULT
                     .m_UpdatedITEM[pStorePacket->m_gsv_P_STORE_RESULT.m_btItemCNT]
                     .m_btSLOT = btStoreSLOT;
@@ -5255,13 +5261,13 @@ classUSER::Recv_cli_P_STORE_BUY_REQ(t_PACKET* pPacket) {
             }
         }
 
-        this->Send_gsv_SET_MONEYnINV(pBuyerPacket); // ±¸¸ÅÀÚ´Â ÀÎº¥Åä¸®,µ· ÆĞÅ¶À¸·Î º¯°æ Á¤º¸ Àü¼Û.
+        this->Send_gsv_SET_MONEYnINV(pBuyerPacket); // êµ¬ë§¤ìëŠ” ì¸ë²¤í† ë¦¬,ëˆ íŒ¨í‚·ìœ¼ë¡œ ë³€ê²½ ì •ë³´ ì „ì†¡.
         pStoreOWNER->Send_gsv_SET_MONEYnINV(pSellerPacket);
 
-        // »óÁ¡ ¾ÆÀÌÅÛ ½½·Ô °»½Å
+        // ìƒì  ì•„ì´í…œ ìŠ¬ë¡¯ ê°±ì‹ 
         pStorePacket->m_gsv_P_STORE_RESULT.m_btResult = btTradeRESULT;
         if (pStorePacket->m_gsv_P_STORE_RESULT.m_btItemCNT) {
-            // °³·¡µÈ Ç°¸ñÀÌ ÀÖ´Ù¸é...
+            // ê°œë˜ëœ í’ˆëª©ì´ ìˆë‹¤ë©´...
             pStorePacket->m_HEADER.m_nSize +=
                 (pStorePacket->m_gsv_P_STORE_RESULT.m_btItemCNT * sizeof(tagPS_SLOT_ITEM));
             pStoreOWNER->SendPacket(pStorePacket);
@@ -5278,7 +5284,7 @@ classUSER::Recv_cli_P_STORE_BUY_REQ(t_PACKET* pPacket) {
 }
 
 //-------------------------------------------------------------------------------------------------
-/// °³ÀÎ »óÁ¡¿¡ ¹°Ç° ÆÇ¸Å Èñ¸Á...
+/// ê°œì¸ ìƒì ì— ë¬¼í’ˆ íŒë§¤ í¬ë§...
 bool
 classUSER::Recv_cli_P_STORE_SELL_REQ(t_PACKET* pPacket) {
     if (pPacket->m_cli_P_STORE_SELL_REQ.m_btItemCNT >= MAX_P_STORE_ITEM_SLOT) {
@@ -5289,7 +5295,7 @@ classUSER::Recv_cli_P_STORE_SELL_REQ(t_PACKET* pPacket) {
         return IS_HACKING(this, "Recv_cli_P_STORE_SELL_REQ :: Trade from self private store");
     }
 
-    // 1:1°Å·¡Áß »óÁ¡ °Å·¡Áß ±İÁö..
+    // 1:1ê±°ë˜ì¤‘ ìƒì  ê±°ë˜ì¤‘ ê¸ˆì§€..
     if (this->m_btTradeBIT & (BIT_TRADE_READY | BIT_TRADE_DONE))
         return true;
 
@@ -5317,7 +5323,7 @@ classUSER::Recv_cli_P_STORE_SELL_REQ(t_PACKET* pPacket) {
                 return IS_HACKING(this,
                     "Recv_cli_P_STORE_SELL_REQ :: m_btWishSLOT >= MAX_P_STORE_ITEM_SLOT");
             }
-            // °³ÀÎ »óÁ¡¿¡ ¹°°ÇÀ» ÆÈÀÚ ...
+            // ê°œì¸ ìƒì ì— ë¬¼ê±´ì„ íŒ”ì ...
             btStoreSLOT = pStoreOWNER->m_STORE.m_btWishIdx2StoreIDX
                               [pPacket->m_cli_P_STORE_SELL_REQ.m_SellITEMs[nI].m_btWishSLOT];
 
@@ -5333,50 +5339,50 @@ classUSER::Recv_cli_P_STORE_SELL_REQ(t_PACKET* pPacket) {
                 continue;
 
             if (pWishITEM->IsEnableDupCNT()) {
-                // Áßº¹ °¹¼ö ¾ÆÀÌÅÛÀÏ°æ¿ì...
+                // ì¤‘ë³µ ê°¯ìˆ˜ ì•„ì´í…œì¼ê²½ìš°...
                 if (sToSellITEM.GetQuantity() > pWishITEM->GetQuantity()) {
-                    // ÆÈ·Á´Â°ÍÀÌ ±¸¸ÅÈñ¸Á·® º¸´Ù ¸¹´Ù - ÆÇ¸Å°¹¼ö º¸Á¤.
+                    // íŒ”ë ¤ëŠ”ê²ƒì´ êµ¬ë§¤í¬ë§ëŸ‰ ë³´ë‹¤ ë§ë‹¤ - íŒë§¤ê°¯ìˆ˜ ë³´ì •.
                     sToSellITEM.m_uiQuantity = pWishITEM->GetQuantity();
                     btTradeRESULT = RESULT_P_STORE_SOLD_PART;
                 }
                 if (sToSellITEM.GetQuantity() > pSellerITEM->GetQuantity()) {
-                    // ÆÈ·Á´Â°ÍÀÌ ¼ÒÁö·® º¸´Ù ¸¹´Ù :: ¸ŞÅ©·Î¿¡ ÀÇÇÑ ¼ıÀÚ Á¶ÀÛÀ¸·Î ÇìÅ· ¹ß»ı...
+                    // íŒ”ë ¤ëŠ”ê²ƒì´ ì†Œì§€ëŸ‰ ë³´ë‹¤ ë§ë‹¤ :: ë©”í¬ë¡œì— ì˜í•œ ìˆ«ì ì¡°ì‘ìœ¼ë¡œ í—¤í‚¹ ë°œìƒ...
                     continue;
                 }
                 dwNeedMoney = pStoreOWNER->m_STORE.m_dwWishPricePerEA[btStoreSLOT]
                     * sToSellITEM.GetQuantity();
             } else {
-                // Àåºñ ¾ÆÀÌÅÛÀÏ °æ¿ì ¿É¼Ç±îÁö °°ÀºÁö Ã¼Å©...
+                // ì¥ë¹„ ì•„ì´í…œì¼ ê²½ìš° ì˜µì…˜ê¹Œì§€ ê°™ì€ì§€ ì²´í¬...
                 if (0 == pSellerITEM->GetLife()) {
-                    // ¼ö¸íÀÌ 0ÀÎ°Ç ¸ø¾²´Â ¾ÆÀÌÅÛ¾ß...
+                    // ìˆ˜ëª…ì´ 0ì¸ê±´ ëª»ì“°ëŠ” ì•„ì´í…œì•¼...
                     continue;
                 }
                 if (pWishITEM->HasSocket() && pWishITEM->HasSocket() != pSellerITEM->HasSocket()) {
-                    // ±¸¸ÅÀÚ°¡ ¼ÒÄÏ ÀÖ´Â ¾ÆÀÌÅÛÀ» ¿øÇÏ´Âµ¥... ¼ÒÄÏÀÌ ÀÏÄ¡ ÇÏÁö ¾Ê³×
+                    // êµ¬ë§¤ìê°€ ì†Œì¼“ ìˆëŠ” ì•„ì´í…œì„ ì›í•˜ëŠ”ë°... ì†Œì¼“ì´ ì¼ì¹˜ í•˜ì§€ ì•Šë„¤
                     continue;
                 }
                 if (pWishITEM->GetDurability() > pSellerITEM->GetDurability()) {
-                    // ±¸¸ÅÀÚ°¡ ¿øÇÏ´Â ¾ÆÀÌÅÛÀÇ ³»±¸µµ º¸´Ù ³·À½ ¸øÆÈ¾Æ¿ä~~
+                    // êµ¬ë§¤ìê°€ ì›í•˜ëŠ” ì•„ì´í…œì˜ ë‚´êµ¬ë„ ë³´ë‹¤ ë‚®ìŒ ëª»íŒ”ì•„ìš”~~
                     continue;
                 }
                 if (pWishITEM->GetGrade() > pSellerITEM->GetGrade()) {
-                    // ±¸¸ÅÀÚ°¡ ¿øÇÏ´Â ¾ÆÀÌÅÛÀÇ µî±Şº¸´Ù ³·À½ ¸øÆÈ¾Æ¿ä~~
+                    // êµ¬ë§¤ìê°€ ì›í•˜ëŠ” ì•„ì´í…œì˜ ë“±ê¸‰ë³´ë‹¤ ë‚®ìŒ ëª»íŒ”ì•„ìš”~~
                     continue;
                 }
                 if (pWishITEM->GetOption() && pWishITEM->GetOption() != pSellerITEM->GetOption()) {
-                    // ±¸¸ÅÀÚ°¡ ¿øÇÏ´Â ¾ÆÀÌÅÛ¿¡ ¿É¼ÇÀÖ°í ¿É¼ÇÀÌ Æ²¸®¸é ¸øÆÈ¾Æ¿ä~
+                    // êµ¬ë§¤ìê°€ ì›í•˜ëŠ” ì•„ì´í…œì— ì˜µì…˜ìˆê³  ì˜µì…˜ì´ í‹€ë¦¬ë©´ ëª»íŒ”ì•„ìš”~
                     continue;
                 }
                 sToSellITEM.m_dwBody =
-                    pSellerITEM->m_dwBody; // ¸Ş¸ğ¸® Á¶ÀÛÀ¸·Î ¿É¼ÇÀÌ ¹Ù²î´Â°É ¹æÁö
-                // Àåºñ ¾ÆÀÌÅÛÀÏ °æ¿ì ½Ã¸®¾ó ¹øÈ£...
+                    pSellerITEM->m_dwBody; // ë©”ëª¨ë¦¬ ì¡°ì‘ìœ¼ë¡œ ì˜µì…˜ì´ ë°”ë€ŒëŠ”ê±¸ ë°©ì§€
+                // ì¥ë¹„ ì•„ì´í…œì¼ ê²½ìš° ì‹œë¦¬ì–¼ ë²ˆí˜¸...
                 sToSellITEM.m_iSN = pSellerITEM->m_iSN;
                 dwNeedMoney = pStoreOWNER->m_STORE.m_dwWishPricePerEA[btStoreSLOT];
             }
 
             if (pStoreOWNER->GetCur_MONEY() < dwNeedMoney) {
-// ±¸¸Å »óÁ¡À» ¿­±â Àü¿¡ ¹İµå½Ã µ·ÀÌ ÀÖ´ÂÁö Ã¼Å©...
-#pragma COMPILE_TIME_MSG("±¸ÀÔ ÇÏ·Á´Â ³ÑÀÌ µ·ÀÌ ¸ğÀÚ¶ó´Ù :: »óÁ¡ Á¢¾î ??.. Ç°¸ñ »èÁ¦?? ")
+// êµ¬ë§¤ ìƒì ì„ ì—´ê¸° ì „ì— ë°˜ë“œì‹œ ëˆì´ ìˆëŠ”ì§€ ì²´í¬...
+#pragma COMPILE_TIME_MSG("êµ¬ì… í•˜ë ¤ëŠ” ë„˜ì´ ëˆì´ ëª¨ìë¼ë‹¤ :: ìƒì  ì ‘ì–´ ??.. í’ˆëª© ì‚­ì œ?? ")
                 // btTradeRESULT |= RESULT_P_STORE_NEED_MONEY;
                 continue;
             }
@@ -5386,8 +5392,8 @@ classUSER::Recv_cli_P_STORE_SELL_REQ(t_PACKET* pPacket) {
             if (nInvIDX > 0) {
                 pStoreOWNER->m_Inventory.m_i64Money -= dwNeedMoney;
                 this->m_Inventory.m_i64Money += dwNeedMoney;
-                pSellerITEM->SubtractOnly(sSubITEM); // ÆÈ¸° ¾ç¸¸Å­ Á¦°Å
-                pWishITEM->SubtractOnly(sSubITEM); // ±¸¸ÅÇÑ ¾ç¸¸Å­ Á¦°Å
+                pSellerITEM->SubtractOnly(sSubITEM); // íŒ”ë¦° ì–‘ë§Œí¼ ì œê±°
+                pWishITEM->SubtractOnly(sSubITEM); // êµ¬ë§¤í•œ ì–‘ë§Œí¼ ì œê±°
 
                 pSellerPacket->m_gsv_SET_MONEYnINV
                     .m_sInvITEM[pSellerPacket->m_gsv_SET_MONEYnINV.m_btItemCNT]
@@ -5405,7 +5411,7 @@ classUSER::Recv_cli_P_STORE_SELL_REQ(t_PACKET* pPacket) {
                     .m_ITEM = pStoreOWNER->m_Inventory.m_ItemLIST[nInvIDX];
                 pBuyerPacket->m_gsv_SET_MONEYnINV.m_btItemCNT++;
 
-                // »óÁ¡ ¹°Ç°ÀÇ °»½ÅµÈ ³»¿ª...
+                // ìƒì  ë¬¼í’ˆì˜ ê°±ì‹ ëœ ë‚´ì—­...
                 pStorePacket->m_gsv_P_STORE_RESULT
                     .m_UpdatedITEM[pStorePacket->m_gsv_P_STORE_RESULT.m_btItemCNT]
                     .m_btSLOT = pPacket->m_cli_P_STORE_SELL_REQ.m_SellITEMs[nI].m_btWishSLOT;
@@ -5416,15 +5422,15 @@ classUSER::Recv_cli_P_STORE_SELL_REQ(t_PACKET* pPacket) {
             }
         }
 
-        this->Send_gsv_SET_MONEYnINV(pSellerPacket); // ÆÇ¸ÅÀÚ ÀÎº¥Åä¸®,µ· ÆĞÅ¶À¸·Î º¯°æ Á¤º¸ Àü¼Û.
+        this->Send_gsv_SET_MONEYnINV(pSellerPacket); // íŒë§¤ì ì¸ë²¤í† ë¦¬,ëˆ íŒ¨í‚·ìœ¼ë¡œ ë³€ê²½ ì •ë³´ ì „ì†¡.
         pStoreOWNER->Send_gsv_SET_MONEYnINV(
-            pBuyerPacket); // ±¸¸ÅÀÚ(»óÁ¡ÁÖÀÎ) Ãß°¡µÈ ¾ÆÀÌÅÛ ÀÎº¥Åä¸® Á¤º¸, ±¸¸ÅÀÚ °¨¼ÒµÈ µ· Á¤º¸
-                           // Àü¼Û
+            pBuyerPacket); // êµ¬ë§¤ì(ìƒì ì£¼ì¸) ì¶”ê°€ëœ ì•„ì´í…œ ì¸ë²¤í† ë¦¬ ì •ë³´, êµ¬ë§¤ì ê°ì†Œëœ ëˆ ì •ë³´
+                           // ì „ì†¡
 
-        // »óÁ¡ ¾ÆÀÌÅÛ ½½·Ô °»½Å
+        // ìƒì  ì•„ì´í…œ ìŠ¬ë¡¯ ê°±ì‹ 
         pStorePacket->m_gsv_P_STORE_RESULT.m_btResult = btTradeRESULT;
         if (pStorePacket->m_gsv_P_STORE_RESULT.m_btItemCNT) {
-            // °³·¡µÈ Ç°¸ñÀÌ ÀÖ´Ù¸é...
+            // ê°œë˜ëœ í’ˆëª©ì´ ìˆë‹¤ë©´...
             pStorePacket->m_HEADER.m_nSize +=
                 (pStorePacket->m_gsv_P_STORE_RESULT.m_btItemCNT * sizeof(tagPS_SLOT_ITEM));
             pStoreOWNER->SendPacket(pStorePacket);
@@ -5441,7 +5447,7 @@ classUSER::Recv_cli_P_STORE_SELL_REQ(t_PACKET* pPacket) {
 }
 
 //-------------------------------------------------------------------------------------------------
-/// ½ºÅ³ÀÇ ·¾¾÷ ¿äÃ»
+/// ìŠ¤í‚¬ì˜ ë ™ì—… ìš”ì²­
 bool
 classUSER::Recv_cli_SKILL_LEVELUP_REQ(t_PACKET* pPacket) {
     if (this->m_IngSTATUS.IsIgnoreSTATUS())
@@ -5461,7 +5467,7 @@ classUSER::Recv_cli_SKILL_LEVELUP_REQ(t_PACKET* pPacket) {
     BYTE btResult = this->Skill_LevelUpCondition(nSkillIDX,
         pPacket->m_cli_SKILL_LEVELUP_REQ.m_nNextLevelSkillIDX);
     if (RESULT_SKILL_LEVELUP_SUCCESS == btResult) {
-        // 05.05.25 ½ºÅ³ ·¾¾÷½Ã ÁÙ¸® ¼Ò¸ğ...
+        // 05.05.25 ìŠ¤í‚¬ ë ™ì—…ì‹œ ì¤„ë¦¬ ì†Œëª¨...
         int iNeedZuly = 0;
 
         if (this->GetCur_MONEY() < iNeedZuly) {
@@ -5495,43 +5501,43 @@ classUSER::Recv_cli_SKILL_LEVELUP_REQ(t_PACKET* pPacket) {
 }
 
 //-------------------------------------------------------------------------------------------------
-/// ¼¿ÇÁ ½ºÅ³ÀÎÁö Ã¼Å©...
+/// ì…€í”„ ìŠ¤í‚¬ì¸ì§€ ì²´í¬...
 bool
 classUSER::Is_SelfSKILL(short nSkillIDX) {
     switch (SKILL_TYPE(nSkillIDX)) {
-            //	case SKILL_TYPE_01 :	// Á¡ÇÁ, °øÁßºÎ¾ç.
-        case SKILL_TYPE_08: // ´É·ÂÄ¡ÀÇ Áõ/°¨À» ÀÏÁ¤½Ã°£ Áö¼Ó(¼¿ÇÁ)
-        case SKILL_TYPE_10: // ´É·ÂÄ¡ º¯°æÇü(¼¿ÇÁ)	:	ÇÑ¹æ¿¡ ¿Ã¸²
-        case SKILL_TYPE_12: // »óÅÂ Áö¼ÓÇü(¼¿ÇÁ)	Áßµ¶, º¡¾î¸®, ±âÀı, Åõ¸í, ¹æÆĞµ¥¹ÌÁö, Ãß°¡
-                            // µ¥¹ÌÁö
-        case SKILL_TYPE_14: // ¼ÒÈ¯...
+            //	case SKILL_TYPE_01 :	// ì í”„, ê³µì¤‘ë¶€ì–‘.
+        case SKILL_TYPE_08: // ëŠ¥ë ¥ì¹˜ì˜ ì¦/ê°ì„ ì¼ì •ì‹œê°„ ì§€ì†(ì…€í”„)
+        case SKILL_TYPE_10: // ëŠ¥ë ¥ì¹˜ ë³€ê²½í˜•(ì…€í”„)	:	í•œë°©ì— ì˜¬ë¦¼
+        case SKILL_TYPE_12: // ìƒíƒœ ì§€ì†í˜•(ì…€í”„)	ì¤‘ë…, ë²™ì–´ë¦¬, ê¸°ì ˆ, íˆ¬ëª…, ë°©íŒ¨ë°ë¯¸ì§€, ì¶”ê°€
+                            // ë°ë¯¸ì§€
+        case SKILL_TYPE_14: // ì†Œí™˜...
         case SKILL_TYPE_17: // self & damage to scope...
             return true;
     }
     return false;
 }
-/// Å¸°Ù ½ºÅ³ÀÎÁö Ã¼Å©...
+/// íƒ€ê²Ÿ ìŠ¤í‚¬ì¸ì§€ ì²´í¬...
 bool
 classUSER::Is_TargetSKILL(short nSkillIDX) {
     switch (SKILL_TYPE(nSkillIDX)) {
-        case SKILL_TYPE_03: // °ø°İ µ¿ÀÛ º¯°æÇü
-        case SKILL_TYPE_04: // ¹«±â »óÅÂ º¯°æÇü
-        case SKILL_TYPE_05: // ÃÑ¾Ë º¯°æÇë °ø°İÇü
+        case SKILL_TYPE_03: // ê³µê²© ë™ì‘ ë³€ê²½í˜•
+        case SKILL_TYPE_04: // ë¬´ê¸° ìƒíƒœ ë³€ê²½í˜•
+        case SKILL_TYPE_05: // ì´ì•Œ ë³€ê²½í— ê³µê²©í˜•
 
-        case SKILL_TYPE_06: // ¹ß»ç ¸¶¹ıÇü
-        case SKILL_TYPE_09: // ´É·ÂÄ¡ÀÇ Áõ/°¨À» ÀÏÁ¤½Ã°£ Áö¼Ó(Å¸°Ù)
-        case SKILL_TYPE_11: // ´É·ÂÄ¡ º¯°æÇü(Å¸°Ù)	:	ÇÑ¹æ¿¡ ¿Ã¸²
-        case SKILL_TYPE_13: // »óÅÂ Áö¼ÓÇü(Å¸°Ù)	Áßµ¶, º¡¾î¸®, ±âÀı, Åõ¸í, ¹æÆĞµ¥¹ÌÁö, Ãß°¡
-                            // µ¥¹ÌÁö
-        case SKILL_TYPE_19: // (Å¸°Ù¿¡ µ¥¹ÌÁö°ø°İÀ» ÇÏ¸é¼­ HP,MP »¯¾î¿À±â °³³ä)
-        case SKILL_TYPE_20: // ½ÃÃ¼ ºÎÈ°
+        case SKILL_TYPE_06: // ë°œì‚¬ ë§ˆë²•í˜•
+        case SKILL_TYPE_09: // ëŠ¥ë ¥ì¹˜ì˜ ì¦/ê°ì„ ì¼ì •ì‹œê°„ ì§€ì†(íƒ€ê²Ÿ)
+        case SKILL_TYPE_11: // ëŠ¥ë ¥ì¹˜ ë³€ê²½í˜•(íƒ€ê²Ÿ)	:	í•œë°©ì— ì˜¬ë¦¼
+        case SKILL_TYPE_13: // ìƒíƒœ ì§€ì†í˜•(íƒ€ê²Ÿ)	ì¤‘ë…, ë²™ì–´ë¦¬, ê¸°ì ˆ, íˆ¬ëª…, ë°©íŒ¨ë°ë¯¸ì§€, ì¶”ê°€
+                            // ë°ë¯¸ì§€
+        case SKILL_TYPE_19: // (íƒ€ê²Ÿì— ë°ë¯¸ì§€ê³µê²©ì„ í•˜ë©´ì„œ HP,MP ëºì–´ì˜¤ê¸° ê°œë…)
+        case SKILL_TYPE_20: // ì‹œì²´ ë¶€í™œ
             break;
 
             /*
-                    case SKILL_TYPE_08 :	// ´É·ÂÄ¡ÀÇ Áõ/°¨À» ÀÏÁ¤½Ã°£ Áö¼Ó(¼¿ÇÁ)
-                    case SKILL_TYPE_10 :	// ´É·ÂÄ¡ º¯°æÇü(¼¿ÇÁ)	:	ÇÑ¹æ¿¡ ¿Ã¸²
-                    case SKILL_TYPE_12 :	// »óÅÂ Áö¼ÓÇü(¼¿ÇÁ)	Áßµ¶, º¡¾î¸®, ±âÀı, Åõ¸í,
-               ¹æÆĞµ¥¹ÌÁö, Ãß°¡ µ¥¹ÌÁö return false; default : if ( SA_TARGET_STOP   ==
+                    case SKILL_TYPE_08 :	// ëŠ¥ë ¥ì¹˜ì˜ ì¦/ê°ì„ ì¼ì •ì‹œê°„ ì§€ì†(ì…€í”„)
+                    case SKILL_TYPE_10 :	// ëŠ¥ë ¥ì¹˜ ë³€ê²½í˜•(ì…€í”„)	:	í•œë°©ì— ì˜¬ë¦¼
+                    case SKILL_TYPE_12 :	// ìƒíƒœ ì§€ì†í˜•(ì…€í”„)	ì¤‘ë…, ë²™ì–´ë¦¬, ê¸°ì ˆ, íˆ¬ëª…,
+               ë°©íŒ¨ë°ë¯¸ì§€, ì¶”ê°€ ë°ë¯¸ì§€ return false; default : if ( SA_TARGET_STOP   ==
                SKILL_ACTION_MODE( nSkillIDX ) || SA_TARGET_ATTACK == SKILL_ACTION_MODE( nSkillIDX )
                ) break;
             */
@@ -5544,11 +5550,11 @@ classUSER::Is_TargetSKILL(short nSkillIDX) {
 //-------------------------------------------------------------------------------------------------
 
 #define SKILL_DELAY_TIME 500 // 0.5 sec
-/// °³ÀÎ ½ºÅ³ ½ÃÀÛ ¿äÃ» ¹ŞÀ½
+/// ê°œì¸ ìŠ¤í‚¬ ì‹œì‘ ìš”ì²­ ë°›ìŒ
 bool
 classUSER::Recv_cli_SELF_SKILL(t_PACKET* pPacket) {
     if (!(this->m_dwPayFLAG & PLAY_FLAG_BATTLE)) {
-        // °ø°İ ¸øÇØ... µ·³»¾ßÇÔ
+        // ê³µê²© ëª»í•´... ëˆë‚´ì•¼í•¨
         return true;
     }
 
@@ -5558,7 +5564,7 @@ classUSER::Recv_cli_SELF_SKILL(t_PACKET* pPacket) {
     }
 
     if (this->Get_ActiveSKILL()) {
-        return true; // ½ºÅ³ ÄÉ½ºÆÃ ÁßÀÏ¶© ¸ø¹Ù²ã
+        return true; // ìŠ¤í‚¬ ì¼€ìŠ¤íŒ… ì¤‘ì¼ë• ëª»ë°”ê¿”
     }
     if (this->m_IngSTATUS.IsIgnoreSTATUS() || this->m_IngSTATUS.IsSET(FLAG_ING_DUMB)) {
         return true;
@@ -5575,7 +5581,7 @@ classUSER::Recv_cli_SELF_SKILL(t_PACKET* pPacket) {
     }
 
     if (this->Get_WeightRATE() >= WEIGHT_RATE_CANT_ATK) {
-        // ¹«°Ì´Ù.. ¸í·É ºÒ°¡...
+        // ë¬´ê²ë‹¤.. ëª…ë ¹ ë¶ˆê°€...
         if ((SKILL_TYPE(nSkillIDX) >= 3 && SKILL_TYPE(nSkillIDX) <= 13)
             || SKILL_TYPE(nSkillIDX) == 17) {
             return true;
@@ -5591,7 +5597,7 @@ classUSER::Recv_cli_SELF_SKILL(t_PACKET* pPacket) {
     }
 
     if (this->Do_SelfSKILL(nSkillIDX)) {
-        // ½ÃÀÛ ¼º°ø...
+        // ì‹œì‘ ì„±ê³µ...
         this->m_dwLastSkillActiveTIME = dwCurTime;
         this->m_dwLastSkillSpellTIME[pPacket->m_cli_SELF_SKILL.m_btSkillSLOT] = dwCurTime;
         this->m_dwLastSkillGroupSpeelTIME[SKILL_RELOAD_TYPE(nSkillIDX)] = dwCurTime;
@@ -5612,7 +5618,7 @@ classUSER::Recv_cli_TARGET_SKILL(t_PACKET* pPacket) {
     }
 
     if (this->Get_ActiveSKILL()) {
-        return true; // ½ºÅ³ ÄÉ½ºÆÃ ÁßÀÏ¶© ¸ø¹Ù²ã
+        return true; // ìŠ¤í‚¬ ì¼€ìŠ¤íŒ… ì¤‘ì¼ë• ëª»ë°”ê¿”
     }
     if (this->m_IngSTATUS.IsIgnoreSTATUS() || this->m_IngSTATUS.IsSET(FLAG_ING_DUMB)) {
         return true;
@@ -5629,7 +5635,7 @@ classUSER::Recv_cli_TARGET_SKILL(t_PACKET* pPacket) {
     }
 
     if (this->Get_WeightRATE() >= WEIGHT_RATE_CANT_ATK) {
-        // ¹«°Ì´Ù.. ¸í·É ºÒ°¡...
+        // ë¬´ê²ë‹¤.. ëª…ë ¹ ë¶ˆê°€...
         if ((SKILL_TYPE(nSkillIDX) >= 3 && SKILL_TYPE(nSkillIDX) <= 13)
             || SKILL_TYPE(nSkillIDX) == 17) {
             return true;
@@ -5656,7 +5662,7 @@ classUSER::Recv_cli_TARGET_SKILL(t_PACKET* pPacket) {
 bool
 classUSER::Recv_cli_POSITION_SKILL(t_PACKET* pPacket) {
     if (!(this->m_dwPayFLAG & PLAY_FLAG_BATTLE)) {
-        // °ø°İ ¸øÇØ... µ·³»¾ßÇÔ
+        // ê³µê²© ëª»í•´... ëˆë‚´ì•¼í•¨
         return true;
     }
 
@@ -5666,7 +5672,7 @@ classUSER::Recv_cli_POSITION_SKILL(t_PACKET* pPacket) {
     }
 
     if (this->Get_ActiveSKILL())
-        return true; // ½ºÅ³ ÄÉ½ºÆÃ ÁßÀÏ¶© ¸ø¹Ù²ã
+        return true; // ìŠ¤í‚¬ ì¼€ìŠ¤íŒ… ì¤‘ì¼ë• ëª»ë°”ê¿”
     if (this->m_IngSTATUS.IsIgnoreSTATUS() || this->m_IngSTATUS.IsSET(FLAG_ING_DUMB))
         return true;
     if (pPacket->m_cli_POSITION_SKILL.m_btSkillSLOT >= MAX_LEARNED_SKILL_CNT)
@@ -5679,7 +5685,7 @@ classUSER::Recv_cli_POSITION_SKILL(t_PACKET* pPacket) {
         return true;
     }
     if (this->Get_WeightRATE() >= WEIGHT_RATE_CANT_ATK) {
-        // ¹«°Ì´Ù.. ¸í·É ºÒ°¡...
+        // ë¬´ê²ë‹¤.. ëª…ë ¹ ë¶ˆê°€...
         if ((SKILL_TYPE(nSkillIDX) >= 3 && SKILL_TYPE(nSkillIDX) <= 13)
             || SKILL_TYPE(nSkillIDX) == 17)
             return true;
@@ -5689,8 +5695,8 @@ classUSER::Recv_cli_POSITION_SKILL(t_PACKET* pPacket) {
     }
 
     switch (SKILL_TYPE(nSkillIDX)) {
-        case SKILL_TYPE_07: // Áö¿ª ¸¶¹ı °ø°İÇü
-            if (this->GetCur_RIDE_MODE()) // Å¾½Â½Ã »ç¿ë ÇÒ¼ö ¾ø´Ù.
+        case SKILL_TYPE_07: // ì§€ì—­ ë§ˆë²• ê³µê²©í˜•
+            if (this->GetCur_RIDE_MODE()) // íƒ‘ìŠ¹ì‹œ ì‚¬ìš© í• ìˆ˜ ì—†ë‹¤.
                 return true;
             break;
 
@@ -5699,11 +5705,11 @@ classUSER::Recv_cli_POSITION_SKILL(t_PACKET* pPacket) {
     }
 
     if (this->Skill_ActionCondition(nSkillIDX)) {
-        // ½ÇÁ¦ ÇÊ¿ä ¼öÄ¡ ¼Ò¸ğ Àû¿ë...
+        // ì‹¤ì œ í•„ìš” ìˆ˜ì¹˜ ì†Œëª¨ ì ìš©...
         // if ( this->SetCMD_Skill2POS( pPacket->m_cli_POSITION_SKILL.m_PosTARGET, nSkillIDX ) )
         //	this->Skill_UseAbilityValue( nSkillIDX );
         if (this->SetCMD_Skill2POS(pPacket->m_cli_POSITION_SKILL.m_PosTARGET, nSkillIDX)) {
-            // ½ÃÀÛ ¼º°ø...
+            // ì‹œì‘ ì„±ê³µ...
             this->m_dwLastSkillActiveTIME = dwCurTime;
             this->m_dwLastSkillSpellTIME[pPacket->m_cli_POSITION_SKILL.m_btSkillSLOT] = dwCurTime;
             this->m_dwLastSkillGroupSpeelTIME[SKILL_RELOAD_TYPE(nSkillIDX)] = dwCurTime;
@@ -5714,7 +5720,7 @@ classUSER::Recv_cli_POSITION_SKILL(t_PACKET* pPacket) {
 }
 
 //-------------------------------------------------------------------------------------------------
-/// Äù½ºÆ® Ãß°¡/½ÇÇà¿¡ ´ëÇÑ °á°ú Åëº¸
+/// í€˜ìŠ¤íŠ¸ ì¶”ê°€/ì‹¤í–‰ì— ëŒ€í•œ ê²°ê³¼ í†µë³´
 bool
 classUSER::Send_gsv_QUEST_REPLY(BYTE btResult, BYTE btSlot, int iQuestID) {
     classPACKET* pCPacket = Packet_AllocNLock();
@@ -5733,12 +5739,12 @@ classUSER::Send_gsv_QUEST_REPLY(BYTE btResult, BYTE btSlot, int iQuestID) {
 
     return true;
 }
-/// Äù½ºÆ® ½ÇÇà...
+/// í€˜ìŠ¤íŠ¸ ì‹¤í–‰...
 bool
 classUSER::Do_QuestTRIGGER(t_HASHKEY HashTRIGGER, short nSelectReward) {
-    // ¼­¹ö¿¡¼­¸¸ Ã¼Å©ÇÏ°í Å¬¶óÀÌ¾ğÆ®¿¡¼­ Ã¼Å©ÇÏÁö ¾Ê´Â Á¶°ÇÀÏ °æ¿ì
-    // ¼­¹ö¿¡¼­ Á¶°ÇÀÌ falseµÉ¼ö ÀÖ´Ù...¹«Á¶°Ç Á¢¼Ó ²÷À¸¸é ¾ÈµÊ... ½ÇÆĞ¸¦ Åëº¸ÇÒ²¨³Ä? °Á ¹«½Ã
-    // ÇÒ²¨³Ä???
+    // ì„œë²„ì—ì„œë§Œ ì²´í¬í•˜ê³  í´ë¼ì´ì–¸íŠ¸ì—ì„œ ì²´í¬í•˜ì§€ ì•ŠëŠ” ì¡°ê±´ì¼ ê²½ìš°
+    // ì„œë²„ì—ì„œ ì¡°ê±´ì´ falseë ìˆ˜ ìˆë‹¤...ë¬´ì¡°ê±´ ì ‘ì† ëŠìœ¼ë©´ ì•ˆë¨... ì‹¤íŒ¨ë¥¼ í†µë³´í• êº¼ëƒ? ê± ë¬´ì‹œ
+    // í• êº¼ëƒ???
     eQST_RESULT eResult = g_QuestList.CheckQUEST(this,
         HashTRIGGER,
         true,
@@ -5758,12 +5764,12 @@ classUSER::Do_QuestTRIGGER(t_HASHKEY HashTRIGGER, short nSelectReward) {
         case QST_RESULT_STOPPED:
             return true;
         case QST_RESULT_INVALID:
-            // ¹«½Ã...
+            // ë¬´ì‹œ...
             return true;
         default: {
             CQuestTRIGGER* pQuestTrigger = g_QuestList.GetQuest(HashTRIGGER);
             if (pQuestTrigger) {
-                // ¿ì¼± Â©¸£Áö ¸»°í...
+                // ìš°ì„  ì§¤ë¥´ì§€ ë§ê³ ...
                 g_LOG.CS_ODS(0xffff,
                     ">>> ERROR(%s,ZoneNO:%d):: QuestTrigger( %s:Result:%d )\n",
                     this->Get_NAME(),
@@ -5782,12 +5788,12 @@ classUSER::Do_QuestTRIGGER(t_HASHKEY HashTRIGGER, short nSelectReward) {
         }
     } // switch ( eResult )
 
-    // Å¬¶óÀÌ¾ğÆ®¿¡¼­ ÀÌ¹Ì ÇÑ¹ø °ËÁõÇÑÈÄ º¸³»±â ¶§¹®¿¡ ½ÇÆĞÇÒ °æ¿ì
-    // µ¥ÀÌÅ¸°¡ Æ²¸±¼ö ÀÖÀ¸¹Ç·Î Â©¸£°í ´Ù½Ã Á¢¼ÓÇÏµµ·Ï À¯µµ... !!!
+    // í´ë¼ì´ì–¸íŠ¸ì—ì„œ ì´ë¯¸ í•œë²ˆ ê²€ì¦í•œí›„ ë³´ë‚´ê¸° ë•Œë¬¸ì— ì‹¤íŒ¨í•  ê²½ìš°
+    // ë°ì´íƒ€ê°€ í‹€ë¦´ìˆ˜ ìˆìœ¼ë¯€ë¡œ ì§¤ë¥´ê³  ë‹¤ì‹œ ì ‘ì†í•˜ë„ë¡ ìœ ë„... !!!
     // return this->Send_gsv_QUEST_REPLY(RESULT_QUEST_REPLY_TRIGGER_FAILED, 0, (int)HashTRIGGER );
     return true;
 }
-/// Äù½ºÆ® »èÁ¦/¿Ï·áÃ¼Å© ¸¦ ¿äÃ» ¹ŞÀ½
+/// í€˜ìŠ¤íŠ¸ ì‚­ì œ/ì™„ë£Œì²´í¬ ë¥¼ ìš”ì²­ ë°›ìŒ
 bool
 classUSER::Recv_cli_QUEST_REQ(t_PACKET* pPacket) {
     switch (pPacket->m_cli_QUEST_REQ.m_btTYPE) {
@@ -5803,7 +5809,7 @@ classUSER::Recv_cli_QUEST_REQ(t_PACKET* pPacket) {
 
         case TYPE_QUEST_REQ_DO_TRIGGER:
             return this->Do_QuestTRIGGER(
-                pPacket->m_cli_QUEST_REQ.m_TriggerHash /*º¸»ó¼±ÅÃ ÀÎµ¦½º */);
+                pPacket->m_cli_QUEST_REQ.m_TriggerHash /*ë³´ìƒì„ íƒ ì¸ë±ìŠ¤ */);
     }
 
     IS_HACKING(this, "classUSER::cli_QUEST_REQ( Script hacking.. )");
@@ -5859,24 +5865,24 @@ pPacket->m_cli_QUEST_DATA_REQ.m_btQuestSLOT ], sizeof( CQUEST ) );
 */
 
 //-------------------------------------------------------------------------------------------------
-/// ÆÄÆ¼ °ü·Ã ¿äÃ» ÆĞÅ¶
+/// íŒŒí‹° ê´€ë ¨ ìš”ì²­ íŒ¨í‚·
 bool
 classUSER::Recv_cli_PARTY_REQ(t_PACKET* pPacket) {
     switch (pPacket->m_cli_PARTY_REQ.m_btREQUEST) {
-        case PARTY_REQ_BAN: // ÆÄÂ¯ ÀÌ¾î¾ß ÇÑ´Ù.
+        case PARTY_REQ_BAN: // íŒŒì§± ì´ì–´ì•¼ í•œë‹¤.
             if (this->GetPARTY() && this == this->m_pPartyBUFF->GetPartyOWNER()) {
                 this->m_pPartyBUFF->Kick_MEMBER(pPacket->m_cli_PARTY_REQ.m_dwDestIDXorTAG);
             }
             return true;
 
-        case PARTY_REQ_LEFT: // ³»°¡ ³ª°£´Ù.
+        case PARTY_REQ_LEFT: // ë‚´ê°€ ë‚˜ê°„ë‹¤.
             if (this->GetPARTY()) {
                 this->m_pPartyBUFF->Sub_PartyUSER(this->m_nPartyPOS); // PARTY_REQ_LEFT
             }
             return true;
     } // switch( pPacket->m_cli_PARTY_REQ.m_btREQUEST )
 
-    // ÀÚ½ÅÇÑÅ× ÆÄÆ¼°¡ ½ÅÃ»µÇ´Â È²´çÇÑ ÆĞÅ¶ÀÌ ¿Â´Ù°í...
+    // ìì‹ í•œí…Œ íŒŒí‹°ê°€ ì‹ ì²­ë˜ëŠ” í™©ë‹¹í•œ íŒ¨í‚·ì´ ì˜¨ë‹¤ê³ ...
     if (this->Get_INDEX() == pPacket->m_cli_PARTY_REQ.m_dwDestIDXorTAG)
         return false;
 
@@ -5887,7 +5893,7 @@ classUSER::Recv_cli_PARTY_REQ(t_PACKET* pPacket) {
     }
     switch (pPacket->m_cli_PARTY_REQ.m_btREQUEST) {
         case PARTY_REQ_MAKE:
-            // °ú±İ ¾ÈµÇ¾î ÀÖ´Ù¸é ÆÄÆ¼ ¸øÇÑ´Ù.
+            // ê³¼ê¸ˆ ì•ˆë˜ì–´ ìˆë‹¤ë©´ íŒŒí‹° ëª»í•œë‹¤.
             if (!(this->m_dwPayFLAG & PAY_FLAG_JP_BATTLE))
                 return true;
             if (!(pUSER->m_dwPayFLAG & PAY_FLAG_JP_BATTLE)) {
@@ -5898,12 +5904,12 @@ classUSER::Recv_cli_PARTY_REQ(t_PACKET* pPacket) {
             if (this->GetPARTY())
                 return true;
             if (pUSER->Get_HP() <= 0 || pUSER->GetPARTY()) {
-                // ÀÌ¹Ì ´Ù¸¥ ÆÄÆ¼¿¡ Âü°¡ ÁßÀÌ¸é..
+                // ì´ë¯¸ ë‹¤ë¥¸ íŒŒí‹°ì— ì°¸ê°€ ì¤‘ì´ë©´..
                 return this->Send_gsv_PARTY_REPLY(pPacket->m_cli_PARTY_REQ.m_dwDestIDXorTAG,
                     PARTY_REPLY_BUSY);
             }
 
-            // °á¼º½Ã ÆÄÆ¼·¾Àº 0ÀÌ´Ù !!
+            // ê²°ì„±ì‹œ íŒŒí‹°ë ™ì€ 0ì´ë‹¤ !!
             if (!this->Check_PartyJoinLEVEL(pUSER->Get_LEVEL(), this->Get_LEVEL(), 0)) {
                 return Send_gsv_PARTY_REPLY(pPacket->m_cli_PARTY_REQ.m_dwDestIDXorTAG,
                     PARTY_REPLY_INVALID_LEVEL);
@@ -5912,7 +5918,7 @@ classUSER::Recv_cli_PARTY_REQ(t_PACKET* pPacket) {
             return pUSER->Send_gsv_PARTY_REQ(this->Get_INDEX(), PARTY_REQ_MAKE);
 
         case PARTY_REQ_JOIN:
-            // °ú±İ ¾ÈµÇ¾î ÀÖ´Ù¸é ÆÄÆ¼ ¸øÇÑ´Ù.
+            // ê³¼ê¸ˆ ì•ˆë˜ì–´ ìˆë‹¤ë©´ íŒŒí‹° ëª»í•œë‹¤.
             if (!(this->m_dwPayFLAG & PAY_FLAG_JP_BATTLE)) {
                 return true;
             }
@@ -5924,12 +5930,12 @@ classUSER::Recv_cli_PARTY_REQ(t_PACKET* pPacket) {
             if (!this->GetPARTY())
                 return true;
             if (pUSER->Get_HP() <= 0 || pUSER->GetPARTY()) {
-                // ÀÌ¹Ì ´Ù¸¥ ÆÄÆ¼¿¡ Âü°¡ ÁßÀÌ¸é..
+                // ì´ë¯¸ ë‹¤ë¥¸ íŒŒí‹°ì— ì°¸ê°€ ì¤‘ì´ë©´..
                 return this->Send_gsv_PARTY_REPLY(pPacket->m_cli_PARTY_REQ.m_dwDestIDXorTAG,
                     PARTY_REPLY_BUSY);
             }
 
-            // pUSERÀÇ °¡ÀÔ ·¹º§ Ã¼Å©...
+            // pUSERì˜ ê°€ì… ë ˆë²¨ ì²´í¬...
             if (!this->Check_PartyJoinLEVEL(pUSER->Get_LEVEL(),
                     this->m_pPartyBUFF->GetAverageLEV(),
                     this->m_pPartyBUFF->GetPartyLEV())) {
@@ -5952,7 +5958,7 @@ classUSER::Recv_cli_PARTY_REQ(t_PACKET* pPacket) {
     return true;
 }
 
-/// ÆÄÆ¼ °ü·Ã ÀÀ´ä ÆĞÅ¶
+/// íŒŒí‹° ê´€ë ¨ ì‘ë‹µ íŒ¨í‚·
 bool
 classUSER::Recv_cli_PARTY_REPLY(t_PACKET* pPacket) {
     classUSER* pUSER = g_pObjMGR->Get_UserOBJ(pPacket->m_cli_PARTY_REPLY.m_dwDestIDXorTAG);
@@ -5968,24 +5974,24 @@ classUSER::Recv_cli_PARTY_REPLY(t_PACKET* pPacket) {
     switch (pPacket->m_cli_PARTY_REPLY.m_btREPLY) {
         case PARTY_REPLY_ACCEPT_MAKE: {
             if (this->GetPARTY()) {
-                // ÆÄÆ¼ °á¼º ¿äÃ»À» Çã¶ôÇß´Âµ¥ ³»°¡ ÀÌ¹Ì ´Ù¸¥ ÆÄÆ¼¿øÀÌ¶ó¸é ???
-                // ³»°¡ ÆÄÆ¼ °á¼ºÀ» ¿äÃ»ÇÑ »ç¶÷ »ç¶÷ÀÌ ¹Ş¾Æµé¿©Á® ÆÄÆ¼°¡ °á¼ºµÉ¶§...
+                // íŒŒí‹° ê²°ì„± ìš”ì²­ì„ í—ˆë½í–ˆëŠ”ë° ë‚´ê°€ ì´ë¯¸ ë‹¤ë¥¸ íŒŒí‹°ì›ì´ë¼ë©´ ???
+                // ë‚´ê°€ íŒŒí‹° ê²°ì„±ì„ ìš”ì²­í•œ ì‚¬ëŒ ì‚¬ëŒì´ ë°›ì•„ë“¤ì—¬ì ¸ íŒŒí‹°ê°€ ê²°ì„±ë ë•Œ...
                 return true;
             }
 
             if (NULL == pUSER->GetPARTY()) {
-                // ÆÄÆ¼ °á¼º ¿äÃ»ÀÚ°¡ ÆÄÆ¼¸¦ ¸¸µç´Ù.
+                // íŒŒí‹° ê²°ì„± ìš”ì²­ìê°€ íŒŒí‹°ë¥¼ ë§Œë“ ë‹¤.
                 if (!g_pPartyBUFF->CreatePARTY(pUSER)) {
                     return this->Send_gsv_PARTY_REPLY(pPacket->m_cli_PARTY_REPLY.m_dwDestIDXorTAG,
                         PARTY_REPLY_DESTROY);
                 }
             } else if (pUSER != pUSER->m_pPartyBUFF->GetPartyOWNER()) {
-                // ÆÄÆ¼ °á¼º ¿äÃ»ÀÚ°¡ ÀÌ¹Ì ´Ù¸¥ ÆÄÆ¼¿¡ °¡ÀÔÇß´Ù.
+                // íŒŒí‹° ê²°ì„± ìš”ì²­ìê°€ ì´ë¯¸ ë‹¤ë¥¸ íŒŒí‹°ì— ê°€ì…í–ˆë‹¤.
                 return this->Send_gsv_PARTY_REPLY(pPacket->m_cli_PARTY_REPLY.m_dwDestIDXorTAG,
                     PARTY_REPLY_DESTROY);
             }
 
-            // ÆÄÂ¯ÀÌ µÈ À¯Àú¿¡°Ô Çã¶ô ÆĞÅ¶ Àü¼Û.
+            // íŒŒì§±ì´ ëœ ìœ ì €ì—ê²Œ í—ˆë½ íŒ¨í‚· ì „ì†¡.
             pUSER->Send_gsv_PARTY_REPLY(pPacket->m_cli_PARTY_REPLY.m_dwDestIDXorTAG,
                 PARTY_REPLY_ACCEPT_MAKE);
 
@@ -5996,12 +6002,12 @@ classUSER::Recv_cli_PARTY_REPLY(t_PACKET* pPacket) {
 
         case PARTY_REPLY_ACCEPT_JOIN: {
             if (this->GetPARTY()) {
-                // ³»°¡ ÆÄÆ¼ Âü°¡¸¦ Çã¶ôÇÑ »óÅÂ¿¡¼­ ³»°¡ ÆÄÆ¼°¡ ÀÖ´Ù¸é ???
-                // ³»°¡ ÆÄÆ¼ °á¼ºÀ» ¿äÃ»ÇÑ ´Ù¸¥ ÀÌ°¡ Çã·°ÇØ¼­ ³»°¡ ÆÄÆ¼¿¡ Á¶ÀÎÀÌ µÈ°æ¿ì...
+                // ë‚´ê°€ íŒŒí‹° ì°¸ê°€ë¥¼ í—ˆë½í•œ ìƒíƒœì—ì„œ ë‚´ê°€ íŒŒí‹°ê°€ ìˆë‹¤ë©´ ???
+                // ë‚´ê°€ íŒŒí‹° ê²°ì„±ì„ ìš”ì²­í•œ ë‹¤ë¥¸ ì´ê°€ í—ˆëŸ­í•´ì„œ ë‚´ê°€ íŒŒí‹°ì— ì¡°ì¸ì´ ëœê²½ìš°...
                 return true;
             }
 
-            // ÆÄÆ¼°á¼º ¿äÃ»ÀÚ, °¡ÀÔ ¿äÃ»ÀÚ°¡ ÀÚ½ÅÀÇ ÆÄÆ¼ÀÇ Â¯ÀÎ°¡ ??
+            // íŒŒí‹°ê²°ì„± ìš”ì²­ì, ê°€ì… ìš”ì²­ìê°€ ìì‹ ì˜ íŒŒí‹°ì˜ ì§±ì¸ê°€ ??
             if (pUSER->GetPARTY() && pUSER == pUSER->m_pPartyBUFF->GetPartyOWNER()) {
                 BYTE btFailed = pUSER->m_pPartyBUFF->Add_PartyUSER(this);
                 if (btFailed)
@@ -6026,7 +6032,7 @@ classUSER::Recv_cli_PARTY_REPLY(t_PACKET* pPacket) {
 }
 
 //-------------------------------------------------------------------------------------------------
-/// ¾ÆÀÌÅÛ ¿É¼Ç °ËÁõ ¿äÃ» ÆĞÅ¶
+/// ì•„ì´í…œ ì˜µì…˜ ê²€ì¦ ìš”ì²­ íŒ¨í‚·
 bool
 classUSER::Recv_cli_APPRAISAL_REQ(t_PACKET* pPacket) {
     if (pPacket->m_cli_APPRAISAL_REQ.m_wInventoryIndex < 1
@@ -6050,7 +6056,7 @@ classUSER::Recv_cli_APPRAISAL_REQ(t_PACKET* pPacket) {
     pCPacket->m_gsv_APPRAISAL_REPLY.m_wInventoryIndex =
         pPacket->m_cli_APPRAISAL_REQ.m_wInventoryIndex;
 
-    if (iNeedMoney > this->Get_MONEY()) { // µ·¾ø´ç
+    if (iNeedMoney > this->Get_MONEY()) { // ëˆì—†ë‹¹
         pCPacket->m_gsv_APPRAISAL_REPLY.m_btResult = RESULT_APPRAISAL_REPLY_FAILED;
     } else {
         this->Sub_CurMONEY(iNeedMoney);
@@ -6062,8 +6068,8 @@ classUSER::Recv_cli_APPRAISAL_REQ(t_PACKET* pPacket) {
     Packet_ReleaseNUnlock(pCPacket);
 
     if ( pPacket->m_cli_APPRAISAL_REQ.m_wInventoryIndex < MAX_EQUIP_IDX /* || pPacket->m_cli_APPRAISAL_REQ.m_wInventoryIndex >= INVENTORY_RIDE_ITEM0 */ ) {
-        // TODO:: PAT¾ÆÀÌÅÛÀº ??
-        // ÀåÂøµÈ ÀåºñÀÌ¹Ç·Î ´É·ÂÄ¡ º¯°æµÊ ÀÌ¼Ó, È¸º¹¼Óµµ º¯°æ µÇ¸é ÁÖº¯¿¡ Åëº¸ ÇÊ¿ä
+        // TODO:: PATì•„ì´í…œì€ ??
+        // ì¥ì°©ëœ ì¥ë¹„ì´ë¯€ë¡œ ëŠ¥ë ¥ì¹˜ ë³€ê²½ë¨ ì´ì†, íšŒë³µì†ë„ ë³€ê²½ ë˜ë©´ ì£¼ë³€ì— í†µë³´ í•„ìš”
         if (this->GetPARTY()) {
             BYTE btCurCON = this->GetCur_CON();
             BYTE btRecvHP = this->m_btRecoverHP;
@@ -6071,7 +6077,7 @@ classUSER::Recv_cli_APPRAISAL_REQ(t_PACKET* pPacket) {
 
             this->UpdateAbility(); // appraisal
 
-            // º¯°æ¿¡ ÀÇÇØ ¿É¼ÇÀÌ ºÙ¾î È¸º¹ÀÌ ¹Ù²î¸é ÆÄÆ¼¿ø¿¡°Ô Àü¼Û.
+            // ë³€ê²½ì— ì˜í•´ ì˜µì…˜ì´ ë¶™ì–´ íšŒë³µì´ ë°”ë€Œë©´ íŒŒí‹°ì›ì—ê²Œ ì „ì†¡.
             if (btCurCON != this->GetCur_CON() || btRecvHP != this->m_btRecoverHP
                 || btRecvMP != this->m_btRecoverMP) {
                 this->m_pPartyBUFF->Change_ObjectIDX(this);
@@ -6086,7 +6092,7 @@ classUSER::Recv_cli_APPRAISAL_REQ(t_PACKET* pPacket) {
 }
 
 //-------------------------------------------------------------------------------------------------
-/// ¼Ò¸ğ ¾ÆÀÌÅÛÀ¸·Î ¾ÆÀÌÅÛ ¼ö¸® ¿äÃ»
+/// ì†Œëª¨ ì•„ì´í…œìœ¼ë¡œ ì•„ì´í…œ ìˆ˜ë¦¬ ìš”ì²­
 bool
 classUSER::Recv_cli_USE_ITEM_TO_REPAIR(t_PACKET* pPacket) {
     if (this->m_IngSTATUS.IsSET(FLAG_ING_IGNORE_ALL))
@@ -6094,12 +6100,12 @@ classUSER::Recv_cli_USE_ITEM_TO_REPAIR(t_PACKET* pPacket) {
 
     if (pPacket->m_cli_USE_ITEM_TO_REPAIR.m_nUseItemInvIDX < 0
         || pPacket->m_cli_USE_ITEM_TO_REPAIR.m_nUseItemInvIDX >= INVENTORY_TOTAL_SIZE) {
-        // ÆĞÅ¶ÀÌ Á¶ÀÛµÈ°ÍÀÎ°¡?
+        // íŒ¨í‚·ì´ ì¡°ì‘ëœê²ƒì¸ê°€?
         return IS_HACKING(this, "Recv_cli_USE_ITEM_TO_REPLY-1");
     }
     if (pPacket->m_cli_USE_ITEM_TO_REPAIR.m_nRepairTargetInvIDX < 0
         || pPacket->m_cli_USE_ITEM_TO_REPAIR.m_nRepairTargetInvIDX >= INVENTORY_TOTAL_SIZE) {
-        // ÆĞÅ¶ÀÌ Á¶ÀÛµÈ°ÍÀÎ°¡?
+        // íŒ¨í‚·ì´ ì¡°ì‘ëœê²ƒì¸ê°€?
         return IS_HACKING(this, "Recv_cli_USE_ITEM_TO_REPLY-2");
     }
 
@@ -6112,17 +6118,17 @@ classUSER::Recv_cli_USE_ITEM_TO_REPAIR(t_PACKET* pPacket) {
     tagITEM* pTgtITEM =
         &this->m_Inventory.m_ItemLIST[pPacket->m_cli_USE_ITEM_TO_REPAIR.m_nRepairTargetInvIDX];
     if (!pTgtITEM->IsEquipITEM()) {
-        // Àåºñ°¡ ¾Æ´Ï´Ù.
+        // ì¥ë¹„ê°€ ì•„ë‹ˆë‹¤.
         if (ITEM_TYPE_RIDE_PART != pTgtITEM->GetTYPE())
             return true;
-        // ¿£ÁøÀ» ¼ö¸® ¸øÇÑ´Ù... ¿¬·á·Î º¸ÃæÀ» ÇØ¾ßÁã~~~
+        // ì—”ì§„ì„ ìˆ˜ë¦¬ ëª»í•œë‹¤... ì—°ë£Œë¡œ ë³´ì¶©ì„ í•´ì•¼ì¥~~~
         if (RIDE_PART_ENGINE == PAT_ITEM_PART_IDX(pTgtITEM->GetItemNO()))
             return true;
     }
-    if (pTgtITEM->GetDurability() <= 0) // ³»±¸µµ°¡ 0ÀÌ¸é ¼ö¸® ¸øÇÑ´Ù.
+    if (pTgtITEM->GetDurability() <= 0) // ë‚´êµ¬ë„ê°€ 0ì´ë©´ ìˆ˜ë¦¬ ëª»í•œë‹¤.
         return true;
 
-    // ³»±¸µµ °¨¼Ò¾ø´Â ÆÛÆÑÆ® ¸ÁÄ¡³Ä ???
+    // ë‚´êµ¬ë„ ê°ì†Œì—†ëŠ” í¼íŒ©íŠ¸ ë§ì¹˜ëƒ ???
     if (0 == USEITEM_ADD_DATA_VALUE(pUseITEM->GetItemNO())) {
         int iDec = (int)((1400 - pTgtITEM->GetLife()) * (RANDOM(100) + 11)
             / (pTgtITEM->GetDurability() + 40) / 400.f);
@@ -6135,9 +6141,9 @@ classUSER::Recv_cli_USE_ITEM_TO_REPAIR(t_PACKET* pPacket) {
     pTgtITEM->m_nLife = MAX_ITEM_LIFE;
     this->UpdateAbility(); // repair weapon
 
-    // ¼ö·® °¨¼Ò
+    // ìˆ˜ëŸ‰ ê°ì†Œ
     if (--pUseITEM->m_uiQuantity <= 0) {
-        // ´Ù ¼Ò¸ğÇß´Ù..
+        // ë‹¤ ì†Œëª¨í–ˆë‹¤..
         m_Inventory.DeleteITEM(pPacket->m_cli_USE_ITEM_TO_REPAIR.m_nUseItemInvIDX);
     }
 
@@ -6149,7 +6155,7 @@ classUSER::Recv_cli_USE_ITEM_TO_REPAIR(t_PACKET* pPacket) {
 
     return true;
 }
-/// npc¸¦ ÅëÇØ ¾ÆÀÌÅÛ ¼ö¸® ¿äÃ»
+/// npcë¥¼ í†µí•´ ì•„ì´í…œ ìˆ˜ë¦¬ ìš”ì²­
 bool
 classUSER::Recv_cli_REPAIR_FROM_NPC(t_PACKET* pPacket) {
     CObjNPC* pCharNPC;
@@ -6159,7 +6165,7 @@ classUSER::Recv_cli_REPAIR_FROM_NPC(t_PACKET* pPacket) {
         return false;
     }
 
-    // »óÁ¡ npc¿ÍÀÇ °Å·¡ Ã¼Å©...
+    // ìƒì  npcì™€ì˜ ê±°ë˜ ì²´í¬...
     int iDistance = distance((int)m_PosCUR.x,
         (int)m_PosCUR.y,
         (int)pCharNPC->m_PosCUR.x,
@@ -6171,20 +6177,20 @@ classUSER::Recv_cli_REPAIR_FROM_NPC(t_PACKET* pPacket) {
     tagITEM* pTgtITEM =
         &this->m_Inventory.m_ItemLIST[pPacket->m_cli_REPAIR_FROM_NPC.m_nRepairTargetInvIDX];
     if (!pTgtITEM->IsEquipITEM()) {
-        // Àåºñ°¡ ¾Æ´Ï´Ù.
+        // ì¥ë¹„ê°€ ì•„ë‹ˆë‹¤.
         if (ITEM_TYPE_RIDE_PART != pTgtITEM->GetTYPE())
             return true;
-        // ¿£ÁøÀ» ¼ö¸® ¸øÇÑ´Ù... ¿¬·á·Î º¸ÃæÀ» ÇØ¾ßÁã~~~
+        // ì—”ì§„ì„ ìˆ˜ë¦¬ ëª»í•œë‹¤... ì—°ë£Œë¡œ ë³´ì¶©ì„ í•´ì•¼ì¥~~~
         if (RIDE_PART_ENGINE == PAT_ITEM_PART_IDX(pTgtITEM->GetItemNO()))
             return true;
     }
-    if (pTgtITEM->GetDurability() <= 0) // ³»±¸µµ°¡ 0ÀÌ¸é ¼ö¸® ¸øÇÑ´Ù.
+    if (pTgtITEM->GetDurability() <= 0) // ë‚´êµ¬ë„ê°€ 0ì´ë©´ ìˆ˜ë¦¬ ëª»í•œë‹¤.
         return true;
 
     int iFee = (int)((ITEM_BASE_PRICE(pTgtITEM->GetTYPE(), pTgtITEM->GetItemNO()) + 1000) / 400000.f
         * (pTgtITEM->GetDurability() + 10) * (1100 - pTgtITEM->GetLife()));
     if (this->Get_MONEY() < iFee) {
-        // µ· ¾ø´Ù.
+        // ëˆ ì—†ë‹¤.
         return true;
     }
 
@@ -6205,7 +6211,7 @@ classUSER::Recv_cli_REPAIR_FROM_NPC(t_PACKET* pPacket) {
 }
 
 //-------------------------------------------------------------------------------------------------
-/// ¾ÆÀÌÅÛÀÇ ¼ö¸íÀ» Åëº¸
+/// ì•„ì´í…œì˜ ìˆ˜ëª…ì„ í†µë³´
 bool
 classUSER::Send_gsv_SET_ITEM_LIFE(short nInvIDX, short nLife) {
     classPACKET* pCPacket = Packet_AllocNLock();
@@ -6225,7 +6231,7 @@ classUSER::Send_gsv_SET_ITEM_LIFE(short nInvIDX, short nLife) {
 }
 
 //-------------------------------------------------------------------------------------------------
-/// ¸Ş½ÅÁ® :: °³ÀÎ¼· Å×½ºÆ®¿ëÇÔ¼ö
+/// ë©”ì‹ ì ¸ :: ê°œì¸ì„­ í…ŒìŠ¤íŠ¸ìš©í•¨ìˆ˜
 bool
 classUSER::Send_tag_MCMD_HEADER(BYTE btCMD, char* szStr) {
     classPACKET* pCPacket = Packet_AllocNLock();
@@ -6243,7 +6249,7 @@ classUSER::Send_tag_MCMD_HEADER(BYTE btCMD, char* szStr) {
 
     return true;
 }
-/// ¸Ş½ÅÁ® :: °³ÀÎ¼· Å×½ºÆ®¿ëÇÔ¼ö
+/// ë©”ì‹ ì ¸ :: ê°œì¸ì„­ í…ŒìŠ¤íŠ¸ìš©í•¨ìˆ˜
 bool
 classUSER::Recv_cli_MCMD_APPEND_REQ(t_PACKET* pPacket) {
     char* szName = pPacket->m_cli_MCMD_APPEND_REQ.m_szName;
@@ -6255,7 +6261,7 @@ classUSER::Recv_cli_MCMD_APPEND_REQ(t_PACKET* pPacket) {
     if (!pCPacket)
         return false;
 
-#pragma COMPILE_TIME_MSG("Ä£±¸ Ãß°¡ °ÅºÎ »óÅÂ¸é...")
+#pragma COMPILE_TIME_MSG("ì¹œêµ¬ ì¶”ê°€ ê±°ë¶€ ìƒíƒœë©´...")
 
     pCPacket->m_HEADER.m_wType = WSV_MESSENGER;
     pCPacket->m_HEADER.m_nSize = sizeof(wsv_MCMD_APPEND_REQ);
@@ -6312,7 +6318,7 @@ classUSER::Init_gsv_CRAFT_ITEM_REPLY() {
 
     return pCPacket;
 }
-/// ¾ÆÀÌÅÛ Àç¹Ö/ºĞÇØ ¼º°ø °á°ú Åëº¸
+/// ì•„ì´í…œ ì¬ë°/ë¶„í•´ ì„±ê³µ ê²°ê³¼ í†µë³´
 void
 classUSER::Send_gsv_CRAFT_ITEM_REPLY(classPACKET* pCPacket, BYTE btRESULT, BYTE btOutCNT) {
     pCPacket->m_HEADER.m_nSize = sizeof(gsv_CRAFT_ITEM_REPLY) + btOutCNT * sizeof(tag_SET_INVITEM);
@@ -6323,7 +6329,7 @@ classUSER::Send_gsv_CRAFT_ITEM_REPLY(classPACKET* pCPacket, BYTE btRESULT, BYTE 
     Packet_ReleaseNUnlock(pCPacket);
 }
 
-/// Àç¹Ö ¿äÃ»
+/// ì¬ë° ìš”ì²­
 bool
 classUSER::Proc_CRAFT_GEMMING_REQ(t_PACKET* pPacket) {
     if (pPacket->m_cli_CRAFT_GEMMING_REQ.m_btEquipInvIDX >= MAX_EQUIP_IDX)
@@ -6355,7 +6361,7 @@ classUSER::Proc_CRAFT_GEMMING_REQ(t_PACKET* pPacket) {
         return this->Send_gsv_CRAFT_ITEM_RESULT(CRAFT_GEMMING_USED_SOCKET);
     }
 
-    // º¸¼® ¹ÚÈù°ÍÀº ÀÚµ¿ °ËÁõ...
+    // ë³´ì„ ë°•íŒê²ƒì€ ìë™ ê²€ì¦...
     pEquipITEM->m_nGEM_OP = pJewelITEM->GetItemNO();
     this->SetPartITEM(pPacket->m_cli_CRAFT_GEMMING_REQ.m_btEquipInvIDX);
 
@@ -6374,14 +6380,14 @@ classUSER::Proc_CRAFT_GEMMING_REQ(t_PACKET* pPacket) {
 
     this->Send_gsv_CRAFT_ITEM_REPLY(pCPacket, CRAFT_GEMMING_SUCCESS, 2);
 
-    // ÀåÂøµÈ ÀåºñÀÌ¹Ç·Î ÁÖº¯¿¡ Åëº¸ ÇÊ¿ä...
+    // ì¥ì°©ëœ ì¥ë¹„ì´ë¯€ë¡œ ì£¼ë³€ì— í†µë³´ í•„ìš”...
     this->UpdateAbility(); // gemming
     this->InitPassiveSkill();
     this->Send_gsv_EQUIP_ITEM(pPacket->m_cli_CRAFT_GEMMING_REQ.m_btEquipInvIDX, pEquipITEM);
 
     return true;
 }
-/// ¾ÆÀÌÅÛ ºĞÇØ ¿äÃ»
+/// ì•„ì´í…œ ë¶„í•´ ìš”ì²­
 bool
 classUSER::Proc_CRAFT_BREAKUP_REQ(t_PACKET* pPacket, bool bUseMP) {
     if (pPacket->m_cli_CRAFT_BREAKUP_REQ.m_btTargetInvIDX < MAX_EQUIP_IDX
@@ -6394,7 +6400,7 @@ classUSER::Proc_CRAFT_BREAKUP_REQ(t_PACKET* pPacket, bool bUseMP) {
         return true;
 
     if (!pInITEM->IsEnableDupCNT() && pInITEM->HasSocket() && pInITEM->GetGemNO() > 300) {
-        // º¸¼® ºĞ¸®
+        // ë³´ì„ ë¶„ë¦¬
         short ORI_QUAL = ITEM_QUALITY(pInITEM->GetTYPE(), pInITEM->GetItemNO());
         short GEM_QUAL = ITEM_QUALITY(ITEM_TYPE_GEM, pInITEM->GetGemNO());
 
@@ -6402,14 +6408,14 @@ classUSER::Proc_CRAFT_BREAKUP_REQ(t_PACKET* pPacket, bool bUseMP) {
         if (bUseMP) {
             nNeed = CCal::GetMP_WhenBreakupGEM(ORI_QUAL, GEM_QUAL);
             if (this->Get_MP() < nNeed) {
-                // ¿¥ ¾ø´Ù
+                // ì—  ì—†ë‹¤
                 return true;
             }
             this->Sub_MP(nNeed);
         } else {
             nNeed = CCal::GetMONEY_WhenBreakupGEM(ORI_QUAL, GEM_QUAL);
             if (this->GetCur_MONEY() < nNeed) {
-                // µ· ¾ø´Ù.
+                // ëˆ ì—†ë‹¤.
                 return true;
             }
             this->Sub_CurMONEY(nNeed);
@@ -6423,10 +6429,10 @@ classUSER::Proc_CRAFT_BREAKUP_REQ(t_PACKET* pPacket, bool bUseMP) {
         tagITEM sOutITEM;
         sOutITEM.Clear();
 
-        if (RANDOM(100) + 1 + GEM_QUAL / 6 <= 30) { // µî±Ş °¨¼Ò
-            if (GEM_QUAL <= 35) { // º¸¼® »èÁ¦
-                // Àåºñ ¾ÆÀÌÅÛ...
-                pInITEM->m_nGEM_OP = 0; // Àåºñ¿¡¼­ º¸¼® »èÁ¦
+        if (RANDOM(100) + 1 + GEM_QUAL / 6 <= 30) { // ë“±ê¸‰ ê°ì†Œ
+            if (GEM_QUAL <= 35) { // ë³´ì„ ì‚­ì œ
+                // ì¥ë¹„ ì•„ì´í…œ...
+                pInITEM->m_nGEM_OP = 0; // ì¥ë¹„ì—ì„œ ë³´ì„ ì‚­ì œ
                 pCPacket->m_gsv_CRAFT_ITEM_REPLY.m_sInvITEM[0].m_btInvIDX =
                     pPacket->m_cli_CRAFT_BREAKUP_REQ.m_btTargetInvIDX;
                 pCPacket->m_gsv_CRAFT_ITEM_REPLY.m_sInvITEM[0].m_ITEM = *pInITEM;
@@ -6434,7 +6440,7 @@ classUSER::Proc_CRAFT_BREAKUP_REQ(t_PACKET* pPacket, bool bUseMP) {
                 return true;
             }
 
-            // º¸¼® ¾ÆÀÌÅÛ »ı¼º...
+            // ë³´ì„ ì•„ì´í…œ ìƒì„±...
             sOutITEM.m_nItemNo = pInITEM->GetGemNO() - 1;
 
             btResult = CRAFT_BREAKUP_DEGRADE_GEM;
@@ -6445,15 +6451,15 @@ classUSER::Proc_CRAFT_BREAKUP_REQ(t_PACKET* pPacket, bool bUseMP) {
         sOutITEM.m_cType = ITEM_TYPE_GEM;
         sOutITEM.m_uiQuantity = 1;
 
-        pInITEM->m_nGEM_OP = 0; // Àåºñ¿¡¼­ º¸¼® »èÁ¦
+        pInITEM->m_nGEM_OP = 0; // ì¥ë¹„ì—ì„œ ë³´ì„ ì‚­ì œ
         pCPacket->m_gsv_CRAFT_ITEM_REPLY.m_sInvITEM[0].m_btInvIDX =
             pPacket->m_cli_CRAFT_BREAKUP_REQ.m_btTargetInvIDX;
         pCPacket->m_gsv_CRAFT_ITEM_REPLY.m_sInvITEM[0].m_ITEM = *pInITEM;
 
-        // º¸¼® ºĞ¸® µÆÀ½.
+        // ë³´ì„ ë¶„ë¦¬ ëìŒ.
         short nInvIDX = this->Add_ITEM(sOutITEM);
         if (nInvIDX > 0) {
-            // pInITEM->m_nGEM_OP = 0;				// Àåºñ¿¡¼­ º¸¼® »èÁ¦
+            // pInITEM->m_nGEM_OP = 0;				// ì¥ë¹„ì—ì„œ ë³´ì„ ì‚­ì œ
             // pCPacket->m_gsv_CRAFT_ITEM_REPLY.m_sInvITEM[ 0 ].m_btInvIDX =
             // pPacket->m_cli_CRAFT_BREAKUP_REQ.m_btTargetInvIDX;
             // pCPacket->m_gsv_CRAFT_ITEM_REPLY.m_sInvITEM[ 0 ].m_ITEM		= *pInITEM;
@@ -6464,21 +6470,21 @@ classUSER::Proc_CRAFT_BREAKUP_REQ(t_PACKET* pPacket, bool bUseMP) {
             this->Send_gsv_CRAFT_ITEM_REPLY(pCPacket, btResult, 2);
         } else {
             this->Send_gsv_CRAFT_ITEM_REPLY(pCPacket, btResult, 1);
-            this->Save_ItemToFILED(sOutITEM); // º¸¼® ºĞ¸®ÈÄ ÀÎº¥Åä¸® ¸ğÀÚ¶÷...
+            this->Save_ItemToFILED(sOutITEM); // ë³´ì„ ë¶„ë¦¬í›„ ì¸ë²¤í† ë¦¬ ëª¨ìëŒ...
         }
         return true;
     } // if ( !pInITEM->IsEnableDupCNT() && pInITEM->HasSocket() && pInITEM->GetGemNO() > 300 )
     else {
-        // ºĞÇØ.
+        // ë¶„í•´.
         if (0 == ITEM_PRODUCT_IDX(pInITEM->GetTYPE(), pInITEM->GetItemNO())) {
-            // Àç·á ¹øÈ£ ¾ø´Â°Ç ºĞÇØ ¸ø½ÃÄÑ !!!
+            // ì¬ë£Œ ë²ˆí˜¸ ì—†ëŠ”ê±´ ë¶„í•´ ëª»ì‹œì¼œ !!!
             return true; // false
         }
 
         short ORI_QUAL = ITEM_QUALITY(pInITEM->GetTYPE(), pInITEM->GetItemNO());
         short nProductIDX = ITEM_PRODUCT_IDX(pInITEM->GetTYPE(), pInITEM->GetItemNO());
         tagITEM sOutITEM;
-        if (PRODUCT_RAW_MATERIAL(nProductIDX)) { // Àç·á Á¾·ù...
+        if (PRODUCT_RAW_MATERIAL(nProductIDX)) { // ì¬ë£Œ ì¢…ë¥˜...
             short TEMP = (ORI_QUAL - 20) / 12; // nTemp = ORI_QUAL
             if (TEMP < 1)
                 TEMP = 1;
@@ -6490,7 +6496,7 @@ classUSER::Proc_CRAFT_BREAKUP_REQ(t_PACKET* pPacket, bool bUseMP) {
             sOutITEM.m_nItemNo = (PRODUCT_RAW_MATERIAL(nProductIDX) - 421) * 10 + TEMP;
         } else {
             if (0 == PRODUCT_NEED_ITEM_NO(nProductIDX, 0)) {
-                // ÀÔ·Â ¿À·ù~~~
+                // ì…ë ¥ ì˜¤ë¥˜~~~
                 return true;
             }
             sOutITEM.Init(PRODUCT_NEED_ITEM_NO(nProductIDX, 0), 1);
@@ -6500,14 +6506,14 @@ classUSER::Proc_CRAFT_BREAKUP_REQ(t_PACKET* pPacket, bool bUseMP) {
         if (bUseMP) {
             iTmpVAR = CCal::GetMP_WhenBreakupMAT(ORI_QUAL);
             if (this->Get_MP() < iTmpVAR) {
-                // ¿¥ ¾ø´Ù
+                // ì—  ì—†ë‹¤
                 return true;
             }
             this->Sub_MP(iTmpVAR);
         } else {
             iTmpVAR = CCal::GetMONEY_WhenBreakupMAT(ORI_QUAL);
             if (this->GetCur_MONEY() < iTmpVAR) {
-                // µ· ¾ø´Ù.
+                // ëˆ ì—†ë‹¤.
                 return true;
             }
             this->Sub_CurMONEY(iTmpVAR);
@@ -6531,9 +6537,9 @@ classUSER::Proc_CRAFT_BREAKUP_REQ(t_PACKET* pPacket, bool bUseMP) {
         tagITEM sOutLogITEM[CREATE_ITEM_STEP];
         while (true) {
             // switch( ITEM_TYPE( sOutITEM.GetTYPE(), sOutITEM.GetItemNO() ) ) {
-            //	case 427 :	// ¿¬±İÀç·á
-            //	case 428 :	// È­ÇĞÇ°
-            //		// ºĞÇØ ¾ÈµÇ°í »ç¶óÁø´Ù..
+            //	case 427 :	// ì—°ê¸ˆì¬ë£Œ
+            //	case 428 :	// í™”í•™í’ˆ
+            //		// ë¶„í•´ ì•ˆë˜ê³  ì‚¬ë¼ì§„ë‹¤..
             //		break;
             //	default :
             MAT_NUM = PRODUCT_NEED_ITEM_CNT(nProductIDX, nStep);
@@ -6550,7 +6556,7 @@ classUSER::Proc_CRAFT_BREAKUP_REQ(t_PACKET* pPacket, bool bUseMP) {
                     pCPacket->m_gsv_CRAFT_ITEM_REPLY.m_sInvITEM[btOutCNT].m_ITEM = sOutITEM;
                     btOutCNT++;
                 } else {
-                    this->Save_ItemToFILED(sOutITEM); // ¾ÆÀÌÅÛ ºĞ¸®ÈÄ
+                    this->Save_ItemToFILED(sOutITEM); // ì•„ì´í…œ ë¶„ë¦¬í›„
                 }
             }
             // }
@@ -6563,9 +6569,9 @@ classUSER::Proc_CRAFT_BREAKUP_REQ(t_PACKET* pPacket, bool bUseMP) {
             sOutITEM.Init(PRODUCT_NEED_ITEM_NO(nProductIDX, nStep), 1);
         }
 
-        // ºĞÇØµÈ ¾ÆÀÌÅÛ Á¦°Å...
+        // ë¶„í•´ëœ ì•„ì´í…œ ì œê±°...
         if (pInITEM->IsEnableDupCNT()) {
-            pInITEM->SubQuantity(); // °¹¼ö 1°³ Á¦°Å
+            pInITEM->SubQuantity(); // ê°¯ìˆ˜ 1ê°œ ì œê±°
         } else {
             pInITEM->Clear();
         }
@@ -6579,7 +6585,7 @@ classUSER::Proc_CRAFT_BREAKUP_REQ(t_PACKET* pPacket, bool bUseMP) {
 
     return true;
 }
-/// ¾ÆÀÌÅÛ Àç·Ã ¿äÃ»
+/// ì•„ì´í…œ ì¬ë ¨ ìš”ì²­
 bool
 classUSER::Proc_CRAFT_UPGRADE_REQ(t_PACKET* pPacket, bool bUseMP) {
     if (pPacket->m_cli_CRAFT_UPGRADE_REQ.m_btTargetInvIDX < MAX_EQUIP_IDX
@@ -6590,7 +6596,7 @@ classUSER::Proc_CRAFT_UPGRADE_REQ(t_PACKET* pPacket, bool bUseMP) {
         &this->m_Inventory.m_ItemLIST[pPacket->m_cli_CRAFT_UPGRADE_REQ.m_btTargetInvIDX];
     if (!pInITEM->IsEquipITEM())
         return true;
-    if (pInITEM->GetGrade() >= 9) // ´õÀÌ»ó Àç·Ã ºÒ°¡..
+    if (pInITEM->GetGrade() >= 9) // ë”ì´ìƒ ì¬ë ¨ ë¶ˆê°€..
         return true;
 
     short nProductIDX;
@@ -6617,14 +6623,14 @@ classUSER::Proc_CRAFT_UPGRADE_REQ(t_PACKET* pPacket, bool bUseMP) {
     if (bUseMP) {
         nStep = CCal::GetMP_WhenUpgradeEQUIP(pInITEM->GetGrade(), ITEM_QUAL);
         if (this->Get_MP() < nStep) {
-            // ¿¥ ¾ø´Ù
+            // ì—  ì—†ë‹¤
             return true;
         }
         this->Sub_MP(nStep);
     } else {
         nStep = CCal::GetMONEY_WhenUpgradeEQUIP(pInITEM->GetGrade(), ITEM_QUAL);
         if (this->GetCur_MONEY() < nStep) {
-            // µ· ¾ø´Ù.
+            // ëˆ ì—†ë‹¤.
             return true;
         }
         this->Sub_CurMONEY(nStep);
@@ -6638,7 +6644,7 @@ classUSER::Proc_CRAFT_UPGRADE_REQ(t_PACKET* pPacket, bool bUseMP) {
     tagITEM sNeedITEM;
     nStep = 0;
     while (true) {
-        // °¹¼ö¸¸Å­ ¼Ò¸ğ...
+        // ê°¯ìˆ˜ë§Œí¼ ì†Œëª¨...
         if (!pMatITEM->SubQuantity(PRODUCT_NEED_ITEM_CNT(nProductIDX, nStep))) {
             return this->Send_gsv_CRAFT_ITEM_RESULT(CRAFT_UPGRADE_INVALID_MAT);
         }
@@ -6666,7 +6672,7 @@ classUSER::Proc_CRAFT_UPGRADE_REQ(t_PACKET* pPacket, bool bUseMP) {
         }
     }
 
-    // Àç·Ã ½ÃÀÛÀ» ÁÖº¯¿¡ Åëº¸...
+    // ì¬ë ¨ ì‹œì‘ì„ ì£¼ë³€ì— í†µë³´...
     this->Send_gsv_ITEM_RESULT_REPORT(REPORT_ITEM_UPGRADE_START,
         static_cast<BYTE>(pInITEM->GetTYPE()),
         pInITEM->GetItemNO());
@@ -6674,12 +6680,12 @@ classUSER::Proc_CRAFT_UPGRADE_REQ(t_PACKET* pPacket, bool bUseMP) {
     short SUC;
     BYTE btResult, btBeforeGrade;
     btBeforeGrade = pInITEM->m_cGrade;
-    // ¼º°ø·ü °è»ê
+    // ì„±ê³µë¥  ê³„ì‚°
     SUC = (((pInITEM->GetGrade() + 2) * (pInITEM->GetGrade() + 3)
                * (pInITEM->GetGrade() * 5 + ITEM_QUAL * 3 + 250) * (61 + RANDOM(100)) * 320)
               / (MAT_QUAL * (pInITEM->GetDurability() + 180) * (Get_WorldPROD() + 10)))
         + 200;
-    if (SUC < 1000) { // ¼º°ø
+    if (SUC < 1000) { // ì„±ê³µ
         SUC = (200 + (MAT_QUAL + 5) * 10 + (1 + RANDOM(100)) * 3 - (pInITEM->GetGrade() + 6) * 80)
             / 40;
         if (SUC > 0) {
@@ -6691,8 +6697,8 @@ classUSER::Proc_CRAFT_UPGRADE_REQ(t_PACKET* pPacket, bool bUseMP) {
 
         btResult = CRAFT_UPGRADE_SUCCESS;
         pInITEM->m_cGrade++;
-    } else { // ½ÇÆĞ ½Ã µî±Ş °¨¼Ò
-        // ³»±¸µµ º¯È­.
+    } else { // ì‹¤íŒ¨ ì‹œ ë“±ê¸‰ ê°ì†Œ
+        // ë‚´êµ¬ë„ ë³€í™”.
         SUC = pInITEM->m_cDurability
             + (200 + (MAT_QUAL + 5) * 10 + (1 + RANDOM(100)) * 3 - (pInITEM->GetGrade() + 6) * 80)
                 / 40;
@@ -6723,7 +6729,7 @@ classUSER::Proc_CRAFT_UPGRADE_REQ(t_PACKET* pPacket, bool bUseMP) {
 
     this->Send_gsv_CRAFT_ITEM_REPLY(pCPacket, btResult, btOutCNT);
 
-    // if ( ÀåÂøÁßÀÎ Àåºñ´Â ¾÷±Û ¾ÈµÊ...
+    // if ( ì¥ì°©ì¤‘ì¸ ì¥ë¹„ëŠ” ì—…ê¸€ ì•ˆë¨...
     //	this->UpdateAbility ();		// upgrade...
     //	this->Send_gsv_EQUIP_ITEM( pPacket->m_cli_APPRAISAL_REQ.m_wInventoryIndex, pITEM );
     //}
@@ -6732,7 +6738,7 @@ classUSER::Proc_CRAFT_UPGRADE_REQ(t_PACKET* pPacket, bool bUseMP) {
 }
 
 //-------------------------------------------------------------------------------------------------
-/// ¾ÆÀÌÅÛ Àç¹Ö/ºĞÇØ/Àç·Ã °ü·Ã ¿äÃ»
+/// ì•„ì´í…œ ì¬ë°/ë¶„í•´/ì¬ë ¨ ê´€ë ¨ ìš”ì²­
 bool
 classUSER::Recv_cli_CRAFT_ITEM_REQ(t_PACKET* pPacket) {
     switch (pPacket->m_cli_CRAFT_ITEM_REQ.m_btTYPE) {
@@ -6751,14 +6757,14 @@ classUSER::Recv_cli_CRAFT_ITEM_REQ(t_PACKET* pPacket) {
             pCharNPC = (CObjNPC*)g_pObjMGR->Get_GameOBJ(
                 pPacket->m_cli_CRAFT_BREAKUP_REQ.m_nSkillSLOTorNpcIDX,
                 OBJ_NPC);
-            if (!pCharNPC) { // »óÁ¡ ÁÖÀÎÀÌ ¾ø¾î???
+            if (!pCharNPC) { // ìƒì  ì£¼ì¸ì´ ì—†ì–´???
                 return false;
             }
             int iDistance = distance((int)m_PosCUR.x,
                 (int)m_PosCUR.y,
                 (int)pCharNPC->m_PosCUR.x,
                 (int)pCharNPC->m_PosCUR.y);
-            if (iDistance > MAX_TRADE_DISTANCE) { // »óÁ¡ npc¿ÍÀÇ °Å·¡ Ã¼Å©...
+            if (iDistance > MAX_TRADE_DISTANCE) { // ìƒì  npcì™€ì˜ ê±°ë˜ ì²´í¬...
                 return true;
             }
 
@@ -6777,14 +6783,14 @@ classUSER::Recv_cli_CRAFT_ITEM_REQ(t_PACKET* pPacket) {
             pCharNPC = (CObjNPC*)g_pObjMGR->Get_GameOBJ(
                 pPacket->m_cli_CRAFT_UPGRADE_REQ.m_nSkillSLOTorNpcIDX,
                 OBJ_NPC);
-            if (!pCharNPC) { // »óÁ¡ ÁÖÀÎÀÌ ¾ø¾î???
+            if (!pCharNPC) { // ìƒì  ì£¼ì¸ì´ ì—†ì–´???
                 return false;
             }
             int iDistance = distance((int)m_PosCUR.x,
                 (int)m_PosCUR.y,
                 (int)pCharNPC->m_PosCUR.x,
                 (int)pCharNPC->m_PosCUR.y);
-            if (iDistance > MAX_TRADE_DISTANCE) { // »óÁ¡ npc¿ÍÀÇ °Å·¡ Ã¼Å©...
+            if (iDistance > MAX_TRADE_DISTANCE) { // ìƒì  npcì™€ì˜ ê±°ë˜ ì²´í¬...
                 return true;
             }
 
@@ -6796,7 +6802,7 @@ classUSER::Recv_cli_CRAFT_ITEM_REQ(t_PACKET* pPacket) {
 }
 
 //-------------------------------------------------------------------------------------------------
-/// ÆÄÆ¼ ·ê º¯°æ
+/// íŒŒí‹° ë£° ë³€ê²½
 bool
 classUSER::Recv_cli_PARTY_RULE(t_PACKET* pPacket) {
     if (this->GetPARTY() && this == this->GetPARTY()->GetPartyOWNER()) {
@@ -6806,7 +6812,7 @@ classUSER::Recv_cli_PARTY_RULE(t_PACKET* pPacket) {
 }
 
 //-------------------------------------------------------------------------------------------------
-/// ¸ğ´ÏÅÍ¸µ Åø¿¡ ¼­¹ö ¹öÁ¯,½ÃÀÛ½Ã°£ Àü¼Û
+/// ëª¨ë‹ˆí„°ë§ íˆ´ì— ì„œë²„ ë²„ì ¼,ì‹œì‘ì‹œê°„ ì „ì†¡
 bool
 classUSER::Recv_mon_SERVER_LIST_REQ(t_PACKET* pPacket) {
     classPACKET* pCPacket = Packet_AllocNLock();
@@ -6826,7 +6832,7 @@ classUSER::Recv_mon_SERVER_LIST_REQ(t_PACKET* pPacket) {
     return true;
 }
 
-/// ¸ğ´ÏÅÍ¸µ Åø¿¡ »ç¿ëÀÚ¼ö Àü¼Û
+/// ëª¨ë‹ˆí„°ë§ íˆ´ì— ì‚¬ìš©ììˆ˜ ì „ì†¡
 bool
 classUSER::Recv_mon_SERVER_STATUS_REQ(t_PACKET* pPacket) {
     classPACKET* pCPacket = Packet_AllocNLock();
@@ -6844,7 +6850,7 @@ classUSER::Recv_mon_SERVER_STATUS_REQ(t_PACKET* pPacket) {
     Packet_ReleaseNUnlock(pCPacket);
     return true;
 }
-/// ¸ğ´ÏÅÍ¸µÅø¿¡¼­ °øÁö »çÇ× ¹ŞÀ½
+/// ëª¨ë‹ˆí„°ë§íˆ´ì—ì„œ ê³µì§€ ì‚¬í•­ ë°›ìŒ
 bool
 classUSER::Recv_mon_SERVER_ANNOUNCE(t_PACKET* pPacket) {
     short nOffset = sizeof(t_PACKETHEADER);
@@ -6861,7 +6867,7 @@ classUSER::Recv_mon_SERVER_ANNOUNCE(t_PACKET* pPacket) {
 
 //-------------------------------------------------------------------------------------------------
 /**
- * Á¸ °øÁö
+ * ì¡´ ê³µì§€
  */
 bool
 classUSER::Recv_ost_SERVER_ZONEANNOUNCE(t_PACKET* pPacket) {
@@ -6898,7 +6904,7 @@ classUSER::Recv_ost_SERVER_ZONEANNOUNCE(t_PACKET* pPacket) {
 
 //-------------------------------------------------------------------------------------------------
 /**
- * À¯Àú¸¦ °­Á¦·Î ·Î±×¾Æ¿ô ½ÃÅ´
+ * ìœ ì €ë¥¼ ê°•ì œë¡œ ë¡œê·¸ì•„ì›ƒ ì‹œí‚´
  */
 bool
 classUSER::Recv_ost_SERVER_USERLOGOUT(t_PACKET* pPacket) {
@@ -6918,7 +6924,7 @@ classUSER::Recv_ost_SERVER_USERLOGOUT(t_PACKET* pPacket) {
 }
 
 //-------------------------------------------------------------------------------------------------
-/// °­Á¦ ·Î±×¾Æ¿ô ÀÀ´ä
+/// ê°•ì œ ë¡œê·¸ì•„ì›ƒ ì‘ë‹µ
 bool
 classUSER::Send_gsv_SERVER_USERLOGOUT_REPLY(const char* szAccount, bool bLogOuted) {
     if (!szAccount)
@@ -6939,7 +6945,7 @@ classUSER::Send_gsv_SERVER_USERLOGOUT_REPLY(const char* szAccount, bool bLogOute
 }
 
 //-------------------------------------------------------------------------------------------------
-// Å¬¶óÀÌ¾ğÆ®·ÎºÎÅÍ À¯Àú Á¤º¸¸¦ ¿äÃ»À» ¹ŞÀ½
+// í´ë¼ì´ì–¸íŠ¸ë¡œë¶€í„° ìœ ì € ì •ë³´ë¥¼ ìš”ì²­ì„ ë°›ìŒ
 bool
 classUSER::Recv_ost_SERVER_USERINFO(t_PACKET* pPacket) {
     short nOffset = sizeof(ost_SERVER_USERINFO);
@@ -6954,7 +6960,7 @@ classUSER::Recv_ost_SERVER_USERINFO(t_PACKET* pPacket) {
 }
 
 //-------------------------------------------------------------------------------------------------
-// À¯Àú Á¤º¸¸¦ ¿äÃ»¿¡ ´ëÇÑ ÀÀ´ä
+// ìœ ì € ì •ë³´ë¥¼ ìš”ì²­ì— ëŒ€í•œ ì‘ë‹µ
 bool
 classUSER::Send_gsv_SERVER_USERINFO_REPLY(const char* szACCOUNT, classUSER* pUSER) {
     classPACKET* pCPacket = Packet_AllocNLock();
@@ -6987,7 +6993,7 @@ classUSER::Send_gsv_SERVER_USERINFO_REPLY(const char* szACCOUNT, classUSER* pUSE
 }
 
 //-------------------------------------------------------------------------------------------------
-/// Æ¯Á¤ À¯Àú¿¡ ´ëÇØ °­Á¦·Î »óÅÂ¸¦ ¹Ù²Ş ¿äÃ»À» Å¬¶óÀÌ¾ğÆ®·ÎºÎÅÍ ¹ŞÀ½
+/// íŠ¹ì • ìœ ì €ì— ëŒ€í•´ ê°•ì œë¡œ ìƒíƒœë¥¼ ë°”ê¿ˆ ìš”ì²­ì„ í´ë¼ì´ì–¸íŠ¸ë¡œë¶€í„° ë°›ìŒ
 bool
 classUSER::Recv_ost_SERVER_CHGUSER(t_PACKET* pPacket) {
     if (!pPacket)
@@ -7005,9 +7011,9 @@ classUSER::Recv_ost_SERVER_CHGUSER(t_PACKET* pPacket) {
         pPacket->m_ost_SERVER_CHGUSER.m_dwCMD);
 }
 
-#define OST_CHAT_BLOCK_TIME 30 // ±âº» Ã¤ÆÃºí·° Å¸ÀÓ
+#define OST_CHAT_BLOCK_TIME 30 // ê¸°ë³¸ ì±„íŒ…ë¸”ëŸ­ íƒ€ì„
 //-------------------------------------------------------------------------------------------------
-/// Æ¯Á¤ À¯Àú¿¡ ´ëÇØ °­Á¦·Î »óÅÂ¸¦ ¹Ù²Ş.
+/// íŠ¹ì • ìœ ì €ì— ëŒ€í•´ ê°•ì œë¡œ ìƒíƒœë¥¼ ë°”ê¿ˆ.
 bool
 classUSER::Send_gsv_SERVER_CHGUSER_REPLY(classUSER* pUSER, DWORD dwSTATUS, DWORD dwCMD) {
     classPACKET* pCPacket = Packet_AllocNLock();
@@ -7048,7 +7054,7 @@ classUSER::Send_gsv_SERVER_CHGUSER_REPLY(classUSER* pUSER, DWORD dwSTATUS, DWORD
 }
 
 //-------------------------------------------------------------------------------------------------
-/// Á¸ Á¤º¸
+/// ì¡´ ì •ë³´
 bool
 classUSER::Recv_ost_SERVER_ZONEINFO(t_PACKET* pPacket) {
     Send_gsv_SERVER_ZONEINFO_REPLY();
@@ -7057,7 +7063,7 @@ classUSER::Recv_ost_SERVER_ZONEINFO(t_PACKET* pPacket) {
 }
 
 //-------------------------------------------------------------------------------------------------
-// Á¸¿¡ ´ëÇÑ Á¤º¸¸¦ Á¶»ç
+// ì¡´ì— ëŒ€í•œ ì •ë³´ë¥¼ ì¡°ì‚¬
 bool
 classUSER::Send_gsv_SERVER_ZONEINFO_REPLY(void) {
     short nZoneCNT = ::g_pZoneLIST->GetZoneCNT();
@@ -7074,7 +7080,7 @@ classUSER::Send_gsv_SERVER_ZONEINFO_REPLY(void) {
     ost_ZoneINFO* pZoneINFO = new ost_ZoneINFO[nZoneCNT];
     int iZI = 0;
     for (short nI = 0; nI < g_TblZONE.row_count; nI++) {
-        if (iZI >= nZoneCNT) // ¿©±â¼­ °É¸° °Ç µµ´ëÃ¼ ÀÌÇØ¸¦ ÇÒ¼ö ¾øÀ½. Á¸ÀÌ °©ÀÚ±â Ãß°¡µÆ³ª..
+        if (iZI >= nZoneCNT) // ì—¬ê¸°ì„œ ê±¸ë¦° ê±´ ë„ëŒ€ì²´ ì´í•´ë¥¼ í• ìˆ˜ ì—†ìŒ. ì¡´ì´ ê°‘ìê¸° ì¶”ê°€ëë‚˜..
             break;
 
         if (!ZONE_FILE(nI) || !g_pZoneLIST->IsValidZONE(nI))
@@ -7098,7 +7104,7 @@ classUSER::Send_gsv_SERVER_ZONEINFO_REPLY(void) {
 
 //-------------------------------------------------------------------------------------------------
 /**
- * ¿Â¶óÀÎÅø¿¡¼­ ¹ŞÀº Á¤º¸·Î Ä³¸¯ÅÍ¸¦ ÀÌµ¿½ÃÅ´
+ * ì˜¨ë¼ì¸íˆ´ì—ì„œ ë°›ì€ ì •ë³´ë¡œ ìºë¦­í„°ë¥¼ ì´ë™ì‹œí‚´
  */
 bool
 classUSER::Recv_ost_SERVER_MOVECHR(t_PACKET* pPacket) {
@@ -7123,7 +7129,7 @@ classUSER::Recv_ost_SERVER_MOVECHR(t_PACKET* pPacket) {
 
 //-------------------------------------------------------------------------------------------------
 /**
- * ¿Â¶óÀÎÅø¿¡¼­ ¹ŞÀº Á¤º¸·Î Ä³¸¯ÅÍ¸¦ ÀÌµ¿½ÃÅ²ÈÄ °á°ú¸¦ Åëº¸
+ * ì˜¨ë¼ì¸íˆ´ì—ì„œ ë°›ì€ ì •ë³´ë¡œ ìºë¦­í„°ë¥¼ ì´ë™ì‹œí‚¨í›„ ê²°ê³¼ë¥¼ í†µë³´
  */
 bool
 classUSER::Send_gsv_SERVER_MOVECHR_REPLY(classUSER* pUSER, short nZoneNO, short nX, short nY) {
@@ -7145,7 +7151,7 @@ classUSER::Send_gsv_SERVER_MOVECHR_REPLY(classUSER* pUSER, short nZoneNO, short 
     PosSEC.x = (short)(PosWARP.x / g_pZoneLIST->GetSectorSIZE(nZoneNO));
     PosSEC.y = (short)(PosWARP.y / g_pZoneLIST->GetSectorSIZE(nZoneNO));
 
-    // yÃà Ã¼Å©´Â ¾ÈµÊ - ·ÎÄÃÁ¸ÀÌ ¾Æ´Ò°æ¿ì g_pZoneLIST->GetZONE(nZoneNO)->Get_SectorYCNT()¿¡¼­ »¶~~
+    // yì¶• ì²´í¬ëŠ” ì•ˆë¨ - ë¡œì»¬ì¡´ì´ ì•„ë‹ê²½ìš° g_pZoneLIST->GetZONE(nZoneNO)->Get_SectorYCNT()ì—ì„œ ë»‘~~
     if (PosSEC.x >= 0 && PosSEC.y >= 0) {
         pUSER->Proc_TELEPORT(nZoneNO, PosWARP);
         pUSER->m_nZoneNO = nZoneNO;
@@ -7167,7 +7173,7 @@ classUSER::Send_gsv_SERVER_MOVECHR_REPLY(classUSER* pUSER, short nZoneNO, short 
 
 //-------------------------------------------------------------------------------------------------
 /**
- * IP¸¦ ÅëÇØ À¯Àú °Ë»ö
+ * IPë¥¼ í†µí•´ ìœ ì € ê²€ìƒ‰
  */
 bool
 classUSER::Recv_ost_SERVER_IPSEARCH(t_PACKET* pPacket) {
@@ -7188,7 +7194,7 @@ classUSER::Recv_ost_SERVER_IPSEARCH(t_PACKET* pPacket) {
 
 //-------------------------------------------------------------------------------------------------
 /**
- * IP¸¦ ÅëÇØ À¯Àú °Ë»ö¿¡ ´ëÇÑ ÀÀ´ä
+ * IPë¥¼ í†µí•´ ìœ ì € ê²€ìƒ‰ì— ëŒ€í•œ ì‘ë‹µ
  */
 bool
 classUSER::Send_gsv_SERVER_IPSEARCH_REPLY(classUSER* pUSER) {
@@ -7218,13 +7224,13 @@ classUSER::Send_srv_CHECK_AUTH() {
     return true;
 }
 
-/// n-protectÀÇ Ã¼Å©¿äÃ» ÀÀ´ä ÆĞÅ¶
+/// n-protectì˜ ì²´í¬ìš”ì²­ ì‘ë‹µ íŒ¨í‚·
 bool
 classUSER::Recv_cli_CHECK_AUTH(t_PACKET* pPacket) {
     return true;
 }
 
-/// »ç¿ë¾ÈÇÔ...
+/// ì‚¬ìš©ì•ˆí•¨...
 bool
 classUSER::Send_srv_ERROR(WORD wErrCODE) {
     classPACKET* pCPacket = Packet_AllocNLock();
@@ -7250,7 +7256,7 @@ bool
 classUSER::Recv_cli_CLAN_COMMAND(t_PACKET* pPacket) {
     if (GCMD_CREATE == pPacket->m_cli_CLAN_COMMAND.m_btCMD) {
         if (this->GetClanID() || !this->CheckClanCreateCondition(0)) {
-            // Ã¢¼³ Á¶°Ç ¾ÈµÇ~~~
+            // ì°½ì„¤ ì¡°ê±´ ì•ˆë˜~~~
             this->Send_wsv_CLAN_COMMAND(RESULT_CLAN_CREATE_NO_CONDITION, NULL);
             return true;
         }
@@ -7316,11 +7322,11 @@ classUSER::Send_gsv_BILLING_MESSAGE(BYTE btMsgType, char* szMsg) {
     Packet_ReleaseNUnlock(pCPacket);
 
     if ((btMsgType & 0x0ff) < 0x0f) {
-        // °ú±İ Å¸ÀÔÀÌ´Ù.
+        // ê³¼ê¸ˆ íƒ€ì…ì´ë‹¤.
         this->m_dwPayFLAG = (0x01 << btMsgType);
     }
 
-    // ÀÓ½Ã Å×½ºÆ®...
+    // ì„ì‹œ í…ŒìŠ¤íŠ¸...
     // CStrVAR	tmpStr;
     // tmpStr.Alloc( 200 );
     // tmpStr.Printf("Type:0x%x : %s", btMsgType, szMsg ? szMsg : "<null>" );
@@ -7345,7 +7351,7 @@ classUSER::Send_gsv_BILLING_MESSAGE_EXT(WORD wMsgType,
     ::CopyMemory(pCPacket->m_gsv_BILLING_MESSAGE_EXT.m_dwPlayingFlag, pPlayFlag, 4 * sizeof(DWORD));
 
     if (szMsg) {
-        // NULLÀÌ ¿À´Â °æ¿ì ÀÖÀ½
+        // NULLì´ ì˜¤ëŠ” ê²½ìš° ìˆìŒ
         pCPacket->AppendString(szMsg);
     }
 
@@ -7378,7 +7384,7 @@ classUSER::Recv_cli_SCREEN_SHOT_TIME(t_PACKET* pPacket) {
     return Send_gsv_SCREEN_SHOT_TIME();
 }
 
-// ½º¼¦¿¡ ÇÊ¿äÇÑ  ¼­¹ö½Ã°£ Àü¼Û         (ÇãÀç¿µ Ãß°¡ 2005.10.18)
+// ìŠ¤ìƒ·ì— í•„ìš”í•œ  ì„œë²„ì‹œê°„ ì „ì†¡         (í—ˆì¬ì˜ ì¶”ê°€ 2005.10.18)
 bool
 classUSER::Send_gsv_SCREEN_SHOT_TIME() {
     classPACKET* pCPacket = Packet_AllocNLock();
@@ -7403,7 +7409,7 @@ classUSER::Send_gsv_SCREEN_SHOT_TIME() {
 }
 
 //-------------------------------------------------------------------------------------------------
-/// »ç¿ë¾ÈÇÔ...
+/// ì‚¬ìš©ì•ˆí•¨...
 bool
 classUSER::Recv_cli_SUMMON_CMD(t_PACKET* pPacket) {
     this->m_btSummonCMD = pPacket->m_cli_SUMMON_CMD.m_btCMD;
@@ -7412,7 +7418,7 @@ classUSER::Recv_cli_SUMMON_CMD(t_PACKET* pPacket) {
 }
 
 //-------------------------------------------------------------------------------------------------
-/// ¿ùµå ¼­¹ö¿¡¼­ ¹ŞÀº ÆĞÅ¶ Ã³¸®...
+/// ì›”ë“œ ì„œë²„ì—ì„œ ë°›ì€ íŒ¨í‚· ì²˜ë¦¬...
 bool
 classUSER::HandleWorldPACKET(void) {
     CSLList<t_PACKET*>::tagNODE* pNode;
@@ -7433,7 +7439,7 @@ classUSER::HandleWorldPACKET(void) {
                 case ZWS_DEL_USER_CLAN:
                     this->ClanINIT();
                     this->Send_wsv_RESULT_CLAN_SET();
-                    // Å¬·£ÀÌ »èÁ¦µÆ´Ù... Å¬·£¾ÆÁöÆ®Á¸¿¡¼­ ÀÚµ¿ ¿öÇÁ ½ÃÅ²´Ù.
+                    // í´ëœì´ ì‚­ì œëë‹¤... í´ëœì•„ì§€íŠ¸ì¡´ì—ì„œ ìë™ ì›Œí”„ ì‹œí‚¨ë‹¤.
                     break;
             }
         }
@@ -7519,13 +7525,13 @@ classUSER::HandlePACKET(t_PACKETHEADER* pPacketHeader) {
             this->m_iSocketIDX);
 
         if ((pPacket->m_HEADER.m_wType & 0x0f00) == 0x0700) {
-            // °ÔÀÓ ÆĞÅ¶ÀÌ´Ï±î ÀÚ¸£Áø ¸»ÀÚ..
+            // ê²Œì„ íŒ¨í‚·ì´ë‹ˆê¹Œ ìë¥´ì§„ ë§ì..
             return true;
         }
     } // if ( !this->GetZONE() )
 
 #pragma COMPILE_TIME_MSG( \
-    "ÆĞÅ¶ °É·¯¼­ ¼ÒÄÏ Á¾·áÇÒ°÷ :: Å¬¶óÀÌ¾ğÆ®°¡ º¸³»¸é ¾ÈµÇ´Â ÆĞÅ¶À» º¸³»°í ÀÖÀ½...")
+    "íŒ¨í‚· ê±¸ëŸ¬ì„œ ì†Œì¼“ ì¢…ë£Œí• ê³³ :: í´ë¼ì´ì–¸íŠ¸ê°€ ë³´ë‚´ë©´ ì•ˆë˜ëŠ” íŒ¨í‚·ì„ ë³´ë‚´ê³  ìˆìŒ...")
     if ((pPacket->m_HEADER.m_wType & 0x0f00) == 0x0700) {
         if (CLI_MOUSECMD != pPacket->m_HEADER.m_wType)
             g_LOG.CS_ODS(0xffff,
@@ -7563,7 +7569,7 @@ classUSER::Proc_ZonePACKET(t_PACKET* pPacket) {
                 m_dwTimeToLogOUT = this->GetZONE()->GetTimeGetTIME() + LOGOUT_WAIT_SECOND * 1000;
                 this->Send_gsv_LOGOUT_REPLY(LOGOUT_WAIT_SECOND);
             } else {
-                // ¹Ù·Î Á¢¼Ó Á¾·á °¡´É...
+                // ë°”ë¡œ ì ‘ì† ì¢…ë£Œ ê°€ëŠ¥...
                 m_dwTimeToLogOUT = this->GetZONE()->GetTimeGetTIME();
                 this->Send_gsv_LOGOUT_REPLY(0);
             }
@@ -7577,7 +7583,7 @@ classUSER::Proc_ZonePACKET(t_PACKET* pPacket) {
                 m_dwTimeToLogOUT = this->GetZONE()->GetTimeGetTIME() + LOGOUT_WAIT_SECOND * 1000;
                 this->Send_gsv_LOGOUT_REPLY(LOGOUT_WAIT_SECOND);
             } else {
-                // ¹Ù·Î Á¢¼Ó Á¾·á °¡´É...
+                // ë°”ë¡œ ì ‘ì† ì¢…ë£Œ ê°€ëŠ¥...
                 m_dwTimeToLogOUT = this->GetZONE()->GetTimeGetTIME();
                 this->Send_gsv_LOGOUT_REPLY(0);
             }
@@ -7604,7 +7610,7 @@ classUSER::Proc_ZonePACKET(t_PACKET* pPacket) {
             return Recv_cli_TOGGLE(pPacket);
 
         case CLI_MOUSECMD:
-            if (RIDE_MODE_GUEST == this->GetCur_RIDE_MODE()) // Ä«Æ® ¾ò¾î ÅÀ´Âµ¥ ??
+            if (RIDE_MODE_GUEST == this->GetCur_RIDE_MODE()) // ì¹´íŠ¸ ì–»ì–´ íƒ”ëŠ”ë° ??
                 return true;
             return Recv_cli_MOUSECMD(pPacket);
 
@@ -7614,7 +7620,7 @@ classUSER::Proc_ZonePACKET(t_PACKET* pPacket) {
         */
         case CLI_SET_WEIGHT_RATE:
             return Recv_cli_SET_WEIGHT_RATE(pPacket->m_cli_SET_WEIGHT_RATE.m_btWeightRate,
-                true); // ÁÖº¯¿¡ Àü¼Û
+                true); // ì£¼ë³€ì— ì „ì†¡
 
         case CLI_CHAT:
             return Recv_cli_CHAT(pPacket);
@@ -7631,23 +7637,23 @@ classUSER::Proc_ZonePACKET(t_PACKET* pPacket) {
             return Recv_cli_ALLIED_SHOUT(pPacket);
 
         case CLI_STOP:
-            if (RIDE_MODE_GUEST == this->GetCur_RIDE_MODE()) // Ä«Æ® ¾ò¾î ÅÀ´Âµ¥ ??
+            if (RIDE_MODE_GUEST == this->GetCur_RIDE_MODE()) // ì¹´íŠ¸ ì–»ì–´ íƒ”ëŠ”ë° ??
                 return true;
             return Recv_cli_STOP(pPacket);
 
         case CLI_ATTACK:
-            if (RIDE_MODE_GUEST == this->GetCur_RIDE_MODE()) // Ä«Æ® ¾ò¾î ÅÀ´Âµ¥ ??
+            if (RIDE_MODE_GUEST == this->GetCur_RIDE_MODE()) // ì¹´íŠ¸ ì–»ì–´ íƒ”ëŠ”ë° ??
                 return true;
             return Recv_cli_ATTACK(pPacket);
         case CLI_DAMAGE:
             return Recv_cli_DAMAGE(pPacket);
 
         case CLI_CANTMOVE:
-            if (RIDE_MODE_GUEST == this->GetCur_RIDE_MODE()) // Ä«Æ® ¾ò¾î ÅÀ´Âµ¥ ??
+            if (RIDE_MODE_GUEST == this->GetCur_RIDE_MODE()) // ì¹´íŠ¸ ì–»ì–´ íƒ”ëŠ”ë° ??
                 return true;
             return Recv_cli_CANTMOVE(pPacket);
         case CLI_SETPOS:
-            if (RIDE_MODE_GUEST == this->GetCur_RIDE_MODE()) // Ä«Æ® ¾ò¾î ÅÀ´Âµ¥ ??
+            if (RIDE_MODE_GUEST == this->GetCur_RIDE_MODE()) // ì¹´íŠ¸ ì–»ì–´ íƒ”ëŠ”ë° ??
                 return true;
             return Recv_cli_SETPOS(pPacket);
 
@@ -7703,9 +7709,9 @@ classUSER::Proc_ZonePACKET(t_PACKET* pPacket) {
             return Recv_cli_BANK_LIST_REQ(pPacket);
 
         case CLI_TELEPORT_REQ:
-            if (RIDE_MODE_GUEST == this->GetCur_RIDE_MODE()) // Ä«Æ® ¾ò¾î ÅÀ´Âµ¥ ??
+            if (RIDE_MODE_GUEST == this->GetCur_RIDE_MODE()) // ì¹´íŠ¸ ì–»ì–´ íƒ”ëŠ”ë° ??
                 return true;
-            // Á¸ÀÌ ¹Ù²î´Â°¡???
+            // ì¡´ì´ ë°”ë€ŒëŠ”ê°€???
             return Recv_cli_TELEPORT_REQ(pPacket);
 
         case CLI_USE_BPOINT_REQ:
@@ -7719,15 +7725,15 @@ classUSER::Proc_ZonePACKET(t_PACKET* pPacket) {
             return Recv_cli_SKILL_LEVELUP_REQ(pPacket);
 
         case CLI_SELF_SKILL:
-            if (RIDE_MODE_GUEST == this->GetCur_RIDE_MODE()) // Ä«Æ® ¾ò¾î ÅÀ´Âµ¥ ??
+            if (RIDE_MODE_GUEST == this->GetCur_RIDE_MODE()) // ì¹´íŠ¸ ì–»ì–´ íƒ”ëŠ”ë° ??
                 return true;
             return Recv_cli_SELF_SKILL(pPacket);
         case CLI_TARGET_SKILL:
-            if (RIDE_MODE_GUEST == this->GetCur_RIDE_MODE()) // Ä«Æ® ¾ò¾î ÅÀ´Âµ¥ ??
+            if (RIDE_MODE_GUEST == this->GetCur_RIDE_MODE()) // ì¹´íŠ¸ ì–»ì–´ íƒ”ëŠ”ë° ??
                 return true;
             return Recv_cli_TARGET_SKILL(pPacket);
         case CLI_POSITION_SKILL:
-            if (RIDE_MODE_GUEST == this->GetCur_RIDE_MODE()) // Ä«Æ® ¾ò¾î ÅÀ´Âµ¥ ??
+            if (RIDE_MODE_GUEST == this->GetCur_RIDE_MODE()) // ì¹´íŠ¸ ì–»ì–´ íƒ”ëŠ”ë° ??
                 return true;
             return Recv_cli_POSITION_SKILL(pPacket);
 
@@ -7816,7 +7822,7 @@ classUSER::Proc_ZonePACKET(t_PACKET* pPacket) {
     } // switch ( pPacket->m_HEADER.m_wType )
 
 #pragma COMPILE_TIME_MSG( \
-    "ÆĞÅ¶ °É·¯¼­ ¼ÒÄÏ Á¾·áÇÒ°÷ :: Å¬¶óÀÌ¾ğÆ®°¡ º¸³»¸é ¾ÈµÇ´Â ÆĞÅ¶À» º¸³»°í ÀÖÀ½...")
+    "íŒ¨í‚· ê±¸ëŸ¬ì„œ ì†Œì¼“ ì¢…ë£Œí• ê³³ :: í´ë¼ì´ì–¸íŠ¸ê°€ ë³´ë‚´ë©´ ì•ˆë˜ëŠ” íŒ¨í‚·ì„ ë³´ë‚´ê³  ìˆìŒ...")
     if ((pPacket->m_HEADER.m_wType & 0x0f00) == 0x0700)
         return true;
 
@@ -7894,7 +7900,7 @@ classUSER::Send_wsv_RESULT_CLAN_SET(char* szClanName) {
 }
 
 /**
- * \brief ´ÙÀÎ½Â Å¾½Â ÆĞÅ¶ Ã³¸®
+ * \brief ë‹¤ì¸ìŠ¹ íƒ‘ìŠ¹ íŒ¨í‚· ì²˜ë¦¬
  */
 bool
 classUSER::Recv_cli_CART_RIDE(t_PACKET* pPacket) {
@@ -7903,12 +7909,12 @@ classUSER::Recv_cli_CART_RIDE(t_PACKET* pPacket) {
     switch (pPacket->m_cli_CART_RIDE.m_btType) {
         case CART_RIDE_REQ: {
             if (RIDE_MODE_DRIVE != this->GetCur_RIDE_MODE() || this->m_iLinkedCartObjIDX) {
-                // Å¾½Â½Ã¿¡¸¸ & ÅÂ¿ì°í ÀÖÁö ¾ÊÀ» °æ¿ì¿¡¸¸...
+                // íƒ‘ìŠ¹ì‹œì—ë§Œ & íƒœìš°ê³  ìˆì§€ ì•Šì„ ê²½ìš°ì—ë§Œ...
                 return true;
             } else {
                 tagITEM* pChair = &this->m_Inventory.m_ItemRIDE[RIDE_PART_ABIL];
                 if (!pChair->GetItemNO() || 1 != PAT_ITEM_ABILITY_TYPE(pChair->GetItemNO())) {
-                    // Å¾½Â½ÃÅ°·Á¸é ¾îºô¸®Æ¼¿¡ ÀÇÀÚ°¡ ºÙ¾î¾ßÇÔ.
+                    // íƒ‘ìŠ¹ì‹œí‚¤ë ¤ë©´ ì–´ë¹Œë¦¬í‹°ì— ì˜ìê°€ ë¶™ì–´ì•¼í•¨.
                     return true;
                 }
             }
@@ -7922,7 +7928,7 @@ classUSER::Recv_cli_CART_RIDE(t_PACKET* pPacket) {
             }
 
             if (pUSER->GetCur_RIDE_MODE()) {
-                // Å¾½ÂÁßÀÎ ´ë»óÀº ¸øÅÂ¿ö~
+                // íƒ‘ìŠ¹ì¤‘ì¸ ëŒ€ìƒì€ ëª»íƒœì›Œ~
                 return true;
             }
 
@@ -7933,7 +7939,7 @@ classUSER::Recv_cli_CART_RIDE(t_PACKET* pPacket) {
         }
         case CART_RIDE_ACCEPT: {
             pUSER = g_pObjMGR->Get_UserOBJ(pPacket->m_cli_CART_RIDE.m_wOwnerObjIDX);
-            // Åºµ¥...
+            // íƒ„ë°...
             if (!pUSER) {
                 this->Send_gsv_CART_RIDE(CART_RIDE_OWNER_NOT_FOUND,
                     pPacket->m_cli_CART_RIDE.m_wOwnerObjIDX,
@@ -7942,14 +7948,14 @@ classUSER::Recv_cli_CART_RIDE(t_PACKET* pPacket) {
             }
 
             if (this->GetCur_RIDE_MODE() || !pUSER->GetCur_RIDE_MODE()) {
-                // Å¾½Â½Ã¿¡¸¸ ÅÂ¿ì±â °¡´É...
+                // íƒ‘ìŠ¹ì‹œì—ë§Œ íƒœìš°ê¸° ê°€ëŠ¥...
                 return true;
             }
             if (this->m_iLinkedCartObjIDX || pUSER->m_iLinkedCartObjIDX) {
                 return true;
             }
 
-            /// Å¾½Â »óÅÂ º¯°æÀü¿¡ Á¤Áö ¸í·ÉÇÒ´ç
+            /// íƒ‘ìŠ¹ ìƒíƒœ ë³€ê²½ì „ì— ì •ì§€ ëª…ë ¹í• ë‹¹
             this->SetCMD_STOP();
 
             pUSER->m_btRideMODE = RIDE_MODE_DRIVE;
@@ -7968,9 +7974,9 @@ classUSER::Recv_cli_CART_RIDE(t_PACKET* pPacket) {
         }
         case CART_RIDE_REFUSE: {
             pUSER = g_pObjMGR->Get_UserOBJ(pPacket->m_cli_CART_RIDE.m_wOwnerObjIDX);
-            // ¾ÈÅºµ¥...
+            // ì•ˆíƒ„ë°...
             if (!pUSER) {
-                // °ÅºÎ ÆĞÅ¶ º¸³¾ ÄÉ¸¯ÀÌ ¾ø³× ?
+                // ê±°ë¶€ íŒ¨í‚· ë³´ë‚¼ ì¼€ë¦­ì´ ì—†ë„¤ ?
                 return true;
             }
             pUSER->Send_gsv_CART_RIDE(CART_RIDE_REFUSE,
@@ -8017,7 +8023,7 @@ classUSER::Send_gsv_CART_RIDE(BYTE btType, WORD wSourObjIdx, WORD wDestObjIdx, b
 
 //-------------------------------------------------------------------------------------------------
 /**
- *	³×Æ®¿÷ ÆĞÅ¶ÀÌ ¿Ï¼ºµÇ¾î µé¾î ¿ÔÀ»¶§ Å¥¿¡ µî·ÏÇÏ°Å³ª Ã³¸®ÇÏ´Â ÇÔ¼ö
+ *	ë„¤íŠ¸ì› íŒ¨í‚·ì´ ì™„ì„±ë˜ì–´ ë“¤ì–´ ì™”ì„ë•Œ íì— ë“±ë¡í•˜ê±°ë‚˜ ì²˜ë¦¬í•˜ëŠ” í•¨ìˆ˜
  */
 bool
 classUSER::Recv_Done(tagIO_DATA* pRecvDATA) {
@@ -8039,11 +8045,11 @@ classUSER::Recv_Done(tagIO_DATA* pRecvDATA) {
 
 //-------------------------------------------------------------------------------------------------
 /**
- *	»ç¿ëÀÚÀÇ ·Î±×¾Æ¿ô ¿äÃ»½Ã Ã³¸® ÇÏ´Â ÇÔ¼ö
+ *	ì‚¬ìš©ìì˜ ë¡œê·¸ì•„ì›ƒ ìš”ì²­ì‹œ ì²˜ë¦¬ í•˜ëŠ” í•¨ìˆ˜
  */
 int
 classUSER::ProcLogOUT() {
-    // Á¢¼Ó Á¾·á ¿ä±¸Çß´Ù.
+    // ì ‘ì† ì¢…ë£Œ ìš”êµ¬í–ˆë‹¤.
     if (this->GetZONE()->GetTimeGetTIME() >= m_dwTimeToLogOUT) {
         switch (this->m_btWishLogOutMODE) {
             case LOGOUT_MODE_CHARLIST:
@@ -8053,7 +8059,7 @@ classUSER::ProcLogOUT() {
 
                 this->GetZONE()->Dec_UserCNT();
                 this->GetZONE()->Sub_DIRECT(this);
-                // Â©¸®µµ·Ï..
+                // ì§¤ë¦¬ë„ë¡..
                 g_pUserLIST->DeleteUSER(this, LOGOUT_MODE_CHARLIST);
                 return 1;
 
@@ -8069,11 +8075,11 @@ classUSER::ProcLogOUT() {
         return 1;
     }
 
-    // Á¢¼Ó Á¾·á ´ë±âÁß¿¡µµ Ã³¸®ÇØÁà¾ß ÇÑµ¥...
+    // ì ‘ì† ì¢…ë£Œ ëŒ€ê¸°ì¤‘ì—ë„ ì²˜ë¦¬í•´ì¤˜ì•¼ í•œë°...
     if (this->Get_HP() > 0)
         this->Check_PerFRAME(this->GetZONE()->GetPassTIME());
 
-    // Ãë¼Ò ÆĞÅ¶ÀÌ ¿Ô´Â°¡ ????
+    // ì·¨ì†Œ íŒ¨í‚·ì´ ì™”ëŠ”ê°€ ????
     m_csRecvQ.Lock();
     {
         while (!recv_list.empty()) {
@@ -8084,8 +8090,8 @@ classUSER::ProcLogOUT() {
             do {
                 nTotalPacketLEN = pPacket->m_nSize;
                 if (!nTotalPacketLEN) {
-                    // ÆĞÅ¶ÀÌ º¯Á¶µÇ¾î ¿Ô´Ù.
-                    // ÇìÅ·ÀÎ°¡ ???
+                    // íŒ¨í‚·ì´ ë³€ì¡°ë˜ì–´ ì™”ë‹¤.
+                    // í—¤í‚¹ì¸ê°€ ???
                     m_csRecvQ.Unlock();
                     IS_HACKING(this, "classUSER::Proc( Decode_Recv ... )");
                     return 0;
@@ -8117,13 +8123,13 @@ classUSER::ProcLogOUT() {
 
 //-------------------------------------------------------------------------------------------------
 /**
- *	»ç¿ëÀÚ·Î ºÎÅÍ ¹ŞÀº ÆĞÅ¶ Ã³¸® & ÄÉ¸¯ÅÍ Ã³¸®
+ *	ì‚¬ìš©ìë¡œ ë¶€í„° ë°›ì€ íŒ¨í‚· ì²˜ë¦¬ & ì¼€ë¦­í„° ì²˜ë¦¬
  */
 int
 classUSER::Proc(void) {
-    // Á¸¾È¿¡ ÀÖÀ»¶§ Ã³¸®µÇ´Â ÇÔ¼ö´Ù...
+    // ì¡´ì•ˆì— ìˆì„ë•Œ ì²˜ë¦¬ë˜ëŠ” í•¨ìˆ˜ë‹¤...
     if (this->m_btLogOutMODE || INVALID_SOCKET == this->Get_SOCKET()) {
-        // Á¢¼ÓÀÌ ²÷°å°Å³ª ¿À·ù...
+        // ì ‘ì†ì´ ëŠê²¼ê±°ë‚˜ ì˜¤ë¥˜...
         if (0 == this->m_dwTimeToLogOUT) {
             if (this->m_pPartyBUFF) {
                 this->m_pPartyBUFF->Sub_PartyUSER(this->m_nPartyPOS);
@@ -8135,7 +8141,7 @@ classUSER::Proc(void) {
                 < LOGOUT_WAIT_SECOND * 1000) {
                 m_dwTimeToLogOUT = this->GetZONE()->GetTimeGetTIME() + LOGOUT_WAIT_SECOND * 500;
             } else {
-                // ¹Ù·Î Á¢¼Ó Á¾·á °¡´É...
+                // ë°”ë¡œ ì ‘ì† ì¢…ë£Œ ê°€ëŠ¥...
                 // m_dwTimeToLogOUT = this->GetZONE()->GetTimeGetTIME();
                 return 0;
             }
@@ -8170,12 +8176,12 @@ classUSER::Proc(void) {
                         io_data->bytes -= nTotalPacketLEN;
 
                         if (0 == io_data->bytes) {
-                            // ´ÙÃ³¸®µÈ ÆĞÅ¶...
+                            // ë‹¤ì²˜ë¦¬ëœ íŒ¨í‚·...
                             recv_list.pop();
                             this->Free_RecvIODATA(io_data);
                         } else {
                             pPacket = (t_PACKETHEADER*)(pPacket->m_pDATA + nTotalPacketLEN);
-                            // Ã³¸®ÇÏ°í ³²Àº ºÎºĞ ´ÙÀ½¿¡ Ã³¸® ÇÒ¼ö ÀÖµµ·Ï...
+                            // ì²˜ë¦¬í•˜ê³  ë‚¨ì€ ë¶€ë¶„ ë‹¤ìŒì— ì²˜ë¦¬ í• ìˆ˜ ìˆë„ë¡...
                             for (WORD wI = 0; wI < io_data->bytes; wI++) {
                                 io_data->packet.bytes[wI] = pPacket->m_pDATA[wI];
                             }
@@ -8184,7 +8190,7 @@ classUSER::Proc(void) {
                         return 1;
                     }
                     case RET_FAILED: {
-                        // Â¥¸¦ ³Ñ...
+                        // ì§œë¥¼ ë„˜...
                         m_csRecvQ.Unlock();
                         return 0;
                     }
@@ -8227,11 +8233,11 @@ classUSER::Proc(void) {
         }
 
         if (0 == this->m_iLinkedCartObjIDX) {
-            // Ä«Æ® µå¶óÀÌ¹ö¿Í ÇÔ²² ¿öÇÁÇØ¼­ »õ·Î¿î Á¸¿¡ µé¾î ¿Ô´Ù
+            // ì¹´íŠ¸ ë“œë¼ì´ë²„ì™€ í•¨ê»˜ ì›Œí”„í•´ì„œ ìƒˆë¡œìš´ ì¡´ì— ë“¤ì–´ ì™”ë‹¤
             classUSER* pDriver = (classUSER*)g_pUserLIST->GetSOCKET(this->m_iLinkedCartUsrIDX);
             if (pDriver && RIDE_MODE_DRIVE == pDriver->GetCur_RIDE_MODE()) {
                 if (NULL == pDriver->GetZONE() || NULL == pDriver->m_pGroupSECTOR) {
-                    // ÄÄÅÍ°¡ ´À¸°°¡ º¸´Ù...¾ÆÁ÷ Á¸¿¡ ÀÔÀåÇÏÁö ¾Ê¾ÒÀ½
+                    // ì»´í„°ê°€ ëŠë¦°ê°€ ë³´ë‹¤...ì•„ì§ ì¡´ì— ì…ì¥í•˜ì§€ ì•Šì•˜ìŒ
                     return true;
                 }
 
@@ -8245,12 +8251,12 @@ classUSER::Proc(void) {
                         pDriver->Get_INDEX(),
                         this->Get_INDEX(),
                         true);
-                } // else ÀÌ·±°æ¿ì´Â ¾øÀ»µí...
+                } // else ì´ëŸ°ê²½ìš°ëŠ” ì—†ì„ë“¯...
             }
 
-            // 1. ¿îÀüÀÚÀÇ Á¢¼Ó Á¾·á
-            // 2. ¿îÀüÀÚ¿Í ÇÔ²² ¿öÇÁÇÏ°í Á¸¿¡ ÀÔÀåÇØ º¸´Ï µå¶óÀÌ¹ö°¡ Ä«Æ®¿¡¼­ ³»·È´Ù ??
-            // 3. ¿îÀüÀÚ¿Í Á¸ÀÌ Æ²¸®´Ù
+            // 1. ìš´ì „ìì˜ ì ‘ì† ì¢…ë£Œ
+            // 2. ìš´ì „ìì™€ í•¨ê»˜ ì›Œí”„í•˜ê³  ì¡´ì— ì…ì¥í•´ ë³´ë‹ˆ ë“œë¼ì´ë²„ê°€ ì¹´íŠ¸ì—ì„œ ë‚´ë ¸ë‹¤ ??
+            // 3. ìš´ì „ìì™€ ì¡´ì´ í‹€ë¦¬ë‹¤
             this->m_btRideMODE = 0;
             this->m_iLinkedCartObjIDX = 0;
             this->m_iLinkedCartUsrIDX = 0;
@@ -8262,13 +8268,13 @@ classUSER::Proc(void) {
         return true;
     }
 
-    // ¿öÇÁ ¸í·É ÀÌÈÄ¿¡´Â ...
-    // ZoneÀÌ NULLÀÌ µÇ¾î ¾Æ·¡ ÇÔ¼ö È£Ãâ½Ã »¶~~~~~~~
+    // ì›Œí”„ ëª…ë ¹ ì´í›„ì—ëŠ” ...
+    // Zoneì´ NULLì´ ë˜ì–´ ì•„ë˜ í•¨ìˆ˜ í˜¸ì¶œì‹œ ë»‘~~~~~~~
     return CObjCHAR::Proc();
 }
 
 /**
- * \param dwFLAG	:: »óÅÂÁö¼Ó ºñÆ® ÇÃ·¡±×
+ * \param dwFLAG	:: ìƒíƒœì§€ì† ë¹„íŠ¸ í”Œë˜ê·¸
  */
 bool
 classUSER::Send_gsv_CHARSTATE_CHANGE(DWORD dwFLAG) {
@@ -8291,7 +8297,7 @@ classUSER::Send_gsv_CHARSTATE_CHANGE(DWORD dwFLAG) {
 //-------------------------------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------------------------------
-/// Ã¤ÆÃÀ» ÆÄÀÏ¿¡ ·Î±×·Î ³²±è ( ´ë¸¸ÀÏ °æ¿ì¿¡¸¸ )
+/// ì±„íŒ…ì„ íŒŒì¼ì— ë¡œê·¸ë¡œ ë‚¨ê¹€ ( ëŒ€ë§Œì¼ ê²½ìš°ì—ë§Œ )
 void
 classUSER::LogCHAT(const char* szMSG, const char* pDestCHAR, const char* szMsgTYPE) {
     return;
