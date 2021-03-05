@@ -615,12 +615,12 @@ classUSER::Add_EXP(__int64 iGetExp, bool bApplyStamina, WORD wFromObjIDX) {
 
     short nBeforeLEV = this->Get_LEVEL();
     if (nBeforeLEV == GameStaticConfig::MAX_LEVEL) {
-        m_GrowAbility.m_lEXP = this->Get_NeedEXP(GameStaticConfig::MAX_LEVEL - 1);
+        m_GrowAbility.m_lEXP = 0;
     } else {
         while (m_GrowAbility.m_lEXP >= iNeedEXP) {
             // 레벨 제한
             if (this->Get_LEVEL() >= GameStaticConfig::MAX_LEVEL) {
-                m_GrowAbility.m_lEXP = this->Get_NeedEXP(GameStaticConfig::MAX_LEVEL - 1);
+                m_GrowAbility.m_lEXP = 0;
                 break;
             }
             this->Set_LEVEL(this->Get_LEVEL() + 1);
