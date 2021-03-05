@@ -614,30 +614,34 @@ classUSER::Add_EXP(__int64 iGetExp, bool bApplyStamina, WORD wFromObjIDX) {
     bool bLevelUp = false;
 
     short nBeforeLEV = this->Get_LEVEL();
-    while (m_GrowAbility.m_lEXP >= iNeedEXP) {
-        // 레벨 제한
-        if (this->Get_LEVEL() >= GameStaticConfig::MAX_LEVEL) {
-            m_GrowAbility.m_lEXP = 0;
-            break;
-        }
-        this->Set_LEVEL(this->Get_LEVEL() + 1);
-
-        this->AddCur_BonusPOINT((short)(this->Get_LEVEL() * 0.8) + 10);
-
-        for (short nD = 0; nD < g_TblSkillPoint.row_count; nD++) {
-            // Original formula: this->AddCur_SkillPOINT( (short)( ( this->Get_LEVEL() + 4 ) * 0.5f
-            // ) - 1 );
-            if (SP_LEVEL(nD) == this->Get_LEVEL()) {
-                this->AddCur_SkillPOINT(SP_POINT(nD));
+    if (nBeforeLEV == GameStaticConfig::MAX_LEVEL) {
+        m_GrowAbility.m_lEXP = this->Get_NeedEXP(GameStaticConfig::MAX_LEVEL - 1);
+    } else {
+        while (m_GrowAbility.m_lEXP >= iNeedEXP) {
+            // 레벨 제한
+            if (this->Get_LEVEL() >= GameStaticConfig::MAX_LEVEL) {
+                m_GrowAbility.m_lEXP = this->Get_NeedEXP(GameStaticConfig::MAX_LEVEL - 1);
                 break;
             }
+            this->Set_LEVEL(this->Get_LEVEL() + 1);
+
+            this->AddCur_BonusPOINT((short)(this->Get_LEVEL() * 0.8) + 10);
+
+            for (short nD = 0; nD < g_TblSkillPoint.row_count; nD++) {
+                // Original formula: this->AddCur_SkillPOINT( (short)( ( this->Get_LEVEL() + 4 ) * 0.5f
+                // ) - 1 );
+                if (SP_LEVEL(nD) == this->Get_LEVEL()) {
+                    this->AddCur_SkillPOINT(SP_POINT(nD));
+                    break;
+                }
+            }
+
+            m_GrowAbility.m_lEXP -= iNeedEXP;
+
+            m_GrowAbility.m_lPenalEXP = 0;
+            iNeedEXP = this->Get_NeedEXP(this->Get_LEVEL());
+            bLevelUp = true;
         }
-
-        m_GrowAbility.m_lEXP -= iNeedEXP;
-
-        m_GrowAbility.m_lPenalEXP = 0;
-        iNeedEXP = this->Get_NeedEXP(this->Get_LEVEL());
-        bLevelUp = true;
     }
 
     if (bLevelUp) {
