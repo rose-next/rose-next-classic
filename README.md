@@ -98,7 +98,7 @@ projects by compiling the `rose-next.sln` solution.
 ### Assets
 
 It is recommended to use your own assets but the original rose-next assets can
-be downloaded from https://f000.backblazeb2.com/file/rose-archive/clients/rose-next-assets.7z
+be downloaded from https://dl.flowan.io/public/rosenext/2021-03-09-assets.7z
 
 The `client` requires assets to be baked before it can run. This can be
 accomplished using the `pipeline` tool in conjunction with the `assets/bake.manifest`
